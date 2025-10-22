@@ -10,9 +10,11 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform) apply false
     alias(libs.plugins.publish) apply false
 }
+val build_number = providers.gradleProperty("project.build_number").getOrElse("SNAPSHOT")
+
 subprojects {
     group = "com.yuanjingtech.boot.app.kmp"
-    version = "0.0.2"
+    version = "0.0.2-${build_number}"
     plugins.withId("com.vanniktech.maven.publish") {
         configure<com.vanniktech.maven.publish.MavenPublishBaseExtension> {
             publishToMavenCentral()
