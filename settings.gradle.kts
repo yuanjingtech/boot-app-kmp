@@ -1,4 +1,4 @@
-rootProject.name = "Bootappkmp"
+rootProject.name = "boot-app-kmp"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
