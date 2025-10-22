@@ -60,8 +60,8 @@ mavenPublishing {
     coordinates(group.toString(), "shared", version.toString())
 
     pom {
-        name = "yuanjintech's boot library for kmp app"
-        description = "yuanjintech's boot library for kmp app\"."
+        name = "yuanjingtech's boot library for kmp app"
+        description = "yuanjingtech's boot library for kmp app\"."
         inceptionYear = "2025"
         url = "https://github.com/yuanjingtech/boot-app-kmp"
         licenses {
