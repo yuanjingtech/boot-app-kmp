@@ -1,7 +1,42 @@
 # a boot library for kmp app
-
+boot 旨在通过默认的网络、存储、依赖注入、插件实现,简化kmp跨平台应用开发. 
 ![Publish](https://github.com/yuanjingtech/boot-app-kmp/actions/workflows/publish.yml/badge.svg)
+![Maven Central Version](https://img.shields.io/maven-central/v/com.yuanjingtech.boot.app.kmp/shared)
 
+## 主要功能
+- [] ktor 网络请求
+- [] store(include sqdelight) 数据存储
+- [] koin 依赖注入
+- [] coil 图像加载
+- [] tentant 多租户
+
+## 主要修复
+- [] wasm/js 中文显示乱码问题
+
+## 使用
+gradle/libs.version.toml
+```yaml
+[versions]
+boot = "0.0.1"
+[libraries]
+boot-shared = { module = "com.yuanjingtech.boot.app.kmp:shared", version.ref = "boot" }
+[bundles]
+feature = [
+  "boot-shared",
+]
+```
+feature/build.gradle.kts
+```kotlin
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            api(libs.bundles.feature)
+        }
+    }
+}
+```
+
+## 参考
 
 This is a Kotlin Multiplatform project targeting Android, iOS, Web, Desktop (JVM), Server.
 
