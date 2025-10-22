@@ -32,6 +32,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             // put your Multiplatform dependencies here
+            api(libs.bundles.koin)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
