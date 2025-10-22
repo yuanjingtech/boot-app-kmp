@@ -1,3 +1,8 @@
+# a boot library for kmp app
+
+![Publish](https://github.com/yuanjingtech/boot-app-kmp/actions/workflows/publish.yml/badge.svg)
+
+
 This is a Kotlin Multiplatform project targeting Android, iOS, Web, Desktop (JVM), Server.
 
 * [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
