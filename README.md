@@ -12,7 +12,7 @@ boot 旨在通过默认的网络、存储、依赖注入、插件实现,简化km
 - [] tentant 多租户
 
 ## 主要修复
-- [] wasm/js 中文显示乱码问题
+- [x] wasm/js 中文显示乱码问题
 
 ## 使用
 gradle/libs.version.toml
@@ -36,7 +36,18 @@ kotlin {
     }
 }
 ```
-
+App.kt
+```kotlin
+@Composable
+@Preview
+fun App() {
+    BootApp(config = KoinConfiguration {
+        printLogger()
+    }) {
+      Content()
+    }
+}
+```
 ## 参考
 
 This is a Kotlin Multiplatform project targeting Android, iOS, Web, Desktop (JVM), Server.
