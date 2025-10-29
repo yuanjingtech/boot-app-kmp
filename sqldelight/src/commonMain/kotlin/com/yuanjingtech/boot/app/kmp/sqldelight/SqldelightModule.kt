@@ -1,7 +1,10 @@
 package com.yuanjingtech.boot.app.kmp.sqldelight
 
 import org.koin.core.module.Module
+import org.koin.dsl.module
 
 expect val platformModule: Module
 
-val sqldelightModules: List<Module> = listOf(platformModule)
+val sqldelightModule = module {
+    includes(platformModule)
+}
