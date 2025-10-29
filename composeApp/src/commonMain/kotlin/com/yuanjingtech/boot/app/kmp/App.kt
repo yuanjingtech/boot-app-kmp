@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.yuanjingtech.boot.app.kmp.composeapp.generated.resources.Res
 import com.yuanjingtech.boot.app.kmp.composeapp.generated.resources.compose_multiplatform
+import com.yuanjingtech.boot.app.kmp.di.bootModules
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.dsl.KoinConfiguration
@@ -28,6 +29,7 @@ import org.koin.dsl.KoinConfiguration
 fun App() {
     BootApp(config = KoinConfiguration {
         printLogger()
+        modules(bootModules)
     }) {
         var showContent by remember { mutableStateOf(false) }
         Column(
