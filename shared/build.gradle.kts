@@ -32,8 +32,10 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            api(libs.kotlin.stdlib)
             // put your Multiplatform dependencies here
             api(libs.bundles.koin)
+            api(projects.runblocking)
             api(projects.sqldelight)
             api(libs.kotlinx.datetime)
         }
@@ -72,6 +74,32 @@ kotlin {
             implementation(libs.compose.material3.adaptive)
         }
         commonTest.dependencies {
+        }
+    }
+}
+// app dependencies
+kotlin{
+    sourceSets {
+        androidMain.dependencies {
+            api(compose.preview)
+            api(libs.androidx.activity.compose)
+        }
+        commonMain.dependencies {
+            api(compose.runtime)
+            api(compose.foundation)
+            api(compose.material3)
+            api(compose.ui)
+            api(compose.components.resources)
+            api(compose.components.uiToolingPreview)
+            api(libs.androidx.lifecycle.viewmodelCompose)
+            api(libs.androidx.lifecycle.runtimeCompose)
+        }
+        commonTest.dependencies {
+            api(libs.kotlin.test)
+        }
+        jvmMain.dependencies {
+            api(compose.desktop.currentOs)
+            api(libs.kotlinx.coroutinesSwing)
         }
     }
 }

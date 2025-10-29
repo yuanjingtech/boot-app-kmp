@@ -8,9 +8,11 @@ import androidx.compose.runtime.Composable
 import com.yuanjingtech.boot.app.kmp.theme.BootAppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinMultiplatformApplication
+import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.logger.Level
 import org.koin.dsl.KoinConfiguration
 
+@OptIn(KoinExperimentalAPI::class)
 @Composable
 @Preview
 fun BootApp(
