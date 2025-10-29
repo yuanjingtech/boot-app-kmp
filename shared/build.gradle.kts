@@ -35,6 +35,7 @@ kotlin {
             // put your Multiplatform dependencies here
             api(libs.bundles.koin)
             api(projects.sqldelight)
+            api(libs.kotlinx.datetime)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
