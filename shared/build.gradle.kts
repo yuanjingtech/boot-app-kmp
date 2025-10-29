@@ -1,4 +1,3 @@
-import org.jetbrains.compose.compose
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -35,6 +34,7 @@ kotlin {
         commonMain.dependencies {
             // put your Multiplatform dependencies here
             api(libs.bundles.koin)
+            api(projects.sqldelight)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

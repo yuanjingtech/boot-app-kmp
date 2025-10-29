@@ -6,7 +6,8 @@ boot 旨在通过默认的网络、存储、依赖注入、插件实现,简化km
 
 ## 主要功能
 - [] ktor 网络请求
-- [] store(include sqdelight) 数据存储
+- [x] sqdelight 数据存储
+- [] store 数据源
 - [x] koin 依赖注入
 - [] coil 图像加载
 - [] tentant 多租户

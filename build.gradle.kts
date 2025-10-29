@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.kotlinJvm) apply false
     alias(libs.plugins.kotlinMultiplatform) apply false
     alias(libs.plugins.publish) apply false
+    alias(libs.plugins.sqldelight) apply false
 }
 val build_number = providers.gradleProperty("project.build_number").getOrElse("SNAPSHOT")
 
