@@ -22,7 +22,7 @@ subprojects {
 
             signAllPublications()
 
-            coordinates(group.toString(), "shared", version.toString())
+            coordinates(group.toString(), name, version.toString())
 
             pom {
                 name = "yuanjingtech's boot library for kmp app"
