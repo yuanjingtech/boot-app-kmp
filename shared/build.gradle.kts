@@ -39,6 +39,7 @@ kotlin {
             api(projects.logging)
             api(projects.sqldelight)
             api(libs.kotlinx.datetime)
+            api(libs.compose.material.icons.extended)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
