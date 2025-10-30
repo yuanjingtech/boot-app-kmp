@@ -36,6 +36,7 @@ kotlin {
             // put your Multiplatform dependencies here
             api(libs.bundles.koin)
             api(projects.runblocking)
+            api(projects.logging)
             api(projects.sqldelight)
             api(libs.kotlinx.datetime)
         }
@@ -78,7 +79,7 @@ kotlin {
     }
 }
 // app dependencies
-kotlin{
+kotlin {
     sourceSets {
         androidMain.dependencies {
             api(compose.preview)

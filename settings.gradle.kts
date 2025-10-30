@@ -34,5 +34,6 @@ plugins {
 
 include(":composeApp")
 include(":runblocking")
+include(":logging")
 include(":sqldelight")
 include(":shared")

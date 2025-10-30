@@ -5,8 +5,10 @@ boot 旨在通过默认的网络、存储、依赖注入、插件实现,简化km
 ![Maven Central Version](https://img.shields.io/maven-central/v/com.yuanjingtech.boot.app.kmp/shared)
 
 ## 主要功能
+- [x] 日志 logging(kotlin-logging)
 - [] ktor 网络请求
 - [x] sqdelight 数据存储
+  - [] wasm sqldelight
 - [] store 数据源
 - [x] koin 依赖注入
 - [] coil 图像加载

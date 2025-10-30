@@ -20,13 +20,17 @@ import androidx.compose.ui.Modifier
 import com.yuanjingtech.boot.app.kmp.composeapp.generated.resources.Res
 import com.yuanjingtech.boot.app.kmp.composeapp.generated.resources.compose_multiplatform
 import com.yuanjingtech.boot.app.kmp.di.bootModule
+import com.yuanjingtech.boot.app.kmp.logging.LoggerFactory
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.dsl.KoinConfiguration
 
+private val logger = LoggerFactory.getLogger("com.yuanjingtech.boot.app.kmp.App")
+
 @Composable
 @Preview
 fun App() {
+    logger.info { "App Compose" }
     BootApp(config = KoinConfiguration {
         printLogger()
         modules(bootModule)
