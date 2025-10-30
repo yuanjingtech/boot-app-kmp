@@ -60,7 +60,8 @@ kotlin {
             implementation(libs.kotlin.logging.jvm)
         }
         androidMain.dependencies {
-            implementation(libs.kotlin.logging.android)
+            // 使用通用的 kotlin-logging 而不是特定的 android 变体
+            implementation(libs.kotlin.logging)
         }
         //web
         webMain.dependencies {
@@ -84,5 +85,14 @@ kotlin {
         iosSimulatorArm64Main.dependencies {
             implementation(libs.kotlin.logging.iossimulatorarm64)
         }
+    }
+}
+
+// 强制统一 kotlin-logging 版本以避免冲突
+configurations.all {
+    resolutionStrategy {
+        force("io.github.oshai:kotlin-logging:7.0.7")
+        force("io.github.oshai:kotlin-logging-jvm:7.0.7")
+        force("io.github.oshai:kotlin-logging-js:7.0.7")
     }
 }

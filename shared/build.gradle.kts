@@ -58,27 +58,6 @@ android {
         minSdk = libs.versions.android.minSdk.get().toInt()
     }
 }
-kotlin {
-    sourceSets {
-        androidMain.dependencies {
-            implementation(compose.preview)
-            implementation(libs.androidx.activity.compose)
-        }
-        commonMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material3)
-            implementation(compose.ui)
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
-        }
-        commonMain.dependencies {
-            implementation(libs.compose.material3.adaptive)
-        }
-        commonTest.dependencies {
-        }
-    }
-}
 // app dependencies
 kotlin {
     sourceSets {
@@ -95,6 +74,7 @@ kotlin {
             api(compose.components.uiToolingPreview)
             api(libs.androidx.lifecycle.viewmodelCompose)
             api(libs.androidx.lifecycle.runtimeCompose)
+            api(libs.compose.material3.adaptive)
         }
         commonTest.dependencies {
             api(libs.kotlin.test)
