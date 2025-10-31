@@ -38,6 +38,7 @@ kotlin {
             api(projects.runblocking)
             api(projects.logging)
             api(projects.sqldelight)
+            api(projects.subapp)
             api(libs.kotlinx.datetime)
             api(libs.compose.material.icons.extended)
         }
