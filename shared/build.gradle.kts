@@ -40,6 +40,7 @@ kotlin {
             api(projects.sqldelight)
             api(projects.subapp)
             api(projects.network)
+            api(projects.ui)
             api(libs.kotlinx.datetime)
             api(libs.compose.material.icons.extended)
         }
