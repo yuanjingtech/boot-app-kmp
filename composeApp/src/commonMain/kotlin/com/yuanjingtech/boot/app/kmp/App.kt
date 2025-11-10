@@ -8,13 +8,14 @@ import com.yuanjingtech.boot.app.kmp.demo2.demo2Module
 import com.yuanjingtech.boot.app.kmp.di.bootModule
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.dsl.KoinConfiguration
-
+import org.koin.ksp.generated.configurationModules
 
 @Composable
 @Preview
 fun App() {
     BootApp(config = KoinConfiguration {
         printLogger()
+        modules(BootApp.configurationModules)
         modules(bootModule, demoModule, demo2Module)
     }) {
         Content(Modifier.fillMaxSize())
