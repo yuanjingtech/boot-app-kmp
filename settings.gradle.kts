@@ -25,6 +25,9 @@ dependencyResolutionManagement {
             }
         }
         mavenCentral()
+        maven("https://packages.jetbrains.team/maven/p/kpm/public/")
+        maven("https://jitpack.io")
+        maven("https://jogamp.org/deployment/maven")
     }
 }
 
@@ -39,5 +42,6 @@ include(":sqldelight")
 include(":subapp")
 include(":network")
 include(":ui")
+include(":webview")
 include(":sample:plugin")
 include(":shared")

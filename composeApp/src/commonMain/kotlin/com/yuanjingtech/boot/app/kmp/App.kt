@@ -6,6 +6,7 @@ import androidx.compose.ui.Modifier
 import com.yuanjingtech.boot.app.kmp.demo.demoModule
 import com.yuanjingtech.boot.app.kmp.demo2.demo2Module
 import com.yuanjingtech.boot.app.kmp.di.bootModule
+import com.yuanjingtech.boot.app.kmp.webview.WebViewDemoScreen
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.dsl.KoinConfiguration
 import org.koin.ksp.generated.configurationModules
@@ -18,6 +19,6 @@ fun App() {
         modules(BootApp.configurationModules)
         modules(bootModule, demoModule, demo2Module)
     }) {
-        Content(Modifier.fillMaxSize())
+        WebViewDemoScreen(Modifier.fillMaxSize())
     }
 }
