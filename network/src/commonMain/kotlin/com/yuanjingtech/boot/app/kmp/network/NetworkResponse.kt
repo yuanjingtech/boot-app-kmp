@@ -1,12 +1,14 @@
 package com.yuanjingtech.boot.app.kmp.network
 
 import io.ktor.client.call.body
+import io.ktor.util.reflect.TypeInfo
+import io.ktor.util.reflect.typeInfo
 
 /**
  * 封装的网络响应类，完全隐藏 Ktor HttpResponse 实现
  */
 class NetworkResponse internal constructor(
-    private val httpResponse: io.ktor.client.statement.HttpResponse
+    internal val httpResponse: io.ktor.client.statement.HttpResponse
 ) {
     val status: NetworkStatusCode
         get() = NetworkStatusCode(httpResponse.status.value, httpResponse.status.description)

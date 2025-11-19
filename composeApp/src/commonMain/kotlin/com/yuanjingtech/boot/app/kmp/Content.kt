@@ -10,7 +10,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.yuanjingtech.boot.app.kmp.network.NetworkService
-import com.yuanjingtech.boot.app.kmp.network.ContentType
+import com.yuanjingtech.boot.app.kmp.network.body
 import com.yuanjingtech.boot.app.kmp.subapp.SubAppManager
 import org.koin.compose.koinInject
 

@@ -1,6 +1,7 @@
 package com.yuanjingtech.boot.app.kmp.network
 
 import io.ktor.client.request.HttpRequestBuilder
+import io.ktor.client.request.headers
 import io.ktor.client.request.setBody
 import io.ktor.client.request.url
 import io.ktor.http.HttpMethod
@@ -25,6 +26,16 @@ class NetworkRequestBuilder {
 
     fun setBody(body: Any) {
         builder.setBody(body)
+    }
+
+    fun headers(block: NetworkHeadersBuilder.() -> Unit) {
+        val headersBuilder = NetworkHeadersBuilder()
+        headersBuilder.block()
+        builder.headers {
+            headersBuilder.headers.forEach { (key, value) ->
+                append(key, value)
+            }
+        }
     }
 
     internal fun build(): HttpRequestBuilder {
