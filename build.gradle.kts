@@ -11,6 +11,8 @@ plugins {
     alias(libs.plugins.publish) apply false
     alias(libs.plugins.sqldelight) apply false
     alias(libs.plugins.ksp) apply false
+    alias(libs.plugins.boot.application) apply false
+    alias(libs.plugins.boot.library) apply false
 }
 val build_number = providers.gradleProperty("project.build_number").getOrElse("SNAPSHOT")
 

@@ -5,15 +5,13 @@ import org.koin.core.annotation.Configuration
 import org.koin.core.annotation.Module
 import org.koin.dsl.module
 
+internal val samplePluginModule = module {
+    includes(bootModule)
+}
+
+@Suppress("unused")
 @Module
 @Configuration
 class SamplePluginModule {
-//    val module: org.koin.core.module.Module
-//        get() = module {
-//            includes(samplePluginModule)
-//        }
-}
-
-val samplePluginModule = module {
-    includes(bootModule)
+    val module get() = samplePluginModule
 }

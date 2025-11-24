@@ -46,16 +46,3 @@ android {
         minSdk = libs.versions.android.minSdk.get().toInt()
     }
 }
-
-// KSP
-kotlin {
-    sourceSets {
-        commonMain.dependencies {
-            implementation(libs.koin.annotations)
-        }
-    }
-    // KSP Common sourceSet
-    sourceSets.named("commonMain").configure {
-        kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
-    }
-}

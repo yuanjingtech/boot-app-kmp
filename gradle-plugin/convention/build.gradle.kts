@@ -2,7 +2,6 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     `kotlin-dsl`
-    `maven-publish`
     alias(libs.plugins.kotlinJvm)
 }
 
@@ -24,6 +23,8 @@ kotlin {
 // 插件的依赖 (插件实现代码中使用的依赖)
 dependencies {
     compileOnly(libs.android.gradle.api)
+    compileOnly(libs.android.gradle)
+    compileOnly(libs.kotlin.jvm.gradle.plugin)
     compileOnly(libs.kotlin.multiplatform.gradle.plugin)
 }
 
