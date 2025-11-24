@@ -2,7 +2,13 @@ import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    alias(libs.plugins.boot.library)
+    alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.composeMultiplatform)
+    alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.composeHotReload)
+    alias(libs.plugins.ksp)
+//    alias(libs.plugins.boot.library)
 }
 kotlin {
     androidTarget {
@@ -45,4 +51,32 @@ android {
     defaultConfig {
         minSdk = libs.versions.android.minSdk.get().toInt()
     }
+}
+
+// KSP
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            implementation(libs.koin.annotations)
+        }
+    }
+    // KSP Common sourceSet
+    sourceSets.named("commonMain").configure {
+        kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
+    }
+}
+// KSP Tasks
+dependencies {
+    add("kspCommonMainMetadata", libs.koin.ksp.compiler)
+//    add("kspJvm", libs.koin.ksp.compiler)
+//    add("kspAndroid", libs.koin.ksp.compiler)
+//    add("kspIosArm64", libs.koin.ksp.compiler)
+//    add("kspIosSimulatorArm64", libs.koin.ksp.compiler)
+//    add("kspJs", libs.koin.ksp.compiler)
+//    add("kspWasmJs", libs.koin.ksp.compiler)
+}
+
+// Trigger Common Metadata Generation from Native tasks
+tasks.matching { it.name.startsWith("ksp") && it.name != "kspCommonMainKotlinMetadata" }.configureEach {
+    dependsOn("kspCommonMainKotlinMetadata")
 }
