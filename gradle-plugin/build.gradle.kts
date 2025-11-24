@@ -1,3 +1,7 @@
+plugins {
+    alias(libs.plugins.kotlinJvm) apply false
+    alias(libs.plugins.publish) apply false
+}
 val build_number = providers.gradleProperty("project.build_number").getOrElse("SNAPSHOT")
 subprojects {
     group = "com.yuanjingtech.boot.app.kmp"
