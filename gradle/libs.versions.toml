@@ -115,10 +115,13 @@ ktor-client = [
     "ktor-serialization-kotlinx-json",
 ]
 [plugins]
+# gradle plugin
+gradle-plugin-publish = { id = "com.gradle.plugin-publish", version = "2.0.0" }
+# boot
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
-boot-application = { id = "com.yuanjingtech.boot.app.kmp.app.gradle.plugin" }
-boot-library = { id = "com.yuanjingtech.boot.app.kmp.lib.gradle.plugin" }
+boot-application = { id = "com.yuanjingtech.boot.app.kmp.application.gradle.plugin" }
+boot-library = { id = "com.yuanjingtech.boot.app.kmp.library.gradle.plugin" }
 boot-settings = { id = "com.yuanjingtech.boot.app.kmp.settings.gradle.plugin" }
 composeHotReload = { id = "org.jetbrains.compose.hot-reload", version.ref = "composeHotReload" }
 composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "composeMultiplatform" }

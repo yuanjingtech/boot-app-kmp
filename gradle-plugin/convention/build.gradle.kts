@@ -3,10 +3,11 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     `kotlin-dsl`
     alias(libs.plugins.kotlinJvm)
+    alias(libs.plugins.gradle.plugin.publish)
 }
 
 group = "com.yuanjingtech.boot.app.kmp"
-version = "1.0.0"
+version = "0.0.2-alpha.1"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -29,18 +30,29 @@ dependencies {
 }
 
 gradlePlugin {
+    website = "https://github.com/yuanjingtech/boot-app-kmp"
+    vcsUrl = "https://github.com/yuanjingtech/boot-app-kmp.git"
     plugins {
-        create("bootAppPlugin") {
+        create("bootApplicationPlugin") {
             id = libs.plugins.boot.application.get().pluginId
             implementationClass = "BootApplicationConventionPlugin"
+            displayName = "Kotlin Multiplatform Boot Application Plugin"
+            description = "Kotlin Multiplatform Boot Application Plugin"
+            tags = listOf("boot", "application")
         }
-        create("bootLibPlugin") {
+        create("bootLibraryPlugin") {
             id = libs.plugins.boot.library.get().pluginId
             implementationClass = "BootLibraryConventionPlugin"
+            displayName = "Kotlin Multiplatform Boot Library Plugin"
+            description = "Kotlin Multiplatform Boot Library Plugin"
+            tags = listOf("boot", "library")
         }
         create("bootSettingsPlugin") {
             id = libs.plugins.boot.settings.get().pluginId
             implementationClass = "BootSettingsConventionPlugin"
+            displayName = "Kotlin Multiplatform Boot Settings Plugin"
+            description = "Kotlin Multiplatform Boot Settings Plugin"
+            tags = listOf("boot", "settings")
         }
     }
 }

@@ -17,7 +17,7 @@ App插件专为应用程序项目设计，应用以下插件：
 - com.google.devtools.ksp
 - org.jetbrains.compose
 
-ID: `com.yuanjingtech.boot.app.kmp.app.gradle.plugin`
+ID: `com.yuanjingtech.boot.app.kmp.application.gradle.plugin`
 
 ## Lib Plugin
 
@@ -27,7 +27,7 @@ Lib插件专为库项目设计，应用以下插件：
 - com.google.devtools.ksp
 - org.jetbrains.compose
 
-ID: `com.yuanjingtech.boot.app.kmp.lib.gradle.plugin`
+ID: `com.yuanjingtech.boot.app.kmp.library.gradle.plugin`
 
 所有插件都会自动：
 1. 添加KSP (Kotlin Symbol Processing) 支持
@@ -41,7 +41,7 @@ ID: `com.yuanjingtech.boot.app.kmp.lib.gradle.plugin`
 ```kotlin
 // build.gradle.kts
 plugins {
-    id("com.yuanjingtech.boot.app.kmp.app.gradle.plugin")
+    id("com.yuanjingtech.boot.app.kmp.application.gradle.plugin")
 }
 ```
 
@@ -49,7 +49,7 @@ plugins {
 ```kotlin
 // build.gradle.kts
 plugins {
-    id("com.yuanjingtech.boot.app.kmp.lib.gradle.plugin")
+    id("com.yuanjingtech.boot.app.kmp.library.gradle.plugin")
 }
 ```
 
