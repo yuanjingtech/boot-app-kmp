@@ -1,6 +1,6 @@
 # .github/workflows/publish.yml
 
-name: Publish
+name: Publish Alpha
 on:
   push:
     branches: [ main ] # 触发条件（如推送到 main 分支）
@@ -18,6 +18,8 @@ jobs:
           java-version: 21
       - name: Publish to MavenCentral
         run: |
+          ./gradlew :gradle-plugin:convention:publishAllPublicationsToMavenCentral --no-configuration-cache \
+          -Pproject.build_number=alpha.${{ github.run_number }}
           ./gradlew publishAllPublicationsToMavenCentral --no-configuration-cache \
           -Pproject.build_number=alpha.${{ github.run_number }}
         env:

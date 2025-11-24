@@ -1,6 +1,6 @@
 # .github/workflows/publish.yml
 
-name: Publish
+name: Publish Release
 on:
   release:
     types: [released, prereleased]
