@@ -4,6 +4,17 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 pluginManagement {
     includeBuild("gradle-plugin")
     repositories {
+        val artifactory_contextUrl: String by extra
+        val artifactory_user: String by extra
+        val artifactory_password: String by extra
+        maven {
+            url = uri("${extra["artifactory_contextUrl"]}/gradle-dev")
+            credentials {
+                username = artifactory_user
+                password = artifactory_password
+            }
+            isAllowInsecureProtocol = true
+        }
         google {
             mavenContent {
                 includeGroupAndSubgroups("androidx")
@@ -21,6 +32,22 @@ plugins {
     id("com.yuanjingtech.boot.app.kmp.settings.gradle.plugin")
 }
 
+dependencyResolutionManagement {
+    repositories {
+        mavenLocal()
+        val artifactory_contextUrl: String by extra
+        val artifactory_user: String by extra
+        val artifactory_password: String by extra
+        maven {
+            url = uri("${extra["artifactory_contextUrl"]}/gradle-dev")
+            credentials {
+                username = artifactory_user
+                password = artifactory_password
+            }
+            isAllowInsecureProtocol = true
+        }
+    }
+}
 include(":composeApp")
 include(":runblocking")
 include(":logging")
