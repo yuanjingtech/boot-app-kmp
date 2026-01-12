@@ -3,17 +3,28 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.publish)
 }
 kotlin {
-    androidTarget {
+    androidLibrary {
+        namespace = "com.yuanjingtech.boot.app.kmp.ui"
+        compileSdk = libs.versions.android.compileSdk.get().toInt()
+        minSdk = libs.versions.android.minSdk.get().toInt()
+
+//        withJava() // enable java compilation support
+        withHostTestBuilder {}.configure {}
+        withDeviceTestBuilder {
+            sourceSetTreeName = "test"
+        }
+
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)
         }
     }
+
 
     iosArm64()
     iosSimulatorArm64()
@@ -45,17 +56,7 @@ kotlin {
     }
 }
 
-android {
-    namespace = "com.yuanjingtech.boot.app.kmp.ui"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-    defaultConfig {
-        minSdk = libs.versions.android.minSdk.get().toInt()
-    }
-}
+
 // logging
 kotlin {
     sourceSets {

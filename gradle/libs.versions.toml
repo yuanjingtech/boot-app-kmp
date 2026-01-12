@@ -1,15 +1,15 @@
 [versions]
-agp = "8.13.1"
+agp = "8.13.2"
 android-compileSdk = "36"
 android-minSdk = "24"
 android-targetSdk = "36"
-androidx-activity = "1.12.0"
+androidx-activity = "1.12.2"
 androidx-appcompat = "1.7.1"
 androidx-core = "1.17.0"
 androidx-espresso = "3.7.0"
 androidx-lifecycle = "2.9.6"
 androidx-testExt = "1.3.0"
-composeHotReload = "1.0.0-rc03"
+composeHotReload = "1.0.0"
 composeMultiplatform = "1.9.3"
 compose-material-icons = "1.7.3"
 compose-material3-adaptive = "1.2.0"
@@ -17,13 +17,13 @@ coil = "3.3.0"
 junit = "4.13.2"
 koin = "4.1.1"
 koin-annotations = "2.3.1"
-kotlin = "2.2.21"
-ksp = "2.2.21-2.0.4"
-kotlin-logging = "7.0.13"
+kotlin = "2.3.0"
+ksp = "2.3.4"
+kotlin-logging = "7.0.14"
 kotlinx-coroutines = "1.10.2"
 kotlinx-datetime = "0.7.1"
-ktor = "3.3.2"
-logback = "1.5.21"
+ktor = "3.3.3"
+logback = "1.5.24"
 sqldelight = "2.2.1"
 
 [libraries]
@@ -119,7 +119,6 @@ ktor-client = [
 gradle-plugin-publish = { id = "com.gradle.plugin-publish", version = "2.0.0" }
 # boot
 androidApplication = { id = "com.android.application", version.ref = "agp" }
-androidLibrary = { id = "com.android.library", version.ref = "agp" }
 boot-application = { id = "com.yuanjingtech.boot.app.kmp.application.gradle.plugin" }
 boot-library = { id = "com.yuanjingtech.boot.app.kmp.library.gradle.plugin" }
 boot-settings = { id = "com.yuanjingtech.boot.app.kmp.settings.gradle.plugin" }
@@ -129,6 +128,7 @@ composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "k
 kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 ktor = { id = "io.ktor.plugin", version.ref = "ktor" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 publish = { id = "com.vanniktech.maven.publish", version = "0.35.0" }
 sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
