@@ -35,6 +35,8 @@ plugins {
 dependencyResolutionManagement {
     repositories {
         mavenLocal()
+        mavenCentral()
+        google()
         val artifactory_contextUrl: String by extra
         val artifactory_user: String by extra
         val artifactory_password: String by extra
@@ -55,6 +57,6 @@ include(":sqldelight")
 include(":subapp")
 include(":network")
 include(":ui")
-include(":webview")
+// include(":webview")
 include(":sample:plugin")
 include(":shared")
