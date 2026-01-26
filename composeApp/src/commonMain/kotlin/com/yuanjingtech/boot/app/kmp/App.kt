@@ -3,8 +3,8 @@ package com.yuanjingtech.boot.app.kmp
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import com.yuanjingtech.boot.app.kmp.webview.WebViewDemoScreen
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.dsl.KoinConfiguration
 import org.koin.ksp.generated.configurationModules
 

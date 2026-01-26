@@ -6,7 +6,6 @@ plugins {
     alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    alias(libs.plugins.composeHotReload)
     alias(libs.plugins.publish)
 }
 kotlin {
@@ -71,12 +70,16 @@ kotlin {
             api(libs.androidx.activity.compose)
         }
         commonMain.dependencies {
-            api(compose.runtime)
-            api(compose.foundation)
-            api(compose.material3)
-            api(compose.ui)
-            api(compose.components.resources)
-            api(compose.components.uiToolingPreview)
+            // JetBrains Compose - version managed by composeMultiplatform plugin
+            api(libs.compose.ui)
+            api(libs.compose.ui.graphics)
+            api(libs.compose.material3)
+            api(libs.compose.runtime)
+            api(libs.compose.foundation)
+            // Preview annotation for commonMain (Compose 1.10.0+)
+            api(libs.compose.ui.tooling.preview)
+            // Compose resources for font loading
+            api(libs.compose.components.resources)
             api(libs.androidx.lifecycle.viewmodelCompose)
             api(libs.androidx.lifecycle.runtimeCompose)
             api(libs.compose.material3.adaptive)

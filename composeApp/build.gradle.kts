@@ -7,7 +7,6 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    alias(libs.plugins.composeHotReload)
     alias(libs.plugins.ksp)
 //    alias(libs.plugins.boot.application)
     alias(libs.plugins.sqldelight)
@@ -46,7 +45,8 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.shared)
-            implementation(compose.components.resources)
+            implementation(libs.compose.components.resources)
+            implementation(libs.compose.ui.tooling.preview)
             implementation(projects.sample.plugin)
         }
     }
@@ -77,10 +77,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-}
-
-dependencies {
-    debugImplementation(compose.uiTooling)
 }
 
 compose.desktop {

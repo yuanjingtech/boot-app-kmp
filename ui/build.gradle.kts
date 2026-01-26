@@ -46,12 +46,22 @@ kotlin {
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.bundles.coil)
             implementation(projects.network)
+            // JetBrains Compose - version managed by composeMultiplatform plugin
+            implementation(libs.compose.ui)
+            implementation(libs.compose.ui.graphics)
+            implementation(libs.compose.material3)
+            implementation(libs.compose.runtime)
+            implementation(libs.compose.foundation)
+            // Preview annotation for commonMain (Compose 1.10.0+)
+            implementation(libs.compose.ui.tooling.preview)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
         androidMain.dependencies {
             implementation(libs.bundles.coil.android)
+            // ui-tooling-preview is JVM-only, only for Android previews
+            implementation(libs.compose.ui.tooling.preview)
         }
     }
 }
@@ -62,12 +72,6 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(libs.bundles.koin)
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material3)
-            implementation(compose.ui)
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.compose.material3.adaptive)

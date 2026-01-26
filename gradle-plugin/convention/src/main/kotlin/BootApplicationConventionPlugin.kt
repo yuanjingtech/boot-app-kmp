@@ -9,7 +9,6 @@ class BootApplicationConventionPlugin : Plugin<Project> {
                 apply("com.android.application")
                 apply("org.jetbrains.compose")
                 apply("org.jetbrains.kotlin.plugin.compose")
-                apply("org.jetbrains.compose.hot-reload")
             }
             configureKoin()
         }
