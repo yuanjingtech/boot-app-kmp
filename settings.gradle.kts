@@ -29,6 +29,8 @@ dependencyResolutionManagement {
     }
 }
 include(":composeApp")
+include(":androidApp")
+include(":desktopApp")
 include(":runblocking")
 include(":logging")
 include(":sqldelight")

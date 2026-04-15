@@ -1,4 +1,3 @@
-import com.android.build.api.dsl.androidLibrary
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -8,7 +7,7 @@ plugins {
     alias(libs.plugins.publish)
 }
 kotlin {
-    androidLibrary {
+    android{
         namespace = "com.yuanjingtech.boot.app.kmp.logging"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
