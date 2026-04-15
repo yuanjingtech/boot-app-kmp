@@ -22,7 +22,7 @@ https://insert-koin.io/docs/4.1/reference/koin-compose/compose#compose-preview-w
 
 ## room3
 jetpack-room3-migration
-https://developer.android.com/jetpack/androidx/releases/room3#3.0.0-alpha01
+https://developer.android.com/jetpack/androidx/releases/room3
 https://android-developers.googleblog.com/2026/03/room-30-modernizing-room.html
 
 
