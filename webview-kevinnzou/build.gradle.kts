@@ -6,25 +6,25 @@ plugins {
     alias(libs.plugins.android.kotlin.multiplatform.library)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    alias(libs.plugins.publish)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.koinCompiler)
 }
 kotlin {
     androidLibrary {
-        namespace = "com.yuanjingtech.boot.app.kmp.subapp"
+        namespace = "com.yuanjingtech.boot.app.kmp.webview"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
-
 //        withJava() // enable java compilation support
         withHostTestBuilder {}.configure {}
         withDeviceTestBuilder {
             sourceSetTreeName = "test"
         }
-
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_17)
-        }
+//        compilerOptions {
+//            jvmTarget.set(
+//                org.jetbrains.kotlin.gradle.dsl.JvmTarget.VERSION_17
+//            )
+//        }
     }
-
 
     iosArm64()
     iosSimulatorArm64()
@@ -42,19 +42,18 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            // Coroutines
-            implementation(libs.kotlinx.coroutines.core)
-            implementation(libs.bundles.koin)
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material3)
-            implementation(compose.ui)
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
-            implementation(compose.preview)
-            implementation(libs.androidx.lifecycle.viewmodelCompose)
-            implementation(libs.androidx.lifecycle.runtimeCompose)
-            implementation(libs.compose.material3.adaptive)
+            api(compose.runtime)
+            api(compose.foundation)
+            api(compose.material3)
+            api(compose.ui)
+            api(compose.components.resources)
+            api(compose.components.uiToolingPreview)
+            api(libs.androidx.lifecycle.viewmodelCompose)
+            api(libs.androidx.lifecycle.runtimeCompose)
+            api(libs.compose.material3.adaptive)
+//            implementation("io.github.kevinnzou:compose-webview-multiplatform:2.0.3") {
+//            }
+            implementation(libs.koin.annotations)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

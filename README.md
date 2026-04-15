@@ -16,6 +16,9 @@ boot 旨在通过默认的网络、存储、依赖注入、插件实现,简化km
 - [] store 数据源
 - [x] koin 依赖注入
 - [] coil 图像加载
+- [] webview
+  - [] https://klibs.io/project/parkwoocheol/compose-webview
+  - [] https://klibs.io/project/KevinnZou/compose-webview-multiplatform
 
 ### 核心功能
 - [] 多租户 tenant

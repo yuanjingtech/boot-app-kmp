@@ -52,7 +52,7 @@ kotlin {
             api(projects.subapp)
             api(projects.network)
             api(projects.ui)
-            // api(projects.webview)
+            api(projects.webview)
             api(libs.kotlinx.datetime)
             api(libs.compose.material.icons.extended)
         }

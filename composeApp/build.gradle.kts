@@ -23,7 +23,7 @@ kotlin {
 
     listOf(
         iosArm64(),
-    iosSimulatorArm64()
+        iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
@@ -47,6 +47,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.shared)
+            implementation(projects.webviewParkwoocheol)
             implementation(libs.compose.components.resources)
             implementation(libs.compose.ui.tooling.preview)
             implementation(projects.sample.plugin)

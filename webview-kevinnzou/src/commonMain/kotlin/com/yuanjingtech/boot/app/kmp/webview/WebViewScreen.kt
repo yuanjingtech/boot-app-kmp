@@ -6,26 +6,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import com.multiplatform.webview.web.WebView
+import com.multiplatform.webview.web.rememberWebViewState
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.compose.koinInject
-
-sealed class WebViewState(
-    val url: String,
-    val isLoading: Boolean = false,
-) {
-    class Loading(url: String) : WebViewState(url, true)
-    class Success(url: String) : WebViewState(url, false)
-}
 
 @Composable
 fun WebViewScreen(
     modifier: Modifier = Modifier,
     url: String,
 ) {
-    val impl: IWebViewScreen = koinInject<IWebViewScreen>()
-    val state = rememberSaveable { WebViewState.Loading(url) }
+    val state = rememberWebViewState(url)
     Column(
         modifier = modifier,
     ) {
@@ -34,7 +25,10 @@ fun WebViewScreen(
                 modifier = Modifier.fillMaxWidth(),
             )
         }
-        impl.content().invoke(Modifier.fillMaxSize(), state)
+        WebView(
+            state = state,
+            modifier = Modifier.fillMaxSize(),
+        )
     }
 }
 
@@ -43,7 +37,8 @@ fun WebViewScreen(
 fun WebViewScreenPreview() {
     MaterialTheme {
         WebViewScreen(
-            modifier = Modifier.fillMaxSize(), url = "https://www.baidu.com"
+            modifier = Modifier.fillMaxSize(),
+            url = "https://www.baidu.com"
         )
     }
 }

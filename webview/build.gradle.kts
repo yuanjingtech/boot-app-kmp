@@ -19,11 +19,11 @@ kotlin {
         withDeviceTestBuilder {
             sourceSetTreeName = "test"
         }
-        compilerOptions.configure {
-            jvmTarget.set(
-                org.jetbrains.kotlin.gradle.dsl.JvmTarget.VERSION_17
-            )
-        }
+//        compilerOptions {
+//            jvmTarget.set(
+//                org.jetbrains.kotlin.gradle.dsl.JvmTarget.VERSION_17
+//            )
+//        }
     }
 
     iosArm64()
@@ -51,9 +51,7 @@ kotlin {
             api(libs.androidx.lifecycle.viewmodelCompose)
             api(libs.androidx.lifecycle.runtimeCompose)
             api(libs.compose.material3.adaptive)
-            implementation("io.github.kevinnzou:compose-webview-multiplatform:2.0.3") {
-            }
-            implementation(libs.koin.annotations)
+            implementation(libs.bundles.koin)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
