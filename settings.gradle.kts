@@ -4,17 +4,6 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 pluginManagement {
     includeBuild("gradle-plugin")
     repositories {
-        val artifactory_contextUrl: String by extra
-        val artifactory_user: String by extra
-        val artifactory_password: String by extra
-        maven {
-            url = uri("${extra["artifactory_contextUrl"]}/gradle-dev")
-            credentials {
-                username = artifactory_user
-                password = artifactory_password
-            }
-            isAllowInsecureProtocol = true
-        }
         google {
             mavenContent {
                 includeGroupAndSubgroups("androidx")
@@ -37,17 +26,6 @@ dependencyResolutionManagement {
         mavenLocal()
         mavenCentral()
         google()
-        val artifactory_contextUrl: String by extra
-        val artifactory_user: String by extra
-        val artifactory_password: String by extra
-        maven {
-            url = uri("${extra["artifactory_contextUrl"]}/gradle-dev")
-            credentials {
-                username = artifactory_user
-                password = artifactory_password
-            }
-            isAllowInsecureProtocol = true
-        }
     }
 }
 include(":composeApp")
