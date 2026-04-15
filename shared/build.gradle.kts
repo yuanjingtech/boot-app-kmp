@@ -63,23 +63,11 @@ kotlin {
 kotlin {
     sourceSets {
         androidMain.dependencies {
-            api(compose.preview)
             api(libs.androidx.activity.compose)
         }
         commonMain.dependencies {
             // JetBrains Compose - version managed by composeMultiplatform plugin
-            api(libs.compose.ui)
-            api(libs.compose.ui.graphics)
-            api(libs.compose.material3)
-            api(libs.compose.runtime)
-            api(libs.compose.foundation)
-            // Preview annotation for commonMain (Compose 1.10.0+)
-            api(libs.compose.ui.tooling.preview)
-            // Compose resources for font loading
-            api(libs.compose.components.resources)
-            api(libs.androidx.lifecycle.viewmodelCompose)
-            api(libs.androidx.lifecycle.runtimeCompose)
-            api(libs.compose.material3.adaptive)
+            api(libs.bundles.compose)
         }
         commonTest.dependencies {
             api(libs.kotlin.test)
@@ -89,4 +77,7 @@ kotlin {
             api(libs.kotlinx.coroutinesSwing)
         }
     }
+}
+dependencies {
+    androidRuntimeClasspath(libs.compose.ui.tooling.preview)
 }

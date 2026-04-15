@@ -36,17 +36,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            api(compose.runtime)
-            api(compose.foundation)
-            api(compose.material3)
-            api(compose.ui)
-            api(compose.components.resources)
-            api(compose.components.uiToolingPreview)
-            api(libs.androidx.lifecycle.viewmodelCompose)
-            api(libs.androidx.lifecycle.runtimeCompose)
-            api(libs.compose.material3.adaptive)
-//            implementation("io.github.kevinnzou:compose-webview-multiplatform:2.0.3") {
-//            }
+            implementation(libs.bundles.compose)
             implementation(projects.webview)
             implementation(libs.bundles.koin)
             implementation("io.github.parkwoocheol:compose-webview:1.8.2")
@@ -56,4 +46,7 @@ kotlin {
             implementation(libs.kotlin.test)
         }
     }
+}
+dependencies {
+    androidRuntimeClasspath(libs.compose.ui.tooling)
 }

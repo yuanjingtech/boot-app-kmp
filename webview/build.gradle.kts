@@ -36,19 +36,14 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            api(compose.runtime)
-            api(compose.foundation)
-            api(compose.material3)
-            api(compose.ui)
-            api(compose.components.resources)
-            api(compose.components.uiToolingPreview)
-            api(libs.androidx.lifecycle.viewmodelCompose)
-            api(libs.androidx.lifecycle.runtimeCompose)
-            api(libs.compose.material3.adaptive)
+            implementation(libs.bundles.compose)
             implementation(libs.bundles.koin)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
     }
+}
+dependencies {
+    androidRuntimeClasspath(libs.compose.ui.tooling)
 }
