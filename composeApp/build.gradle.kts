@@ -43,6 +43,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.shared)
+            implementation(projects.webview)
             implementation(projects.webviewParkwoocheol)
             implementation(libs.compose.components.resources)
             implementation(libs.compose.ui.tooling.preview)

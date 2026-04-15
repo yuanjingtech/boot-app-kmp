@@ -11,7 +11,7 @@ import org.koin.plugin.module.dsl.startKoin
 @Composable
 @Preview
 fun App() {
-    BootApp(config = KoinConfiguration {
+    BootApplication(config = KoinConfiguration {
         printLogger()
         startKoin<BootApp>()
     }) {
