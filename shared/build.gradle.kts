@@ -10,21 +10,17 @@ plugins {
     alias(libs.plugins.publish)
 }
 kotlin {
-    androidLibrary {
+    android {
         namespace = "com.yuanjingtech.boot.app.kmp.shared"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
 
 
-//        withJava() // enable java compilation support
         withHostTestBuilder {}.configure {}
         withDeviceTestBuilder {
             sourceSetTreeName = "test"
         }
 
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_17)
-        }
     }
 
     iosArm64()

@@ -10,20 +10,14 @@ plugins {
     alias(libs.plugins.koinCompiler)
 }
 kotlin {
-    androidLibrary {
-        namespace = "com.yuanjingtech.boot.app.kmp.webview"
+    android {
+        namespace = "com.yuanjingtech.boot.app.kmp.webview.parkwoocheol"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
-//        withJava() // enable java compilation support
         withHostTestBuilder {}.configure {}
         withDeviceTestBuilder {
             sourceSetTreeName = "test"
         }
-//        compilerOptions.configure {
-//            jvmTarget.set(
-//                org.jetbrains.kotlin.gradle.dsl.JvmTarget.VERSION_17
-//            )
-//        }
     }
 
     iosArm64()

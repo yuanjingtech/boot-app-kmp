@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     // this is necessary to avoid the plugins to be loaded multiple times
     // in each subproject's classloader
@@ -13,17 +15,17 @@ plugins {
 //    alias(libs.plugins.boot.application) apply false
 //    alias(libs.plugins.boot.library) apply false
 }
-//subprojects {
-//    plugins.withId("org.jetbrains.kotlin.multiplatform") {
-//        extensions.configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
-//            androidTarget {
-//                compilerOptions {
-//                    jvmTarget.set(JvmTarget.JVM_17)
-//                }
-//            }
-//        }
-//    }
-//}
+subprojects {
+    plugins.withId("com.android.kotlin.multiplatform.library") {
+        extensions.configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
+            targets.withType(org.jetbrains.kotlin.gradle.plugin.mpp.KotlinAndroidTarget::class.java) {
+                compilerOptions {
+                    jvmTarget.set(JvmTarget.JVM_17)
+                }
+            }
+        }
+    }
+}
 val build_number = providers.gradleProperty("project.build_number").getOrElse("SNAPSHOT")
 
 subprojects {
