@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "skills": {
+    "di-migration": {
+      "source": "InsertKoinIO/koin-migration",
+      "sourceType": "github",
+      "computedHash": "d6e8471383f0474542e58e98c6ed3b37bab206dd34ddaa762936cc127636426d"
+    },
+    "kotlin-tooling-agp9-migration": {
+      "source": "Kotlin/kotlin-agent-skills",
+      "sourceType": "github",
+      "computedHash": "0d1198cb007e6238f7fc8b3d2999ad0186cabf057950a3b21b6f5c19559a735e"
+    },
+    "kotlin-tooling-cocoapods-spm-migration": {
+      "source": "Kotlin/kotlin-agent-skills",
+      "sourceType": "github",
+      "computedHash": "ef3fdaf390680b7a20a3398ef243ddb61262c338e1f4dbd2ffd8833bd65db908"
+    }
+  }
+}
