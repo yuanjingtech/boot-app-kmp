@@ -9,6 +9,7 @@ class BootLibraryConventionPlugin : Plugin<Project> {
                 apply("com.android.library")
                 apply("org.jetbrains.compose")
                 apply("org.jetbrains.kotlin.plugin.compose")
+                apply("io.insert-koin.compiler.plugin")
             }
             configureKoin()
         }
