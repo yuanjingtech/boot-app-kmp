@@ -6,14 +6,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.yuanjingtech.boot.app.kmp.webview.WebViewDemoScreen
 import org.koin.dsl.KoinConfiguration
-import org.koin.plugin.module.dsl.startKoin
+import org.koin.dsl.includes
+import org.koin.plugin.module.dsl.koinConfiguration
 
 @Composable
 @Preview
 fun App() {
     BootApplication(config = KoinConfiguration {
         printLogger()
-        startKoin<BootApp>()
+        includes(koinConfiguration<BootApp>())
     }) {
         WebViewDemoScreen(Modifier.fillMaxSize())
     }

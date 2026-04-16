@@ -1,6 +1,7 @@
 package com.yuanjingtech.boot.app.kmp.webview.parkwoocheol.di
 
 import com.yuanjingtech.boot.app.kmp.webview.IWebViewScreen
+import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Configuration
 import org.koin.core.annotation.Module
 import org.koin.dsl.bind
@@ -11,8 +12,6 @@ val webviewParkWoocheolModule = module {
 }
 
 @Module
+@ComponentScan
 @Configuration
-class WebViewParkWoocheolModule {
-    @Suppress("unused")
-    val module get() = webviewParkWoocheolModule
-}
+class WebViewParkWoocheolModule

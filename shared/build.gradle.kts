@@ -49,6 +49,7 @@ kotlin {
             api(projects.network)
             api(projects.ui)
             api(projects.webview)
+            implementation(projects.webviewParkwoocheol)
             api(libs.kotlinx.datetime)
             api(libs.compose.material.icons.extended)
         }

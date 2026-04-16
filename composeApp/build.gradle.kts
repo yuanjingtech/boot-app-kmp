@@ -64,5 +64,7 @@ sqldelight {
     }
 }
 koinCompiler {
-    compileSafety.set(true)
+    compileSafety = false
+    userLogs = true
+    debugLogs = true
 }

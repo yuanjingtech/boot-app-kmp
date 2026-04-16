@@ -6,5 +6,5 @@ import org.koin.core.annotation.KoinApplication
 
 @KoinApplication
 @Configuration
-@ComponentScan("com.yuanjingtech.boot.app.kmp")
+@ComponentScan("com.yuanjingtech.boot.app.kmp.**")
 object BootApp
