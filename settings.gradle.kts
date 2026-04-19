@@ -12,6 +12,7 @@ plugins {
     id("com.yuanjingtech.boot.app.kmp.settings.gradle.plugin")
 }
 
+include(":plugin")
 include(":composeApp")
 include(":androidApp")
 include(":desktopApp")
@@ -24,5 +25,5 @@ include(":ui")
 include(":webview")
 // include(":webview-kevinnzou")
 include(":webview-parkwoocheol")
-include(":sample:plugin")
+//include(":sample:plugin")
 include(":shared")

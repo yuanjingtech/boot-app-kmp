@@ -5,11 +5,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
+import com.yuanjingtech.boot.app.kmp.plugin.pluginModule
 import com.yuanjingtech.boot.app.kmp.theme.BootAppTheme
 import org.koin.compose.KoinApplication
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.logger.Level
 import org.koin.dsl.KoinConfiguration
+import org.koin.dsl.includes
 
 @OptIn(KoinExperimentalAPI::class)
 @Composable
@@ -22,7 +24,10 @@ fun BootApplication(
     content: @Composable () -> Unit,
 ) {
     KoinApplication(
-        configuration = config,
+        configuration = KoinConfiguration {
+            modules(pluginModule)
+            includes(config)
+        },
         logLevel = logLevel,
         content = {
             BootAppTheme(

@@ -14,7 +14,7 @@ plugins {
 kotlin {
     withSweetSpi()
     android {
-        namespace = "com.yuanjingtech.boot.app.kmp.shared"
+        namespace = "com.yuanjingtech.boot.app.kmp.plugin"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
         androidResources.enable = true
@@ -32,7 +32,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "shared"
+            baseName = "plugin"
             isStatic = true
         }
     }
@@ -50,20 +50,8 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            api(libs.kotlin.stdlib)
-            // put your Multiplatform dependencies here
-            api(libs.bundles.koin)
-            api(projects.runblocking)
-            api(projects.plugin)
-            api(projects.logging)
-            api(projects.sqldelight)
-            api(projects.subapp)
-            api(projects.network)
-            api(projects.ui)
-            api(projects.webview)
-            implementation(projects.webviewParkwoocheol)
-            api(libs.kotlinx.datetime)
-            api(libs.compose.material.icons.extended)
+            implementation(libs.kotlin.stdlib)
+            implementation(libs.bundles.koin)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

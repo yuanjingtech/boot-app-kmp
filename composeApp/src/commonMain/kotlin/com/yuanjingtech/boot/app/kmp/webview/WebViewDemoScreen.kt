@@ -12,3 +12,4 @@ fun WebViewDemoScreen(
         url = "https://yuanjingtech.github.io/privancy/"
     )
 }
+

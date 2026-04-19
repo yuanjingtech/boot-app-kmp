@@ -1,5 +1,5 @@
+import dev.whyoleg.sweetspi.gradle.*
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -8,20 +8,31 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.ksp)
     alias(libs.plugins.koinCompiler)
+    alias(libs.plugins.sweetspi)
 }
 kotlin {
+    withSweetSpi()
     android {
         namespace = "com.yuanjingtech.boot.app.kmp.webview.parkwoocheol"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
+        androidResources.enable = true
+        withSweetSpi()
         withHostTestBuilder {}.configure {}
         withDeviceTestBuilder {
             sourceSetTreeName = "test"
         }
     }
 
-    iosArm64()
-    iosSimulatorArm64()
+    listOf(
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach { iosTarget ->
+        iosTarget.binaries.framework {
+            baseName = "WebViewParkWoocheol"
+            isStatic = true
+        }
+    }
 
     jvm()
 
@@ -37,8 +48,9 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(libs.bundles.compose)
-            implementation(projects.webview)
             implementation(libs.bundles.koin)
+            implementation(projects.plugin)
+            implementation(projects.webview)
             implementation("io.github.parkwoocheol:compose-webview:1.8.2")
 
         }
@@ -49,4 +61,20 @@ kotlin {
 }
 dependencies {
     androidRuntimeClasspath(libs.compose.ui.tooling)
+}
+kotlin {
+    sourceSets {
+        androidMain {
+            dependencies {
+                implementation(libs.sweetspi.runtime.jvm)
+            }
+            // KSP generates META-INF/services/ as resources under this directory,
+            // but androidResources does not automatically include it. Register it
+            // so the generated service files are packaged into the Android AAR/APK.
+            resources.srcDir(layout.buildDirectory.dir("generated/ksp/android/androidMain/resources"))
+        }
+    }
+}
+dependencies {
+    add("kspAndroid", libs.sweetspi.processor)
 }

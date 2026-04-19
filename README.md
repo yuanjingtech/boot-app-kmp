@@ -14,6 +14,9 @@ boot 旨在通过默认的网络、存储、依赖注入、插件实现,简化km
 - [x] sqdelight 数据存储
   - [] wasm sqldelight
 - [] store 数据源
+- [] [插件框架](./docs/plugin.md)
+  - [x] sweet-spi
+  - [] koin(koin compiler plugin not supported yet)(https://github.com/InsertKoinIO/koin-annotations/issues/320)
 - [x] koin 依赖注入
 - [] coil 图像加载
 - [] webview

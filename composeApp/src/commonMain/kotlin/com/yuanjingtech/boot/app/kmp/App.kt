@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.yuanjingtech.boot.app.kmp.webview.WebViewDemoScreen
 import org.koin.dsl.KoinConfiguration
 import org.koin.dsl.includes
 import org.koin.plugin.module.dsl.koinConfiguration
@@ -16,6 +15,6 @@ fun App() {
         printLogger()
         includes(koinConfiguration<BootApp>())
     }) {
-        WebViewDemoScreen(Modifier.fillMaxSize())
+        Content(Modifier.fillMaxSize())
     }
 }
