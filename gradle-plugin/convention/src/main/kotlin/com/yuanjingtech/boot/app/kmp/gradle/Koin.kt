@@ -8,6 +8,9 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 private const val KOIN_VERSION = "4.2.1"
 
 internal fun Project.configureKoin() {
+    with(pluginManager) {
+        apply("io.insert-koin.compiler.plugin")
+    }
     extensions.configure<KotlinMultiplatformExtension> {
         sourceSets.named("commonMain") {
             dependencies {

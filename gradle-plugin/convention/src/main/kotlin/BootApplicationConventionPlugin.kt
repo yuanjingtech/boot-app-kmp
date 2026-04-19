@@ -1,4 +1,5 @@
 import com.yuanjingtech.boot.app.kmp.gradle.configureKoin
+import com.yuanjingtech.boot.app.kmp.gradle.configureNavigation3
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -9,9 +10,9 @@ class BootApplicationConventionPlugin : Plugin<Project> {
                 apply("com.android.application")
                 apply("org.jetbrains.compose")
                 apply("org.jetbrains.kotlin.plugin.compose")
-                apply("io.insert-koin.compiler.plugin")
             }
             configureKoin()
+            configureNavigation3()
         }
     }
 }
