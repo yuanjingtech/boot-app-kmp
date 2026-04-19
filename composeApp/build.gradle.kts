@@ -4,6 +4,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.android.kotlin.multiplatform.library)
+    alias(libs.plugins.kotlinx.serialization)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.koinCompiler)
@@ -52,9 +53,13 @@ kotlin {
             implementation(libs.compose.components.resources)
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.koin.annotations)
+            implementation(libs.bundles.nav3)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+        }
+        webMain.dependencies {
+            implementation(libs.bundles.nav3.web)
         }
     }
 }
