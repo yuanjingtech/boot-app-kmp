@@ -3,31 +3,15 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
     includeBuild("gradle-plugin")
-    repositories {
-        google {
-            mavenContent {
-                includeGroupAndSubgroups("androidx")
-                includeGroupAndSubgroups("com.android")
-                includeGroupAndSubgroups("com.google")
-            }
-        }
-        mavenCentral()
-        gradlePluginPortal()
-    }
+    includeBuild("build-settings")
 }
 
 plugins {
+    id("com.yuanjingtech.boot.app.kmp.default")
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
     id("com.yuanjingtech.boot.app.kmp.settings.gradle.plugin")
 }
 
-dependencyResolutionManagement {
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        google()
-    }
-}
 include(":composeApp")
 include(":androidApp")
 include(":desktopApp")
@@ -37,8 +21,8 @@ include(":sqldelight")
 include(":subapp")
 include(":network")
 include(":ui")
- include(":webview")
+include(":webview")
 // include(":webview-kevinnzou")
- include(":webview-parkwoocheol")
+include(":webview-parkwoocheol")
 include(":sample:plugin")
 include(":shared")
