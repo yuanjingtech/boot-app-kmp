@@ -37,22 +37,35 @@ gradlePlugin {
             id = libs.plugins.boot.application.get().pluginId
             implementationClass = "BootApplicationConventionPlugin"
             displayName = "Kotlin Multiplatform Boot Application Plugin"
-            description = "Kotlin Multiplatform Boot Application Plugin"
-            tags = listOf("boot", "application")
+            description =
+                "A Gradle convention plugin for Kotlin Multiplatform application projects. " +
+                "Automatically applies Android application, Jetpack Compose, and Kotlin Compose compiler plugins. " +
+                "Includes opinionated defaults for Koin dependency injection and Navigation3. " +
+                "Designed to reduce build script boilerplate in KMP projects."
+            tags = listOf("kotlin", "multiplatform", "compose", "android", "koin", "navigation")
         }
         create("bootLibraryPlugin") {
             id = libs.plugins.boot.library.get().pluginId
             implementationClass = "BootLibraryConventionPlugin"
             displayName = "Kotlin Multiplatform Boot Library Plugin"
-            description = "Kotlin Multiplatform Boot Library Plugin"
-            tags = listOf("boot", "library")
+            description =
+                "A Gradle convention plugin for Kotlin Multiplatform library projects. " +
+                "Automatically applies Android library, Jetpack Compose, and Kotlin Compose compiler plugins. " +
+                "Includes opinionated defaults for Koin dependency injection and Navigation3. " +
+                "Designed to reduce build script boilerplate in KMP projects."
+            tags = listOf("kotlin", "multiplatform", "compose", "android", "koin", "navigation")
         }
         create("bootSettingsPlugin") {
             id = libs.plugins.boot.settings.get().pluginId
             implementationClass = "BootSettingsConventionPlugin"
             displayName = "Kotlin Multiplatform Boot Settings Plugin"
-            description = "Kotlin Multiplatform Boot Settings Plugin"
-            tags = listOf("boot", "settings")
+            description =
+                "A Gradle settings plugin that configures pluginManagement and dependencyResolutionManagement " +
+                "with curated repositories for Kotlin Multiplatform projects. " +
+                "Pre-configures Google, Gradle Plugin Portal, Maven Central, JetBrains KPM, JitPack, and JOGL repositories. " +
+                "Also applies the Foojay toolchain resolver for consistent JDK management across builds. " +
+                "Apply this plugin in settings.gradle.kts before any project-level plugins."
+            tags = listOf("kotlin", "multiplatform", "settings", "repositories", "android", "dependency-management")
         }
     }
 }
