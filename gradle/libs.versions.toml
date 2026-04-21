@@ -160,7 +160,7 @@ ktor-client = [
 ]
 [plugins]
 # gradle plugin
-gradle-plugin-publish = { id = "com.gradle.plugin-publish", version = "2.0.0" }
+gradle-plugin-publish = { id = "com.gradle.plugin-publish", version = "2.1.1" }
 # boot
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 boot-application = { id = "com.yuanjingtech.boot.app.kmp.application.gradle.plugin" }
