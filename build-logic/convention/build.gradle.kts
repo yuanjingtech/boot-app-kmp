@@ -5,9 +5,10 @@ plugins {
     alias(libs.plugins.kotlinJvm)
     alias(libs.plugins.gradle.plugin.publish)
 }
+val build_number = providers.gradleProperty("project.build_number").getOrElse("SNAPSHOT")
 
 group = "com.yuanjingtech.boot.app.kmp"
-version = "0.0.2-alpha.2"
+version = "0.0.2-${build_number}"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -39,9 +40,9 @@ gradlePlugin {
             displayName = "Kotlin Multiplatform Boot Application Plugin"
             description =
                 "A Gradle convention plugin for Kotlin Multiplatform application projects. " +
-                "Automatically applies Android application, Jetpack Compose, and Kotlin Compose compiler plugins. " +
-                "Includes opinionated defaults for Koin dependency injection and Navigation3. " +
-                "Designed to reduce build script boilerplate in KMP projects."
+                        "Automatically applies Android application, Jetpack Compose, and Kotlin Compose compiler plugins. " +
+                        "Includes opinionated defaults for Koin dependency injection and Navigation3. " +
+                        "Designed to reduce build script boilerplate in KMP projects."
             tags = listOf("kotlin", "multiplatform", "compose", "android", "koin", "navigation")
         }
         create("bootLibraryPlugin") {
@@ -50,9 +51,9 @@ gradlePlugin {
             displayName = "Kotlin Multiplatform Boot Library Plugin"
             description =
                 "A Gradle convention plugin for Kotlin Multiplatform library projects. " +
-                "Automatically applies Android library, Jetpack Compose, and Kotlin Compose compiler plugins. " +
-                "Includes opinionated defaults for Koin dependency injection and Navigation3. " +
-                "Designed to reduce build script boilerplate in KMP projects."
+                        "Automatically applies Android library, Jetpack Compose, and Kotlin Compose compiler plugins. " +
+                        "Includes opinionated defaults for Koin dependency injection and Navigation3. " +
+                        "Designed to reduce build script boilerplate in KMP projects."
             tags = listOf("kotlin", "multiplatform", "compose", "android", "koin", "navigation")
         }
         create("bootSettingsPlugin") {
@@ -61,10 +62,10 @@ gradlePlugin {
             displayName = "Kotlin Multiplatform Boot Settings Plugin"
             description =
                 "A Gradle settings plugin that configures pluginManagement and dependencyResolutionManagement " +
-                "with curated repositories for Kotlin Multiplatform projects. " +
-                "Pre-configures Google, Gradle Plugin Portal, Maven Central, JetBrains KPM, JitPack, and JOGL repositories. " +
-                "Also applies the Foojay toolchain resolver for consistent JDK management across builds. " +
-                "Apply this plugin in settings.gradle.kts before any project-level plugins."
+                        "with curated repositories for Kotlin Multiplatform projects. " +
+                        "Pre-configures Google, Gradle Plugin Portal, Maven Central, JetBrains KPM, JitPack, and JOGL repositories. " +
+                        "Also applies the Foojay toolchain resolver for consistent JDK management across builds. " +
+                        "Apply this plugin in settings.gradle.kts before any project-level plugins."
             tags = listOf("kotlin", "multiplatform", "settings", "repositories", "android", "dependency-management")
         }
     }
