@@ -2,14 +2,12 @@ rootProject.name = "boot-app-kmp"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
-    includeBuild("gradle-plugin")
-    includeBuild("build-settings")
+    // 开发阶段使用本地插件(取消下面一行的注释)，发布后使用远程插件
+    includeBuild("build-logic")
 }
 
 plugins {
-    id("com.yuanjingtech.boot.app.kmp.default")
-    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
-    id("com.yuanjingtech.boot.app.kmp.settings.gradle.plugin")
+    id("com.yuanjingtech.boot.app.kmp.settings.gradle.plugin") version "0.0.2-alpha.2"
 }
 
 include(":plugin")
