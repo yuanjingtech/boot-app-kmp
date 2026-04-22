@@ -8,7 +8,7 @@ plugins {
     alias(libs.plugins.sqldelight)
 }
 kotlin {
-    androidLibrary {
+    android {
         namespace = "com.yuanjingtech.boot.app.kmp.sqldelight"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
@@ -19,9 +19,6 @@ kotlin {
             sourceSetTreeName = "test"
         }
 
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_17)
-        }
     }
 
 
