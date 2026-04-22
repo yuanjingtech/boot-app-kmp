@@ -13,6 +13,8 @@ plugins {
     alias(libs.plugins.publish) apply false
     alias(libs.plugins.sqldelight) apply false
     alias(libs.plugins.ksp) apply false
+    alias(libs.plugins.koinCompiler) apply false
+    alias(libs.plugins.sweetspi) apply false
 //    alias(libs.plugins.boot.application) apply false
 //    alias(libs.plugins.boot.library) apply false
 }
