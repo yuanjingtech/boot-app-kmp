@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.koinCompiler)
     alias(libs.plugins.publish)
     alias(libs.plugins.sweetspi)
+    alias(libs.plugins.room3)
 }
 kotlin {
     withSweetSpi()
@@ -64,6 +65,7 @@ kotlin {
             implementation(projects.webviewParkwoocheol)
             api(libs.kotlinx.datetime)
             api(libs.compose.material.icons.extended)
+            api(libs.room3.runtime)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -73,7 +75,9 @@ kotlin {
     }
 }
 
-
+room3 {
+    schemaDirectory("$projectDir/schemas")
+}
 // app dependencies
 kotlin {
     sourceSets {

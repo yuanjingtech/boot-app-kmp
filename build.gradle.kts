@@ -19,6 +19,7 @@ plugins {
     alias(libs.plugins.boot.application.android) apply false
     alias(libs.plugins.boot.application.desktop) apply false
     alias(libs.plugins.boot.library) apply false
+    alias(libs.plugins.room3) apply false
 }
 subprojects {
     plugins.withId("com.android.kotlin.multiplatform.library") {
