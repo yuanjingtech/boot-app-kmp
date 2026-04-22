@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.koinCompiler)
     alias(libs.plugins.sweetspi)
+    alias(libs.plugins.publish)
 }
 kotlin {
     withSweetSpi()

@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.ksp)
     alias(libs.plugins.koinCompiler)
+    alias(libs.plugins.publish)
 }
 kotlin {
     android {
