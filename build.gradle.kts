@@ -15,8 +15,10 @@ plugins {
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.koinCompiler) apply false
     alias(libs.plugins.sweetspi) apply false
-//    alias(libs.plugins.boot.application) apply false
-//    alias(libs.plugins.boot.library) apply false
+    alias(libs.plugins.boot.application) apply false
+    alias(libs.plugins.boot.application.android) apply false
+    alias(libs.plugins.boot.application.desktop) apply false
+    alias(libs.plugins.boot.library) apply false
 }
 subprojects {
     plugins.withId("com.android.kotlin.multiplatform.library") {

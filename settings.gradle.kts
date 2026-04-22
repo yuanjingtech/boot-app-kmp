@@ -2,12 +2,23 @@ rootProject.name = "boot-app-kmp"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
-    // 开发阶段使用本地插件(取消下面一行的注释)，发布后使用远程插件
+    repositories {
+        google {
+            content {
+                includeGroupByRegex("com\\.android.*")
+                includeGroupByRegex("com\\.google.*")
+                includeGroupByRegex("androidx.*")
+            }
+        }
+        gradlePluginPortal()
+        mavenCentral()
+        maven { url = uri("https://packages.jetbrains.team/maven/p/kpm/public/") }
+    }
     includeBuild("build-logic")
 }
 
 plugins {
-    id("com.yuanjingtech.boot.app.kmp.settings.gradle.plugin") version "0.0.2-alpha.2"
+    id("com.yuanjingtech.boot.app.kmp.settings")
 }
 
 include(":plugin")

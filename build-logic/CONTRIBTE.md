@@ -10,7 +10,7 @@ https://plugins.gradle.org/plugin/com.yuanjingtech.boot.app.kmp.library.gradle.p
 
 ```kotlin
 plugins {
-    id("com.yuanjingtech.boot.app.kmp.settings.gradle.plugin") version "0.0.2-alpha.2"
+    id("com.yuanjingtech.boot.app.kmp.settings.gradle.plugin") version "0.0.2-alpha.3"
 }
 ```
 

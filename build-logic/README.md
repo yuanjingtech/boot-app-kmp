@@ -57,6 +57,6 @@ plugins {
 ```kotlin
 // settings.gradle.kts
 plugins {
-    id("com.yuanjingtech.boot.app.kmp.settings.gradle.plugin")
+    id("com.yuanjingtech.boot.app.kmp.settings")
 }
 ```

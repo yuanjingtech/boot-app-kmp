@@ -21,6 +21,8 @@ dependencyResolutionManagement {
                 includeGroupByRegex("androidx.*")
             }
         }
+        // build-login need gradle plugin in dependencies
+        gradlePluginPortal()
         mavenCentral()
     }
 

@@ -7,7 +7,8 @@ class BootApplicationConventionPlugin : Plugin<Project> {
     override fun apply(project: Project) {
         with(project) {
             with(pluginManager) {
-                apply("com.android.application")
+                apply("org.jetbrains.kotlin.multiplatform")
+                apply("com.android.kotlin.multiplatform.library")
                 apply("org.jetbrains.compose")
                 apply("org.jetbrains.kotlin.plugin.compose")
             }

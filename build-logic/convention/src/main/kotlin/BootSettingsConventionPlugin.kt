@@ -1,43 +1,37 @@
+
 import org.gradle.api.Plugin
 import org.gradle.api.initialization.Settings
-import org.gradle.kotlin.dsl.maven
+import java.net.URI
 
 class BootSettingsConventionPlugin : Plugin<Settings> {
-    override fun apply(settings: Settings) {
-        with(settings) {
-            pluginManagement {
-                repositories {
-                    google {
-                        mavenContent {
-                            includeGroupAndSubgroups("androidx")
-                            includeGroupAndSubgroups("com.android")
-                            includeGroupAndSubgroups("com.google")
-                        }
+    override fun apply(settings: Settings) = with(settings) {
+        pluginManagement {
+            repositories {
+                google {
+                    mavenContent {
+                        includeGroupAndSubgroups("androidx")
+                        includeGroupAndSubgroups("com.android")
+                        includeGroupAndSubgroups("com.google")
                     }
-                    gradlePluginPortal()
-                    mavenCentral()
                 }
-            }
-            plugins {
-                id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
-            }
-            dependencyResolutionManagement {
-                repositories {
-                    google {
-                        mavenContent {
-                            includeGroupAndSubgroups("androidx")
-                            includeGroupAndSubgroups("com.android")
-                            includeGroupAndSubgroups("com.google")
-                        }
-                    }
-                    mavenCentral()
-                    maven("https://packages.jetbrains.team/maven/p/kpm/public/")
-                    maven("https://jitpack.io")
-                    maven("https://jogamp.org/deployment/maven")
-                }
+                gradlePluginPortal()
+                mavenCentral()
             }
         }
-        // Apply common settings that are useful for KMP projects
-        println("Boot Settings Plugin applied")
+        dependencyResolutionManagement {
+            repositories {
+                google {
+                    mavenContent {
+                        includeGroupAndSubgroups("androidx")
+                        includeGroupAndSubgroups("com.android")
+                        includeGroupAndSubgroups("com.google")
+                    }
+                }
+                mavenCentral()
+                maven { url = URI("https://packages.jetbrains.team/maven/p/kpm/public/") }
+                maven { url = URI("https://jitpack.io") }
+                maven { url = URI("https://jogamp.org/deployment/maven") }
+            }
+        }
     }
 }
