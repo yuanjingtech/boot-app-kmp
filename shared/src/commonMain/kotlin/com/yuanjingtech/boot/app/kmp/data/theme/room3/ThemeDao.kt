@@ -1,4 +1,4 @@
-package com.yuanjingtech.boot.app.kmp.data.theme
+package com.yuanjingtech.boot.app.kmp.data.theme.room3
 
 import androidx.room3.Dao
 import androidx.room3.Insert

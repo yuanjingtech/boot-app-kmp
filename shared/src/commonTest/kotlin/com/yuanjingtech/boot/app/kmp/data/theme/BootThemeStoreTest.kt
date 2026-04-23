@@ -2,7 +2,6 @@ package com.yuanjingtech.boot.app.kmp.data.theme
 
 import com.yuanjingtech.boot.app.kmp.data.theme.room3.ThemeDao
 import com.yuanjingtech.boot.app.kmp.data.theme.room3.ThemeSettings
-import com.yuanjingtech.boot.app.kmp.theme.ThemeMode
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
@@ -21,54 +20,54 @@ class FakeThemeDao : ThemeDao {
     }
 }
 
-class ThemeStoreTest {
+class BootThemeStoreTest {
 
     private lateinit var fakeDao: FakeThemeDao
-    private lateinit var themeStore: ThemeStore
+    private lateinit var themeStore: BootThemeStore
 
     @BeforeTest
     fun setup() {
         fakeDao = FakeThemeDao()
-        themeStore = ThemeStore(fakeDao)
+        themeStore = BootThemeStore(fakeDao)
     }
 
     @Test
-    fun themeStore_initialThemeMode_isFollowSystem() = runTest {
+    fun themeStore_initialBootThemeMode_isFollowSystem() = runTest {
         val mode = themeStore.themeModeFlow.first()
-        assertEquals(ThemeMode.FOLLOW_SYSTEM, mode)
+        assertEquals(BootThemeMode.FOLLOW_SYSTEM, mode)
     }
 
     @Test
     fun themeStore_setThemeModeToLight_updatesFlow() = runTest {
-        themeStore.setThemeMode(ThemeMode.LIGHT)
+        themeStore.setThemeMode(BootThemeMode.LIGHT)
         val mode = themeStore.themeModeFlow.first()
-        assertEquals(ThemeMode.LIGHT, mode)
+        assertEquals(BootThemeMode.LIGHT, mode)
     }
 
     @Test
     fun themeStore_setThemeModeToDark_updatesFlow() = runTest {
-        themeStore.setThemeMode(ThemeMode.DARK)
+        themeStore.setThemeMode(BootThemeMode.DARK)
         val mode = themeStore.themeModeFlow.first()
-        assertEquals(ThemeMode.DARK, mode)
+        assertEquals(BootThemeMode.DARK, mode)
     }
 
     @Test
     fun themeStore_setThemeModeToFollowSystem_updatesFlow() = runTest {
-        themeStore.setThemeMode(ThemeMode.DARK)
-        themeStore.setThemeMode(ThemeMode.FOLLOW_SYSTEM)
+        themeStore.setThemeMode(BootThemeMode.DARK)
+        themeStore.setThemeMode(BootThemeMode.FOLLOW_SYSTEM)
         val mode = themeStore.themeModeFlow.first()
-        assertEquals(ThemeMode.FOLLOW_SYSTEM, mode)
+        assertEquals(BootThemeMode.FOLLOW_SYSTEM, mode)
     }
 
     @Test
-    fun themeStore_invalidThemeModeString_defaultsToFollowSystem() = runTest {
+    fun themeStore_invalidBootThemeModeString_defaultsToFollowSystem() = runTest {
         val invalidDao = object : ThemeDao {
             private val flow = MutableStateFlow(ThemeSettings(themeMode = "INVALID_MODE"))
             override fun getThemeSettings(): Flow<ThemeSettings> = flow
             override suspend fun insertOrUpdate(settings: ThemeSettings) {}
         }
-        val store = ThemeStore(invalidDao)
+        val store = BootThemeStore(invalidDao)
         val mode = store.themeModeFlow.first()
-        assertEquals(ThemeMode.FOLLOW_SYSTEM, mode)
+        assertEquals(BootThemeMode.FOLLOW_SYSTEM, mode)
     }
 }
