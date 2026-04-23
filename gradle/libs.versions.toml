@@ -36,6 +36,7 @@ sqldelight = "2.2.1"
 sweetspi = "0.1.3"
 maven-publish = "0.35.0"
 room3 = "3.0.0-alpha03"
+sqlite = "2.6.2"
 [libraries]
 # for gradle-plugin
 android-gradle = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
@@ -130,6 +131,8 @@ sweetspi-runtime = { module = "dev.whyoleg.sweetspi:sweetspi-runtime", version.r
 sweetspi-runtime-jvm = { module = "dev.whyoleg.sweetspi:sweetspi-runtime-jvm", version.ref = "sweetspi" }
 room3-runtime = { module = "androidx.room3:room3-runtime", version.ref = "room3" }
 room3-compiler = { module = "androidx.room3:room3-compiler", version.ref = "room3" }
+sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
+sqlite-web = { module = "androidx.sqlite:sqlite-web", version.ref = "sqlite" }
 [bundles]
 nav3 = [
     "jetbrains-navigation3-ui",

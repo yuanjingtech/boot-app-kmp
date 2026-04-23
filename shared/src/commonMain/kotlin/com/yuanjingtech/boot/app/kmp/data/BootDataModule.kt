@@ -8,5 +8,6 @@ import org.koin.plugin.module.dsl.single
 
 internal val bootDataModule = module {
     single<BootDatabase> { createBootDatabase() }
+    factory { get<BootDatabase>().themeDao() }
     single<BootThemeStore>()
 }
