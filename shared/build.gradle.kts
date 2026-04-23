@@ -83,6 +83,7 @@ kotlin {
     sourceSets {
         androidMain.dependencies {
             api(libs.androidx.activity.compose)
+            implementation(libs.sqlite.bundled)
         }
         commonMain.dependencies {
             // JetBrains Compose - version managed by composeMultiplatform plugin
@@ -94,6 +95,13 @@ kotlin {
         jvmMain.dependencies {
             api(compose.desktop.currentOs)
             api(libs.kotlinx.coroutinesSwing)
+            implementation(libs.sqlite.bundled)
+        }
+        jsMain.dependencies {
+            implementation(libs.sqlite.web)
+        }
+        wasmJsMain.dependencies {
+            implementation(libs.sqlite.web)
         }
     }
 }

@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Boot</string>
+    <string name="tab_item_main">主页</string>
+    <string name="tab_item_setting">设置</string>
+</resources>
