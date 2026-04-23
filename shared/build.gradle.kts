@@ -105,6 +105,8 @@ kotlin {
 }
 dependencies {
     androidRuntimeClasspath(libs.compose.ui.tooling.preview)
+    // Room KSP for commonMain metadata — generates expect/actual BootDatabaseConstructor
+    kspCommonMainMetadata(libs.room3.compiler)
 }
 // sweetspi config start
 kotlin {
