@@ -11,45 +11,25 @@ disable-model-invocation: false
 
 # KMP Room 3 Migration Skill
 
-## Problem (from SO 78858784)
+## Reference
 
-After upgrading to Room `2.7.0-alpha06`+, KMP database instantiation requires implementing `RoomDatabaseConstructor`.
+- https://developer.android.com/kotlin/multiplatform/room
+- https://stackoverflow.com/questions/78858784/roomdatabaseconstructor-on-kotlinmultiplatform-has-no-corresponding-expected-dec
 
-The error when KSP auto-generates `actual object` but you also write one manually:
+## Version Requirements
 
-```
-Error 1: [generated] 'actual object MyDatabaseCtor' has no corresponding expected declaration
-Error 2: Redeclaration: actual object MyDatabaseCtor
-Error 3: [androidMain] 'actual object MyDatabaseCtor' has no corresponding expected declaration
-```
+- Room KMP: `2.7.0`+
+- Room SQLite Wrapper: `2.8.0`+
+- SQLite bundled library: `2.6.2`+
+- Kotlin `2.0+` (no `kotlin.native.disableCompilerDaemon` needed)
 
-**Root cause**: Room KSP generates BOTH `expect` and `actual` in commonMain metadata. If you write `expect object` in your source AND also write platform `actual object` implementations, the KSP-generated `actual` conflicts with your manual `actual`.
+## Architecture: expect object + platform actuals
 
-## Solution: Manual expect + Manual actuals (alpha03)
-
-Room `3.0.0-alpha03` KSP does NOT auto-generate actual implementations. You must provide:
-
-1. `expect object MyDatabaseCtor` in `commonMain` (suppress with `@Suppress("KotlinNoActualForExpect")`)
-2. `actual object MyDatabaseCtor` in every platform source set
-3. `@ConstructedBy(MyDatabaseCtor::class)` on the `@Database` class
+Room KSP generates `actual` implementations for `RoomDatabaseConstructor` automatically at compile time. You only write the `expect` declaration — Room handles the rest.
 
 ## Files to Create
 
-### commonMain: `MyDatabaseConstructor.kt`
-
-```kotlin
-package com.example.data
-
-import androidx.room3.RoomDatabaseConstructor
-import kotlin.Suppress
-
-@Suppress("KotlinNoActualForExpect")
-expect object MyDatabaseConstructor : RoomDatabaseConstructor<MyDatabase> {
-    override fun initialize(): MyDatabase
-}
-```
-
-### commonMain: `MyDatabase.kt`
+### commonMain: `AppDatabase.kt`
 
 ```kotlin
 package com.example.data
@@ -57,47 +37,188 @@ package com.example.data
 import androidx.room3.ConstructedBy
 import androidx.room3.Database
 import androidx.room3.RoomDatabase
+import org.koin.dsl.module
 
-@Database(entities = [MyEntity::class], version = 1)
-@ConstructedBy(MyDatabaseConstructor::class)
-abstract class MyDatabase : RoomDatabase() {
-    abstract fun myDao(): MyDao
+@Database(entities = [TodoEntity::class], version = 1)
+@ConstructedBy(AppDatabaseConstructor::class)
+abstract class AppDatabase : RoomDatabase() {
+    abstract fun todoDao(): TodoDao
+}
+
+// Room compiler generates the actual implementations.
+@Suppress("KotlinNoActualForExpect")
+expect object AppDatabaseConstructor : RoomDatabaseConstructor<AppDatabase> {
+    override fun initialize(): AppDatabase
+}
+
+// Common entry point — takes the platform builder and applies shared config.
+fun getRoomDatabase(builder: RoomDatabase.Builder<AppDatabase>): AppDatabase {
+    return builder
+        .setDriver(BundledSQLiteDriver())
+        .setQueryCoroutineContext(Dispatchers.IO)
+        .build()
+}
+
+// Koin module wiring example
+internal val appDataModule = module {
+    single<AppDatabase> { getRoomDatabase(getDatabaseBuilder()) }
+    single { get<AppDatabase>().todoDao() }
 }
 ```
 
-### androidMain: `MyDatabaseConstructor.android.kt`
+### androidMain: `AppDatabase.android.kt`
 
 ```kotlin
 package com.example.data
 
-import androidx.room3.RoomDatabaseConstructor
+import android.content.Context
 
-actual object MyDatabaseConstructor : RoomDatabaseConstructor<MyDatabase> {
-    actual override fun initialize(): MyDatabase = createMyDatabase()
+fun getDatabaseBuilder(context: Context): RoomDatabase.Builder<AppDatabase> {
+    val appContext = context.applicationContext
+    val dbFile = appContext.getDatabasePath("my_room.db")
+    return Room.databaseBuilder<AppDatabase>(
+        context = appContext,
+        name = dbFile.absolutePath,
+    )
 }
 ```
 
-### jvmMain: `MyDatabaseConstructor.jvm.kt`
+### jvmMain: `AppDatabase.jvm.kt`
 
 ```kotlin
 package com.example.data
 
-import androidx.room3.RoomDatabaseConstructor
+import java.io.File
 
-actual object MyDatabaseConstructor : RoomDatabaseConstructor<MyDatabase> {
-    actual override fun initialize(): MyDatabase = createMyDatabase()
+fun getDatabaseBuilder(): RoomDatabase.Builder<AppDatabase> {
+    val dbFile = File(System.getProperty("java.io.tmpdir"), "my_room.db")
+    return Room.databaseBuilder<AppDatabase>(name = dbFile.absolutePath)
 }
 ```
 
-### iosMain: `MyDatabaseConstructor.ios.kt`
+### iosMain: `AppDatabase.ios.kt`
 
 ```kotlin
 package com.example.data
 
-import androidx.room3.RoomDatabaseConstructor
+import platform.Foundation.NSDocumentDirectory
+import platform.Foundation.NSFileManager
+import platform.Foundation.NSUserDomainMask
 
-actual object MyDatabaseConstructor : RoomDatabaseConstructor<MyDatabase> {
-    actual override fun initialize(): MyDatabase {
+fun getDatabaseBuilder(): RoomDatabase.Builder<AppDatabase> {
+    val dbFilePath = documentDirectory() + "/my_room.db"
+    return Room.databaseBuilder<AppDatabase>(name = dbFilePath)
+}
+
+private fun documentDirectory(): String {
+    val url = NSFileManager.defaultManager.URLForDirectory(
+        directory = NSDocumentDirectory,
+        inDomain = NSUserDomainMask,
+        appropriateForURL = null,
+        create = false,
+        error = null,
+    )
+    return requireNotNull(url?.path)
+}
+```
+
+### JS/WASM
+
+SQLite is not bundled for JS/WASM. Use SQLDelight or throw if unsupported:
+
+```kotlin
+// jsMain / wasmJsMain
+fun getDatabaseBuilder(): RoomDatabase.Builder<AppDatabase> {
+    throw UnsupportedOperationException(
+        "Room3 BundledSQLiteDriver is not supported on JS/WASM. " +
+            "Use SQLDelight for web database operations."
+    )
+}
+```
+
+## build.gradle.kts Configuration
+
+### libs.versions.toml
+
+```toml
+[versions]
+room  = "2.8.4"   # or latest 2.x stable
+sqlite = "2.6.2"
+
+[libraries]
+androidx-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
+androidx-room-runtime   = { module = "androidx.room:room-runtime", version.ref = "room" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+# Optional SQLite Wrapper (2.8.0+)
+androidx-room-sqlite-wrapper = { module = "androidx.room:room-sqlite-wrapper", version.ref = "room" }
+
+[plugins]
+ksp          = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+androidx-room = { id = "androidx.room", version.ref = "room" }
+```
+
+### shared/build.gradle.kts
+
+```kotlin
+plugins {
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.androidx.room)
+}
+
+// Room schema export
+room {
+    schemaDirectory("$projectDir/schemas")
+}
+
+commonMain.dependencies {
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.sqlite.bundled)
+}
+
+// iOS linker option for NativeSQLiteDriver
+kotlin {
+    listOf(iosArm64(), iosSimulatorArm64()).forEach { iosTarget ->
+        iosTarget.binaries.framework {
+            linkerOpts.add("-lsqlite3")
+        }
+    }
+}
+```
+
+### KSP configuration — critical for iOS
+
+```kotlin
+dependencies {
+    // Required: KSP must run for all platform targets that use Room
+    add("kspAndroid", libs.androidx.room.compiler)
+    add("kspIosSimulatorArm64", libs.androidx.room.compiler)
+    add("kspIosArm64", libs.androidx.room.compiler)
+}
+```
+
+> Without explicit iOS KSP configs, the `actual` for `RoomDatabaseConstructor` is not generated for iOS targets.
+
+## SO 78858784: Redeclaration Error
+
+**Symptom**: After adding `@ConstructedBy` and `expect object`, compilation fails with:
+
+```
+Error 1: 'actual object AppDatabaseConstructor' has no corresponding expected declaration
+Error 2: Redeclaration: actual object AppDatabaseConstructor
+```
+
+**Root cause**: Room KSP generates BOTH `expect` and `actual` in commonMain metadata. If your source also contains `expect object` (for KSP to resolve the annotation) AND platform `actual object` implementations, two `actual` declarations exist — the manual one and the KSP-generated one.
+
+**Fix**: With Room `2.7.0+` and correct KSP configs for all iOS targets, Room generates the `actual` automatically. Do NOT write manual `actual object` for iOS/Android/JVM — only write the `expect` in commonMain. JS/WASM still need a manual throw-based actual since Room has no SQLite driver there.
+
+## Differences from alpha03
+
+Room `3.0.0-alpha03` may not auto-generate iOS actuals. In that case, provide manual actuals:
+
+```kotlin
+// iosMain
+actual object AppDatabaseConstructor : RoomDatabaseConstructor<AppDatabase> {
+    actual override fun initialize(): AppDatabase {
         throw UnsupportedOperationException(
             "Room3 BundledSQLiteDriver is not supported on iOS. " +
                 "Use SQLDelight for iOS database operations."
@@ -106,36 +227,8 @@ actual object MyDatabaseConstructor : RoomDatabaseConstructor<MyDatabase> {
 }
 ```
 
-### jsMain / wasmJsMain
+## ProGuard / R8 (release builds)
 
-Same pattern as iosMain — throw `UnsupportedOperationException`.
-
-## build.gradle.kts
-
-Add `kspCommonMainMetadata` so Room KSP runs on commonMain metadata and resolves `@ConstructedBy`:
-
-```kotlin
-dependencies {
-    // Room KSP for commonMain metadata — generates expect/actual BootDatabaseConstructor
-    kspCommonMainMetadata(libs.room3.compiler)
-}
+```proguard
+-keep class * extends androidx.room.RoomDatabase { <init>(); }
 ```
-
-Also ensure `room3.runtime` is in commonMain and `sqlite-bundled` is in androidMain/jvmMain:
-
-```kotlin
-commonMain.dependencies {
-    api(libs.room3.runtime)
-}
-androidMain.dependencies {
-    implementation(libs.sqlite.bundled)
-}
-jvmMain.dependencies {
-    implementation(libs.sqlite.bundled)
-}
-```
-
-## Reference
-
-- https://developer.android.com/kotlin/multiplatform/room#creating-database
-- https://stackoverflow.com/questions/78858784/roomdatabaseconstructor-on-kotlinmultiplatform-has-no-corresponding-expected-dec
