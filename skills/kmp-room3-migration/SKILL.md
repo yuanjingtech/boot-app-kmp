@@ -1,6 +1,6 @@
 ---
 name: kmp-room3-migration
-description: "将 KMP 项目迁移到 Room 3.x，使用 @ConstructedBy 和 RoomDatabaseConstructor expect/actual 模式。"
+description: "Migrates a KMP project to Room 3.x with @ConstructedBy and RoomDatabaseConstructor expect/actual pattern."
 license: MIT
 metadata:
   author: "lotosbin"
@@ -9,23 +9,34 @@ user-invocable: true
 disable-model-invocation: false
 ---
 
-# KMP Room 3 迁移指南
+# KMP Room 3 Migration Skill
 
-## 参考
+## Reference
 
 - https://developer.android.com/kotlin/multiplatform/room
+- https://developer.android.com/blog/posts/modernizing-the-room
 - https://stackoverflow.com/questions/78858784/roomdatabaseconstructor-on-kotlinmultiplatform-has-no-corresponding-expected-dec
 
-## 版本要求
+## Version Requirements
 
-- Room KMP：`2.7.0`+
-- Room SQLite Wrapper：`2.8.0`+
-- SQLite bundled：`2.6.2`+
+- Room KMP: `2.7.0`+（完全 KMP 支持，含 JS/WASM）
+- Room SQLite Wrapper: `2.8.0`+
+- SQLite bundled: `2.6.2`+
 - Kotlin `2.0+`（无需 `kotlin.native.disableCompilerDaemon`）
+
+## 平台支持矩阵
+
+| 平台 | 数据库驱动 | KSP 配置 | 说明 |
+|------|-----------|----------|------|
+| Android | BundledSQLiteDriver | kspAndroid | |
+| JVM | BundledSQLiteDriver | 自动 | |
+| iOS | NativeSQLiteDriver | kspIosArm64 等 | 需要 -lsqlite3 linker |
+| JS | WebWorkerSQLiteDriver + OPFS | kspJs | 用 sqlite-web |
+| WASM | WebWorkerSQLiteDriver + OPFS | kspWasmJs | 用 sqlite-web |
 
 ## 架构：`expect object` + 各平台 actual
 
-Room KSP 会自动生成 `actual` 实现。只需编写 `expect` 声明，其余由 Room 处理。
+Room KSP 自动生成 `actual` 实现。只需在 commonMain 编写 `expect` 声明。
 
 ## 文件结构
 
@@ -122,19 +133,77 @@ private fun documentDirectory(): String {
 }
 ```
 
-### jsMain / wasmJsMain
+### jsMain / wasmJsMain：使用 `sqlite-web`（Room 3.0 新增）
 
-JS/WASM 不支持 BundledSQLiteDriver，使用 SQLDelight 或抛出异常：
+JS/WASM 通过 `WebWorkerSQLiteDriver` + OPFS（Origin Private File System）支持持久化存储。
+
+#### 1. 创建 `sqlite-wasm-worker` 模块
+
+```
+sqlite-wasm-worker/
+├── build.gradle.kts
+└── worker/
+    ├── package.json        # npm dependencies
+    └── worker.js           # WebWorker 实现
+```
+
+**`sqlite-wasm-worker/build.gradle.kts`**
+
+```kotlin
+@file:OptIn(ExperimentalWasmDsl::class)
+
+plugins {
+    alias(libs.plugins.kotlinMultiplatform)
+}
+
+kotlin {
+    js { browser { useEsModules() } }
+    wasmJs { browser { useEsModules() } }
+
+    sourceSets {
+        commonMain.dependencies {
+            api(libs.androidx.sqlite.web)
+            implementation(npm("sqlite-wasm-worker", layout.projectDirectory.dir("worker")))
+        }
+        wasmJsMain.dependencies {
+            implementation(libs.kotlinx.browser)
+        }
+    }
+}
+```
+
+**`sqlite-wasm-worker/worker/package.json`**
+
+```json
+{
+  "name": "sqlite-wasm-worker",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "@sqlite.org/sqlite-wasm": "^3.47.0"
+  }
+}
+```
+
+**`sqlite-wasm-worker/worker/worker.js`** — 实现 `WebWorkerSQLiteDriver` 协议，参考 AndroidX 源码：
+https://cs.android.com/androidx/platform/frameworks/support/+/androidx-main:sqlite/sqlite-web-worker-test/web-worker/worker.js
+
+#### 2. JS/WASM actual 实现
 
 ```kotlin
 // jsMain / wasmJsMain
 fun getDatabaseBuilder(): RoomDatabase.Builder<AppDatabase> {
-    throw UnsupportedOperationException(
-        "Room3 BundledSQLiteDriver 在 JS/WASM 上不受支持。" +
-            "请使用 SQLDelight 作为 Web 数据库方案。"
-    )
+    return Room.databaseBuilder<AppDatabase>("my_room.db")
+        .setDriver(WebWorkerSQLiteDriver(createWorker()))
+        .setCoroutineContext(Dispatchers.IO)
 }
+
+fun createWorker(): Worker = Worker(
+    js("""new URL("sqlite-wasm-worker/worker.js", import.meta.url)""")
+)
 ```
+
+> Worker 由 `sqlite-wasm-worker` 模块的 NPM 依赖提供。参考 demo: https://github.com/danysantiago/room-web-demo
 
 ## build.gradle.kts 配置
 
@@ -142,19 +211,14 @@ fun getDatabaseBuilder(): RoomDatabase.Builder<AppDatabase> {
 
 ```toml
 [versions]
-room   = "2.8.4"   # 或最新 2.x 稳定版
+room   = "2.8.4"
 sqlite = "2.6.2"
 
 [libraries]
-androidx-sqlite-bundled       = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
-androidx-room-runtime         = { module = "androidx.room:room-runtime", version.ref = "room" }
-androidx-room-compiler        = { module = "androidx.room:room-compiler", version.ref = "room" }
-# 可选：SQLite Wrapper (2.8.0+)
-androidx-room-sqlite-wrapper  = { module = "androidx.room:room-sqlite-wrapper", version.ref = "room" }
-
-[plugins]
-ksp           = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-androidx-room = { id = "androidx.room", version.ref = "room" }
+androidx-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
+androidx-sqlite-web     = { module = "androidx.sqlite:sqlite-web", version.ref = "sqlite" }
+androidx-room-runtime  = { module = "androidx.room3:room3-runtime", version.ref = "room" }
+androidx-room-compiler  = { module = "androidx.room3:room3-compiler", version.ref = "room" }
 ```
 
 ### shared/build.gradle.kts
@@ -162,17 +226,11 @@ androidx-room = { id = "androidx.room", version.ref = "room" }
 ```kotlin
 plugins {
     alias(libs.plugins.ksp)
-    alias(libs.plugins.androidx.room)
+    alias(libs.plugins.room3)
 }
 
-// Room schema 导出目录
-room {
+room3 {
     schemaDirectory("$projectDir/schemas")
-}
-
-commonMain.dependencies {
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.sqlite.bundled)
 }
 
 // iOS NativeSQLiteDriver 需要链接 sqlite3
@@ -183,51 +241,77 @@ kotlin {
         }
     }
 }
-```
 
-### KSP 配置 — iOS 必须
-
-```kotlin
 dependencies {
     // 必须为所有使用 Room 的平台配置 KSP
     add("kspAndroid", libs.androidx.room.compiler)
     add("kspIosSimulatorArm64", libs.androidx.room.compiler)
     add("kspIosArm64", libs.androidx.room.compiler)
+    add("kspJs", libs.androidx.room.compiler)
+    add("kspWasmJs", libs.androidx.room.compiler)
 }
 ```
 
-> 缺少 iOS KSP 配置将导致 `actual` 无法为 iOS 目标生成。
+### composeApp/build.gradle.kts（含 JS/WASM 目标）
+
+```kotlin
+plugins {
+    alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.composeMultiplatform)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.room3)
+}
+
+kotlin {
+    js { browser(); binaries.executable() }
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs { browser(); binaries.executable() }
+}
+
+commonMain.dependencies {
+    implementation(libs.androidx.room.runtime)
+}
+webMain.dependencies {
+    implementation(libs.androidx.sqlite.web)
+    implementation(project(":sqlite-wasm-worker"))
+}
+
+dependencies {
+    add("kspJs", libs.androidx.room.compiler)
+    add("kspWasmJs", libs.androidx.room.compiler)
+}
+```
 
 ## SO 78858784：Redeclaration 错误
 
-**现象**：添加 `@ConstructedBy` 和 `expect object` 后，编译报错：
+**现象**：`@ConstructedBy` + `expect object` 编译报错：
 
 ```
 Error 1: 'actual object AppDatabaseConstructor' has no corresponding expected declaration
 Error 2: Redeclaration: actual object AppDatabaseConstructor
 ```
 
-**根因**：Room KSP 在 commonMain metadata 中同时生成了 `expect` 和 `actual`。如果源码中同时存在手写的 `expect object`（用于 KSP 解析注解）和手写的平台 `actual object` 实现，就会产生两个 `actual` 声明——手写的和 KSP 生成的——冲突。
+**根因**：Room KSP 在 commonMain metadata 中同时生成 `expect` 和 `actual`。若源码中同时存在手写 `expect` 和平台 `actual`，会产生两个 `actual` 冲突。
 
-**修复**：Room `2.7.0+` 配合正确的 iOS KSP 配置后，Room 会自动生成 `actual`。**不要**手写 iOS/Android/JVM 的 `actual object`，只需在 commonMain 写 `expect`。JS/WASM 仍需手写 throw 异常形式的 actual（Room 无 SQLite 驱动支持）。
+**修复**：`2.7.0+` 配合正确的 iOS/JS/WASM KSP 配置后，Room 自动生成 `actual`。不要手写 Android/JVM/iOS 的 `actual object`，只需写 `expect`。JS/WASM 仍需手写 actual（Room 的 WebWorkerSQLiteDriver 需要平台特定初始化）。
 
-## alpha03 版本差异
+## alpha03 差异
 
-Room `3.0.0-alpha03` 的 KSP 可能不会自动生成 iOS actual，此时需要手动提供：
+`3.0.0-alpha03` 的 KSP 可能不会自动生成 iOS/JS actual，需手动提供：
 
 ```kotlin
-// iosMain
+// iosMain / jsMain / wasmJsMain
 actual object AppDatabaseConstructor : RoomDatabaseConstructor<AppDatabase> {
     actual override fun initialize(): AppDatabase {
         throw UnsupportedOperationException(
-            "Room3 BundledSQLiteDriver 在 iOS 上不受支持。" +
-                "请使用 SQLDelight 作为 iOS 数据库方案。"
+            "Room3 BundledSQLiteDriver 在此平台不受支持。" +
+                "请使用 SQLDelight 作为数据库方案。"
         )
     }
 }
 ```
 
-## ProGuard / R8（发布构建）
+## ProGuard / R8
 
 ```proguard
 -keep class * extends androidx.room.RoomDatabase { <init>(); }
