@@ -1,6 +1,6 @@
 ---
 name: kmp-room3-migration
-description: "Migrates a KMP project to Room 3.x with @ConstructedBy and RoomDatabaseConstructor expect/actual pattern."
+description: "将 KMP 项目迁移到 Room 3.x，使用 @ConstructedBy 和 RoomDatabaseConstructor expect/actual 模式。"
 license: MIT
 metadata:
   author: "lotosbin"
@@ -9,25 +9,25 @@ user-invocable: true
 disable-model-invocation: false
 ---
 
-# KMP Room 3 Migration Skill
+# KMP Room 3 迁移指南
 
-## Reference
+## 参考
 
 - https://developer.android.com/kotlin/multiplatform/room
 - https://stackoverflow.com/questions/78858784/roomdatabaseconstructor-on-kotlinmultiplatform-has-no-corresponding-expected-dec
 
-## Version Requirements
+## 版本要求
 
-- Room KMP: `2.7.0`+
-- Room SQLite Wrapper: `2.8.0`+
-- SQLite bundled library: `2.6.2`+
-- Kotlin `2.0+` (no `kotlin.native.disableCompilerDaemon` needed)
+- Room KMP：`2.7.0`+
+- Room SQLite Wrapper：`2.8.0`+
+- SQLite bundled：`2.6.2`+
+- Kotlin `2.0+`（无需 `kotlin.native.disableCompilerDaemon`）
 
-## Architecture: expect object + platform actuals
+## 架构：`expect object` + 各平台 actual
 
-Room KSP generates `actual` implementations for `RoomDatabaseConstructor` automatically at compile time. You only write the `expect` declaration — Room handles the rest.
+Room KSP 会自动生成 `actual` 实现。只需编写 `expect` 声明，其余由 Room 处理。
 
-## Files to Create
+## 文件结构
 
 ### commonMain: `AppDatabase.kt`
 
@@ -45,13 +45,13 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun todoDao(): TodoDao
 }
 
-// Room compiler generates the actual implementations.
+// Room 编译器自动生成 actual 实现。
 @Suppress("KotlinNoActualForExpect")
 expect object AppDatabaseConstructor : RoomDatabaseConstructor<AppDatabase> {
     override fun initialize(): AppDatabase
 }
 
-// Common entry point — takes the platform builder and applies shared config.
+// 通用入口 — 接收平台 builder，应用共享配置。
 fun getRoomDatabase(builder: RoomDatabase.Builder<AppDatabase>): AppDatabase {
     return builder
         .setDriver(BundledSQLiteDriver())
@@ -59,7 +59,7 @@ fun getRoomDatabase(builder: RoomDatabase.Builder<AppDatabase>): AppDatabase {
         .build()
 }
 
-// Koin module wiring example
+// Koin 模块示例
 internal val appDataModule = module {
     single<AppDatabase> { getRoomDatabase(getDatabaseBuilder()) }
     single { get<AppDatabase>().todoDao() }
@@ -122,38 +122,38 @@ private fun documentDirectory(): String {
 }
 ```
 
-### JS/WASM
+### jsMain / wasmJsMain
 
-SQLite is not bundled for JS/WASM. Use SQLDelight or throw if unsupported:
+JS/WASM 不支持 BundledSQLiteDriver，使用 SQLDelight 或抛出异常：
 
 ```kotlin
 // jsMain / wasmJsMain
 fun getDatabaseBuilder(): RoomDatabase.Builder<AppDatabase> {
     throw UnsupportedOperationException(
-        "Room3 BundledSQLiteDriver is not supported on JS/WASM. " +
-            "Use SQLDelight for web database operations."
+        "Room3 BundledSQLiteDriver 在 JS/WASM 上不受支持。" +
+            "请使用 SQLDelight 作为 Web 数据库方案。"
     )
 }
 ```
 
-## build.gradle.kts Configuration
+## build.gradle.kts 配置
 
 ### libs.versions.toml
 
 ```toml
 [versions]
-room  = "2.8.4"   # or latest 2.x stable
+room   = "2.8.4"   # 或最新 2.x 稳定版
 sqlite = "2.6.2"
 
 [libraries]
-androidx-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
-androidx-room-runtime   = { module = "androidx.room:room-runtime", version.ref = "room" }
-androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
-# Optional SQLite Wrapper (2.8.0+)
-androidx-room-sqlite-wrapper = { module = "androidx.room:room-sqlite-wrapper", version.ref = "room" }
+androidx-sqlite-bundled       = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
+androidx-room-runtime         = { module = "androidx.room:room-runtime", version.ref = "room" }
+androidx-room-compiler        = { module = "androidx.room:room-compiler", version.ref = "room" }
+# 可选：SQLite Wrapper (2.8.0+)
+androidx-room-sqlite-wrapper  = { module = "androidx.room:room-sqlite-wrapper", version.ref = "room" }
 
 [plugins]
-ksp          = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+ksp           = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 androidx-room = { id = "androidx.room", version.ref = "room" }
 ```
 
@@ -165,7 +165,7 @@ plugins {
     alias(libs.plugins.androidx.room)
 }
 
-// Room schema export
+// Room schema 导出目录
 room {
     schemaDirectory("$projectDir/schemas")
 }
@@ -175,7 +175,7 @@ commonMain.dependencies {
     implementation(libs.androidx.sqlite.bundled)
 }
 
-// iOS linker option for NativeSQLiteDriver
+// iOS NativeSQLiteDriver 需要链接 sqlite3
 kotlin {
     listOf(iosArm64(), iosSimulatorArm64()).forEach { iosTarget ->
         iosTarget.binaries.framework {
@@ -185,49 +185,49 @@ kotlin {
 }
 ```
 
-### KSP configuration — critical for iOS
+### KSP 配置 — iOS 必须
 
 ```kotlin
 dependencies {
-    // Required: KSP must run for all platform targets that use Room
+    // 必须为所有使用 Room 的平台配置 KSP
     add("kspAndroid", libs.androidx.room.compiler)
     add("kspIosSimulatorArm64", libs.androidx.room.compiler)
     add("kspIosArm64", libs.androidx.room.compiler)
 }
 ```
 
-> Without explicit iOS KSP configs, the `actual` for `RoomDatabaseConstructor` is not generated for iOS targets.
+> 缺少 iOS KSP 配置将导致 `actual` 无法为 iOS 目标生成。
 
-## SO 78858784: Redeclaration Error
+## SO 78858784：Redeclaration 错误
 
-**Symptom**: After adding `@ConstructedBy` and `expect object`, compilation fails with:
+**现象**：添加 `@ConstructedBy` 和 `expect object` 后，编译报错：
 
 ```
 Error 1: 'actual object AppDatabaseConstructor' has no corresponding expected declaration
 Error 2: Redeclaration: actual object AppDatabaseConstructor
 ```
 
-**Root cause**: Room KSP generates BOTH `expect` and `actual` in commonMain metadata. If your source also contains `expect object` (for KSP to resolve the annotation) AND platform `actual object` implementations, two `actual` declarations exist — the manual one and the KSP-generated one.
+**根因**：Room KSP 在 commonMain metadata 中同时生成了 `expect` 和 `actual`。如果源码中同时存在手写的 `expect object`（用于 KSP 解析注解）和手写的平台 `actual object` 实现，就会产生两个 `actual` 声明——手写的和 KSP 生成的——冲突。
 
-**Fix**: With Room `2.7.0+` and correct KSP configs for all iOS targets, Room generates the `actual` automatically. Do NOT write manual `actual object` for iOS/Android/JVM — only write the `expect` in commonMain. JS/WASM still need a manual throw-based actual since Room has no SQLite driver there.
+**修复**：Room `2.7.0+` 配合正确的 iOS KSP 配置后，Room 会自动生成 `actual`。**不要**手写 iOS/Android/JVM 的 `actual object`，只需在 commonMain 写 `expect`。JS/WASM 仍需手写 throw 异常形式的 actual（Room 无 SQLite 驱动支持）。
 
-## Differences from alpha03
+## alpha03 版本差异
 
-Room `3.0.0-alpha03` may not auto-generate iOS actuals. In that case, provide manual actuals:
+Room `3.0.0-alpha03` 的 KSP 可能不会自动生成 iOS actual，此时需要手动提供：
 
 ```kotlin
 // iosMain
 actual object AppDatabaseConstructor : RoomDatabaseConstructor<AppDatabase> {
     actual override fun initialize(): AppDatabase {
         throw UnsupportedOperationException(
-            "Room3 BundledSQLiteDriver is not supported on iOS. " +
-                "Use SQLDelight for iOS database operations."
+            "Room3 BundledSQLiteDriver 在 iOS 上不受支持。" +
+                "请使用 SQLDelight 作为 iOS 数据库方案。"
         )
     }
 }
 ```
 
-## ProGuard / R8 (release builds)
+## ProGuard / R8（发布构建）
 
 ```proguard
 -keep class * extends androidx.room.RoomDatabase { <init>(); }
