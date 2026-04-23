@@ -9,3 +9,4 @@ actual fun createBootDatabase(): BootDatabase {
     ).setDriver(BundledSQLiteDriver())
         .build()
 }
+
