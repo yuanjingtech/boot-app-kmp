@@ -98,8 +98,10 @@ kotlin {
             implementation(libs.sqlite.bundled)
         }
         jsMain.dependencies {
+            implementation(libs.sqlite.web)
         }
         wasmJsMain.dependencies {
+            implementation(libs.sqlite.web)
         }
     }
 }
