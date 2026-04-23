@@ -1,0 +1,51 @@
+{
+  "reviewer": "performance",
+  "findings": [
+    {
+      "type": "eager_singleton_initialization",
+      "severity": "medium",
+      "confidence": 75,
+      "file": "shared/src/commonMain/kotlin/com/yuanjingtech/boot/app/kmp/data/BootDataModule.kt",
+      "line": 10,
+      "description": "createBootDatabase() is called eagerly inside Koin single {} block. Room.databaseBuilder().build() synchronously opens the SQLite file and runs journal/WAL initialization on the calling thread at startup. On desktop JVM this delays app launch; on Android it is a minor cold-start cost. For a settings-only DB (single ThemeSettings table) the I/O is bounded and the impact is small, but the pattern is not lazy — if the feature is not always used, the DB file is opened unconditionally.",
+      "recommendation": "Consider lazy initialization: single<BootDatabase> { createBootDatabase() } vs single<BootDatabase>(createdAtStart = true). In Koin 4 the default is lazy (first access). Verify the Koin configuration does not override this."
+    },
+    {
+      "type": "unused_transitive_dependency",
+      "severity": "low",
+      "confidence": 85,
+      "file": "shared/build.gradle.kts",
+      "lines": "100-105",
+      "description": "sqlite-web is declared as implementation dependency in both jsMain and wasmJsMain source sets, but both corresponding createBootDatabase() implementations unconditionally throw UnsupportedOperationException. The sqlite-web artifact (~MB of WASM/JS SQLite bindings) is never called. It is scoped as implementation so it does not propagate to consumers, but it still inflates the JS/WASM bundle size and compile time for those targets.",
+      "recommendation": "Remove sqlite-web from jsMain and wasmJsMain dependencies. It was added in anticipation of a working BundledSQLiteDriver on those platforms; remove the dead weight now that the intent is to throw."
+    }
+  ],
+  "residual_risks": [
+    {
+      "type": "blocking_io_on_main_thread",
+      "severity": "low",
+      "confidence": 60,
+      "description": "If bootDataModule is included in the root Koin graph that starts before the UI is rendered (e.g., shared library initialization on desktop), Room's synchronous database build will block that thread. The DB file is small (ThemeSettings only) so the actual delay is sub-millisecond on SSD, but on older Android devices with eMMC storage this could be a brief jank on cold start."
+    },
+    {
+      "type": "no_pagination_on_queries",
+      "severity": "low",
+      "confidence": 40,
+      "description": "ThemeDao queries currently load all rows without LIMIT. Since ThemeSettings is a single-row preferences table this is not a concern. If the schema grows to support history or logs, this should be revisited with Paging 3 or explicit cursor pagination."
+    }
+  ],
+  "testing_gaps": [
+    {
+      "gap": "No test covers the jsMain/wasmJsMain throw path",
+      "detail": "There is no unit test or instrumentation test that exercises createBootDatabase() on the JS or WASM platforms and asserts UnsupportedOperationException. Adding a commonTest that uses expect/actual to verify this behavior prevents silent regressions if the implementation is copy-pasted incorrectly in future."
+    },
+    {
+      "gap": "No test verifies lazy vs eager DB initialization timing",
+      "detail": "There is no test that asserts BootDatabase is not instantiated until first access to ThemeStore or a derived Flow. This matters for startup performance; a future refactor could accidentally flip initialization to eager."
+    },
+    {
+      "gap": "No cross-platform DB migration test",
+      "detail": "BootDatabase uses schema version 1 with no migrations configured. If version 2 is added later, Room's default fallback-to-destructive-migration behavior could silently wipe data on some platforms (e.g., JS throws on migration). A CI test that verifies migration paths across all supported platforms (jvm, android) is needed."
+    }
+  ]
+}

@@ -5,6 +5,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
+import com.yuanjingtech.boot.app.kmp.di.bootModule
 import com.yuanjingtech.boot.app.kmp.plugin.pluginModule
 import com.yuanjingtech.boot.app.kmp.theme.BootAppTheme
 import org.koin.compose.KoinApplication
@@ -25,6 +26,7 @@ fun BootApplication(
 ) {
     KoinApplication(
         configuration = KoinConfiguration {
+            modules(bootModule)
             modules(pluginModule)
             includes(config)
         },

@@ -1,0 +1,37 @@
+{
+  "reviewer": "correctness",
+  "findings": [
+    {
+      "severity": "P0",
+      "title": "commonMain contains actual implementation using BundledSQLiteDriver",
+      "file": "shared/src/commonMain/kotlin/com/yuanjingtech/boot/app/kmp/data/room3/BootDatabaseFactory.kt",
+      "line": 6,
+      "description": "The expect declaration is in commonMain, but the actual implementation code is ALSO in commonMain with BundledSQLiteDriver. The expect/actual separation is missing — commonMain contains a full concrete implementation. On a platform whose nativeMain/jsMain/wasmJsMain are not configured, the compile task for commonMain will pick up this file and fail on JS/WASM/native targets due to the BundledSQLiteDriver dependency not being declared there.",
+      "anchor": 75
+    },
+    {
+      "severity": "P0",
+      "title": "Incorrect file naming — .kt instead of .common.kt",
+      "file": "shared/src/commonMain/kotlin/com/yuanjingtech/boot/app/kmp/data/room3/BootDatabaseFactory.kt",
+      "line": 1,
+      "description": "The file is named `BootDatabaseFactory.kt` (not `.common.kt`). Kotlin resolves source files by directory (commonMain vs jvmMain), not file name. However, since the file contains a full implementation (not an expect), this is a category error — commonMain should only hold the `expect` declaration, not an `actual` implementation. The actuals for jvm/android are in their respective `BootDatabaseFactory.jvm.kt` / `.android.kt` files, and the commonMain file shadows them on those platforms. On JVM/Android the build may still succeed because the actual in commonMain matches the expect, but the intent (platform-specific implementations with `BundledSQLiteDriver`) is not properly expressed.",
+      "anchor": 85
+    }
+  ],
+  "residual_risks": [
+    {
+      "risk": "On JS/WASM/native targets, calling `createBootDatabase()` from BootDataModule (which lives in commonMain) will throw UnsupportedOperationException at runtime. This is by design per the diff, but callers in common/shared code have no static guarantee — they can call it and only discover the restriction when the platform-specific actual is invoked.",
+      "mitigation": "Callers in commonMain should guard with `checkPlatformSupported()` or the module should surface an interface/abstraction so the unsupported platforms inject a no-op or lazy-error factory instead of a hard-throw."
+    },
+    {
+      "risk": "iOS (iosArm64, iosSimulatorArm64) has no nativeMain actual defined. nativeMain directory exists but only contains the .native.kt file for the unsupported throw — this is correct, but the ios targets may still have compile issues if the Room3 driver classes are missing from the classpath.",
+      "mitigation": "Verify iosArm64/iosSimulatorArm64 build tasks pass after this change."
+    }
+  ],
+  "testing_gaps": [
+    "No unit test for BootDatabaseFactory on any platform — the `expect`/`actual` contracts are not validated.",
+    "jsMain/wasmJsMain/nativeMain: no test confirms that createBootDatabase() throws UnsupportedOperationException as expected.",
+    "jvmMain/androidMain: no test confirms that createBootDatabase() returns a non-null BootDatabase instance.",
+    "BootDataModule integration: no test that verifies the Koin `single<BootDatabase>` resolves correctly on JVM/Android and throws on JS/WASM/native."
+  ]
+}
