@@ -79,16 +79,10 @@ koinCompiler {
 kotlin {
     sourceSets {
         androidMain {
-            dependencies {
-                implementation(libs.sweetspi.runtime.jvm)
-            }
             // KSP generates META-INF/services/ as resources under this directory,
             // but androidResources does not automatically include it. Register it
             // so the generated service files are packaged into the Android AAR/APK.
             resources.srcDir(layout.buildDirectory.dir("generated/ksp/android/androidMain/resources"))
         }
     }
-}
-dependencies {
-    add("kspAndroid", libs.sweetspi.processor)
 }

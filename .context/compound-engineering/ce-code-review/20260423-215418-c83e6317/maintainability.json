@@ -1,0 +1,51 @@
+{
+  "reviewer": "maintainability",
+  "findings": [
+    {
+      "file": "shared/src/jvmMain/kotlin/com/yuanjingtech/boot/app/kmp/data/room3/BootDatabaseFactory.jvm.kt",
+      "line": 1,
+      "type": "code_duplication",
+      "severity": "error",
+      "confidence": 100,
+      "description": "BootDatabaseFactory.jvm.kt and BootDatabaseFactory.android.kt are byte-for-byte identical. This is a pure copy-paste duplication with no variation between the two platforms. If the database configuration changes, both files must be updated in lockstep, guaranteeing a sync bug at some point in the future.",
+      "recommendation": "Move the shared implementation to a private/internal function inside commonMain (e.g., `internal expect fun createBootDatabaseInternal()` or a shared utility file), or use a single `jvmAndroidMain` source set that both jvm() and android() targets compile. Alternatively, consider whether the database builder itself can live in commonMain and only the SQLite driver selection is platform-specific via an internal expect/actual pair."
+    },
+    {
+      "file": "shared/src/nativeMain/kotlin/com/yuanjingtech/boot/app/kmp/data/room3/BootDatabaseFactory.native.kt",
+      "line": 5,
+      "type": "copy_paste_bug",
+      "severity": "error",
+      "confidence": 100,
+      "description": "The UnsupportedOperationException message says 'Room3 BundledSQLiteDriver is not supported on JS' but this file is nativeMain/native iOS. The message is incorrect and will mislead developers debugging native platform issues.",
+      "recommendation": "Change the message to 'Room3 BundledSQLiteDriver is not supported on native/iOS. Use SQLDelight for native database operations.'"
+    },
+    {
+      "file": "shared/src/{jsMain,wasmJsMain,nativeMain}/kotlin/com/yuanjingtech/boot/app/kmp/data/room3/",
+      "type": "structural_duplication",
+      "severity": "minor",
+      "confidence": 50,
+      "description": "All three non-JVM stub platforms (jsMain, wasmJsMain, nativeMain) share identical structure: throw UnsupportedOperationException with a platform-specific string. Only the message text differs. If a fourth stub platform is added, this pattern will be copy-pasted again.",
+      "recommendation": "Consider whether this can be expressed once in commonMain (e.g., an internal shared function `internal expect fun throwDatabaseUnsupported(): Nothing`), or document that these stubs are intentionally minimal to avoid a larger refactor. At minimum, extract the common prefix 'Room3 BundledSQLiteDriver is not supported on' to a shared string resource or const."
+    }
+  ],
+  "residual_risks": [
+    {
+      "description": "No compile-time enforcement that non-JVM platforms never call createBootDatabase(). The current approach uses runtime exceptions, so a consumer accidentally calling this on iOS/JS/WASM will get a runtime crash rather than a compile error.",
+      "mitigation": "Add unit tests that assert UnsupportedOperationException is thrown on each non-JVM platform, or use sealed classes / type-safety at the call site to make it impossible to invoke on unsupported platforms."
+    },
+    {
+      "description": "The duplicate jvmMain/androidMain implementation creates a maintenance hazard: any future change to the database configuration must be applied to both files simultaneously. Given that the implementations are already identical today, there is high probability they will diverge over time as developers modify one without remembering the other.",
+      "mitigation": "Consolidate into a single source set or shared internal expect/actual as recommended above."
+    }
+  ],
+  "testing_gaps": [
+    {
+      "file": "shared/src/commonMain/kotlin/com/yuanjingtech/boot/app/kmp/data/room3/BootDatabaseFactory.kt",
+      "description": "The expect declaration has no tests verifying it is implemented by all expected platforms (jvm, android, js, wasmJs, native). Missing multiplatform tests that run on each target to assert createBootDatabase() returns a non-null BootDatabase on JVM variants and throws UnsupportedOperationException on non-JVM variants."
+    },
+    {
+      "file": "shared/src/jvmMain/kotlin/com/yuanjingtech/boot/app/kmp/data/room3/BootDatabaseFactory.jvm.kt",
+      "description": "No JVM-specific unit or integration tests that open the database, perform a query, and verify schema correctness. Existing ThemeStoreTest covers theme data but not the database layer in isolation."
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "reviewer": "project-standards",
+  "findings": [
+    {
+      "severity": "error",
+      "confidence": 100,
+      "rule": "AGENTS.md, operator sub-project (platform-agnostic KMP convention): \"所有改动以重构为主，保持 API 稳定与清晰度\" + expect/actual pattern requires every platform target to have an actual",
+      "rule_source": "AGENTS.md (yuanjingtech sub-project conventions, apply to boot-app-kmp KMP code)",
+      "file": "shared/src/iosMain/kotlin/com/yuanjingtech/boot/app/kmp/data/room3/",
+      "description": "iosMain has no BootDatabaseFactory.actual.kt. The expect/actual pair is incomplete: commonMain declares expect fun createBootDatabase(), but iosMain (which is a distinct KMP target alongside nativeMain) has no corresponding actual. Gradle will fail to link iOS binaries because iosMain cannot satisfy the expect without a nativeMain override for iOS-specific paths.",
+      "evidence": "commonMain expect: `expect fun createBootDatabase(): BootDatabase` (BootDatabaseFactory.kt, line 3); iosMain directory exists at shared/src/iosMain/kotlin/com/yuanjingtech/boot/app/kmp/data/room3/ but no BootDatabaseFactory.ios.kt file; nativeMain/BootDatabaseFactory.native.kt covers native/iOS via inheritance but does NOT cover iosMain source set",
+      "snippet": "iosMain has no BootDatabaseFactory.actual.kt",
+      "recommendation": "Create shared/src/iosMain/kotlin/com/yuanjingtech/boot/app/kmp/data/room3/BootDatabaseFactory.ios.kt with actual fun createBootDatabase() throwing UnsupportedOperationException (matching native.kt pattern), OR confirm iosMain inherits from nativeMain actual via Kotlin source-set hierarchy (iosMain extends nativeMain).",
+      "pre_existing": false,
+      "introduced_by": "BootDatabaseFactory.kt expect conversion + new actual files"
+    },
+    {
+      "severity": "warning",
+      "confidence": 75,
+      "rule": "docs/plans/2026-04-23-002-fix-sqlite-bundled-plan.md, U2 approach: \"在 jsMain/dependencies 和 wasmJsMain/dependencies 中添加 implementation(libs.sqlite.web) 以支持 Web 驱动\"",
+      "rule_source": "docs/plans/2026-04-23-002-fix-sqlite-bundled-plan.md, U2 Scope Boundaries + Implementation Units",
+      "file": "shared/build.gradle.kts",
+      "description": "The plan U2 specifies adding sqlite-web to jsMain and wasmJsMain, but the actual implementation in build.gradle.kts adds it WITHOUT using WebSQLiteDriver in the actual functions. BootDatabaseFactory.js.kt and .wasmJs.kt throw UnsupportedOperationException instead of using the declared sqlite-web dependency. The dependency is declared but unused, which is misleading.",
+      "evidence": "build.gradle.kts lines 100-105: `jsMain.dependencies { implementation(libs.sqlite.web) }` and `wasmJsMain.dependencies { implementation(libs.sqlite.web) }`; BootDatabaseFactory.js.kt line 4: `throw UnsupportedOperationException(\"Room3 BundledSQLiteDriver is not supported on JS...\")`",
+      "snippet": "jsMain.dependencies { implementation(libs.sqlite.web) } // declared but actual throws UnsupportedOperationException",
+      "recommendation": "Either (a) remove sqlite-web from jsMain/wasmJsMain deps if WebSQLiteDriver is not used, or (b) implement actual functions using WebSQLiteDriver if the intent is to support Room3 on JS/WASM.",
+      "pre_existing": false,
+      "introduced_by": "shared/build.gradle.kts U2 implementation"
+    }
+  ],
+  "residual_risks": [
+    {
+      "risk": "iOS build will fail if iosMain does not inherit nativeMain actual for BootDatabaseFactory. The plan's pattern section says nativeMain \"覆盖 iOS\" but the Kotlin source-set tree may not allow nativeMain actual to satisfy iosMain expect without an explicit iosMain override.",
+      "mitigation": "Add BootDatabaseFactory.ios.kt in iosMain, or confirm that iosMain source set inherits from nativeMain actual in Gradle's source-set hierarchy.",
+      "confidence": "medium"
+    },
+    {
+      "risk": "sqlite-web is declared in jsMain/wasmJsMain but unused. If WebSQLiteDriver is never used, the dependency adds to bundle size with no benefit.",
+      "mitigation": "Remove sqlite-web from jsMain/wasmJsMain if WebSQLiteDriver usage is out of scope, or implement the actual functions if it is in scope.",
+      "confidence": "high"
+    }
+  ],
+  "testing_gaps": [
+    {
+      "gap": "No compile verification for iOS target. The fix intent (R1: \"shared 模块在所有平台上均可编译通过\") requires verification via `./gradlew :shared:compileKotlinIosArm64` or equivalent.",
+      "test_command": "./gradlew :shared:compileKotlinIosArm64",
+      "confidence": "high"
+    },
+    {
+      "gap": "No compile verification for JS/WASM targets. The plan U2 test scenarios specify `./gradlew :shared:compileKotlinJs` and `./gradlew :shared:compileKotlinWasmJs` but these are not in the diff.",
+      "test_command": "./gradlew :shared:compileKotlinJs :shared:compileKotlinWasmJs",
+      "confidence": "high"
+    }
+  ]
+}

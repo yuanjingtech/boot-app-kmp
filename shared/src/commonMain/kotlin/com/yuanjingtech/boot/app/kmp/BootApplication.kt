@@ -5,6 +5,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
+import com.yuanjingtech.boot.app.kmp.di.bootModule
 import com.yuanjingtech.boot.app.kmp.plugin.pluginModule
 import com.yuanjingtech.boot.app.kmp.theme.BootAppTheme
 import org.koin.compose.KoinApplication
@@ -18,13 +19,14 @@ import org.koin.dsl.includes
 fun BootApplication(
     config: KoinConfiguration,
     logLevel: Level = Level.INFO,
-    colorScheme: ColorScheme = MaterialTheme.colorScheme,
+    colorScheme: ColorScheme? = null,
     shapes: Shapes = MaterialTheme.shapes,
     typography: Typography = MaterialTheme.typography,
     content: @Composable () -> Unit,
 ) {
     KoinApplication(
         configuration = KoinConfiguration {
+            modules(bootModule)
             modules(pluginModule)
             includes(config)
         },

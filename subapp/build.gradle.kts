@@ -42,13 +42,11 @@ kotlin {
             // Coroutines
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.bundles.koin)
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material3)
-            implementation(compose.ui)
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
-            implementation(compose.preview)
+            implementation(libs.compose.runtime)
+            implementation(libs.compose.foundation)
+            implementation(libs.compose.material3)
+            implementation(libs.compose.ui)
+            implementation(libs.compose.components.resources)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.compose.material3.adaptive)
@@ -56,5 +54,11 @@ kotlin {
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
+        androidMain.dependencies {
+            implementation(libs.compose.ui.tooling.preview)
+        }
     }
+}
+dependencies {
+    androidRuntimeClasspath(libs.compose.ui.tooling)
 }

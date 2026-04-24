@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Boot</string>
+    <string name="tab_item_main">Home</string>
+    <string name="tab_item_setting">Setting</string>
+</resources>

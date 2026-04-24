@@ -1,7 +1,24 @@
 package com.yuanjingtech.boot.app.kmp
 
-class JsPlatform: Platform {
+import androidx.sqlite.driver.web.WebWorkerSQLiteDriver
+import com.yuanjingtech.boot.app.kmp.data.room3.getDatabaseBuilder
+import org.koin.core.module.Module
+import org.koin.dsl.module
+import org.w3c.dom.Worker
+
+class JsPlatform : Platform {
     override val name: String = "Web with Kotlin/JS"
 }
 
 actual fun getPlatform(): Platform = JsPlatform()
+actual val bootPlatformModule: Module = module {
+    single {
+        getDatabaseBuilder()
+            .setDriver(WebWorkerSQLiteDriver(createWorker()))
+            .setQueryCoroutineContext(kotlinx.coroutines.Dispatchers.Main)
+            .build()
+    }
+}
+
+@Suppress("ACTUAL_FUNCTION_WITH_DEFAULT_ARGUMENTS")
+external fun createWorker(): Worker

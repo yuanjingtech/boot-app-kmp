@@ -1,0 +1,52 @@
+{
+  "reviewer": "testing",
+  "findings": [
+    {
+      "file": "shared/src/commonTest/kotlin/com/yuanjingtech/boot/app/kmp/data/room3/",
+      "type": "missing_test_file",
+      "severity": "high",
+      "confidence": 100,
+      "description": "BootDatabaseFactory.kt has zero test coverage. The expect function has 6 actual implementations with divergent behavior: jvmMain/androidMain return a functional BootDatabase (using BundledSQLiteDriver), while jsMain/wasmJsMain/nativeMain throw UnsupportedOperationException with different messages. No test exercises any of these paths. ThemeStoreTest already proves that unit-testing domain logic with fakes works in this codebase; BootDatabaseFactory logic is equally testable with fake DAO injection."
+    },
+    {
+      "file": "shared/src/commonMain/kotlin/com/yuanjingtech/boot/app/kmp/data/BootDataModule.kt",
+      "type": "untested_branch",
+      "severity": "high",
+      "confidence": 100,
+      "description": "bootDataModule registers BootDatabase as a Koin singleton via createBootDatabase(). On JVM/Desktop this returns a live database; on JS/WASM/Native it would throw at injection time. No integration test or platform-aware test verifies that BootDatabase is resolvable (or fails gracefully) in any target. Any production call site that invokes this singleton on a non-JVM platform will crash."
+    },
+    {
+      "file": "shared/src/commonMain/kotlin/com/yuanjingtech/boot/app/kmp/data/room3/BootDatabase.kt",
+      "type": "untested_branch",
+      "severity": "medium",
+      "confidence": 75,
+      "description": "BootDatabase.themeDao() is a Room-generated abstract method with no custom implementation. Unlikely to regress but it is the sole data access surface for ThemeStore (which is tested), so the wiring between BootDatabase and ThemeDao is implicitly tested through ThemeStoreTest. This is acceptable — flagging for completeness."
+    }
+  ],
+  "residual_risks": [
+    {
+      "description": "createBootDatabase() is called via Koin in bootDataModule on all platforms. If a caller on JS/WASM/Native resolves the BootDatabase singleton, the app will crash with UnsupportedOperationException at runtime with no test catching this before release.",
+      "affected_platforms": ["jsMain", "wasmJsMain", "nativeMain"]
+    },
+    {
+      "description": "The three UnsupportedOperationException variants have slightly different messages ('not supported on JS', 'WASM', 'native/iOS'). No test validates these messages are correct or that callers handle them appropriately. This creates a risk of message drift if one message is updated without the others."
+    },
+    {
+      "description": "sqlite-web is added to jsMain/wasmJsMain dependencies but is never referenced in any source file — only in build.gradle.kts. This is a dead dependency that could be removed, or if it was added intentionally for future use, it has no test coverage."
+    }
+  ],
+  "testing_gaps": [
+    {
+      "gap": "No test for createBootDatabase on a platform where it should succeed (JVM/Desktop/Android)",
+      "suggestion": "Add a test in commonTest (or a JVM-specific test) that calls createBootDatabase(), asserts it returns a BootDatabase, and optionally verifies themeDao() returns a non-null DAO. Can use an in-memory configuration or mock the driver."
+    },
+    {
+      "gap": "No test for createBootDatabase on JS/WASM/Native platforms where it throws",
+      "suggestion": "Add a test in a platform-specific test source set (e.g., jsTest) or commonTest (with expect/actual) that calls createBootDatabase() and asserts it throws UnsupportedOperationException. Also verify the exception message mentions the correct platform."
+    },
+    {
+      "gap": "No test for the Koin DI wiring of BootDatabase in bootDataModule",
+      "suggestion": "Add an integration test that loads bootDataModule and resolves the BootDatabase singleton, asserting successful resolution on supported platforms or expected failure on unsupported platforms."
+    }
+  ]
+}

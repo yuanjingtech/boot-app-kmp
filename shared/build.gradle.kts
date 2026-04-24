@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.koinCompiler)
     alias(libs.plugins.publish)
     alias(libs.plugins.sweetspi)
+    alias(libs.plugins.room3)
 }
 kotlin {
     withSweetSpi()
@@ -34,6 +35,7 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "shared"
             isStatic = true
+            linkerOpts.add("-lsqlite3")
         }
     }
 
@@ -64,20 +66,22 @@ kotlin {
             implementation(projects.webviewParkwoocheol)
             api(libs.kotlinx.datetime)
             api(libs.compose.material.icons.extended)
+            api(libs.room3.runtime)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.compose.test)
         }
     }
 }
 
-
+room3 {
+    schemaDirectory("$projectDir/schemas")
+}
 // app dependencies
 kotlin {
     sourceSets {
-        androidMain.dependencies {
-            api(libs.androidx.activity.compose)
-        }
         commonMain.dependencies {
             // JetBrains Compose - version managed by composeMultiplatform plugin
             api(libs.bundles.compose)
@@ -85,29 +89,49 @@ kotlin {
         commonTest.dependencies {
             api(libs.kotlin.test)
         }
+        androidMain.dependencies {
+            api(libs.androidx.activity.compose)
+            implementation(libs.sqlite.bundled)
+        }
         jvmMain.dependencies {
             api(compose.desktop.currentOs)
             api(libs.kotlinx.coroutinesSwing)
+            implementation(libs.sqlite.bundled)
+        }
+        iosMain.dependencies {
+            implementation(libs.sqlite.bundled)
+        }
+        jsMain.dependencies {
+            implementation(libs.sqlite.web)
+            implementation(npm("sqlite-wasm-worker", file("../sqlite-wasm-worker/worker")))
+        }
+        wasmJsMain.dependencies {
+            implementation(libs.sqlite.web)
+            implementation(npm("sqlite-wasm-worker", file("../sqlite-wasm-worker/worker")))
         }
     }
 }
 dependencies {
     androidRuntimeClasspath(libs.compose.ui.tooling.preview)
 }
+//room3 KSP
+dependencies {
+    // KSP generates actual BootDatabaseConstructor for all platforms
+    add("kspAndroid", libs.room3.compiler)
+    add("kspJvm", libs.room3.compiler)
+    add("kspIosSimulatorArm64", libs.room3.compiler)
+    add("kspIosArm64", libs.room3.compiler)
+    add("kspJs", libs.room3.compiler)
+    add("kspWasmJs", libs.room3.compiler)
+}
 // sweetspi config start
 kotlin {
     sourceSets {
         androidMain {
-            dependencies {
-                implementation(libs.sweetspi.runtime.jvm)
-            }
             // KSP generates META-INF/services/ as resources under this directory,
             // but androidResources does not automatically include it. Register it
             // so the generated service files are packaged into the Android AAR/APK.
             resources.srcDir(layout.buildDirectory.dir("generated/ksp/android/androidMain/resources"))
         }
     }
-}
-dependencies {
-    add("kspAndroid", libs.sweetspi.processor)
 }
