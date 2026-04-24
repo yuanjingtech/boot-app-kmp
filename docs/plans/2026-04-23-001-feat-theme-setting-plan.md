@@ -23,7 +23,7 @@ date: 2026-04-23
 
 ## Requirements Trace
 
-- R1. 应用启动时从 `ThemeStore` 读取已保存的主题模式
+- R1. 应用启动时从 `BootThemeStore` 读取已保存的主题模式
 - R2. 将读取到的主题模式传递给 `BootAppTheme`
 - R3. 设置界面正常保存主题偏好到数据库
 - R4. 跟随系统模式能正确响应系统深色/浅色切换
@@ -41,23 +41,22 @@ date: 2026-04-23
 
 ### Relevant Code and Patterns
 
-- `BootApplication.kt` — 应用入口，`BootAppTheme` 默认使用 `ThemeMode.FOLLOW_SYSTEM`
-- `ThemeStore.kt` — 通过 `themeModeFlow` 提供主题模式，`setThemeMode` 持久化
-- `BootThemeSettingScreen.kt` — 已有完整的设置 UI，使用 `ThemeStore`
-- `BootThemeSettingScreenWithStore.kt` — 已有集成 `ThemeStore` 的版本
+- `BootApplication.kt` — 应用入口，`BootAppTheme` 默认使用 `BootThemeMode.FOLLOW_SYSTEM`
+- `BootThemeStore.kt` — 通过 `themeModeFlow` 提供主题模式，`setThemeMode` 持久化
+- `BootThemeSettingScreen.kt` — 已有完整的设置 UI，使用 `BootThemeStore`，包含 `BootThemeSettingScreenWithStore` 函数
 
 ### Architecture Patterns
 
 - Clean Architecture + Koin DI
-- 数据层：`ThemeStore` → `ThemeDao` → `ThemeSettings`
-- UI 层：`BootThemeSettingScreenWithStore` 已正确使用 `ThemeStore`
+- 数据层：`BootThemeStore` → `ThemeDao` → `ThemeSettings`
+- UI 层：`BootThemeSettingScreenWithStore`（位于 `BootThemeSettingScreen.kt`）已正确使用 `BootThemeStore`
 
 ---
 
 ## Key Technical Decisions
 
-- **注入 `ThemeStore` 到 `BootApplication`**：使用 Koin 注入 `ThemeStore`，通过 `collectAsState` 收集 `themeModeFlow`，传递给 `BootAppTheme`
-- **延迟初始化 `themeMode`**：首次 collect 之前使用默认值 `ThemeMode.FOLLOW_SYSTEM`，确保 Compose 编译时类型安全
+- **注入 `BootThemeStore` 到 `BootApplication`**：使用 Koin 注入 `BootThemeStore`，通过 `collectAsState` 收集 `themeModeFlow`，传递给 `BootAppTheme`
+- **延迟初始化 `themeMode`**：首次 collect 之前使用默认值 `BootThemeMode.FOLLOW_SYSTEM`，确保 Compose 编译时类型安全
 
 ---
 
@@ -65,24 +64,24 @@ date: 2026-04-23
 
 - [ ] U1. **[修改 BootApplication 以支持动态主题]**
 
-**Goal:** 将 `ThemeStore` 注入到 `BootApplication`，从 Flow 中收集主题模式并传递给 `BootAppTheme`
+**Goal:** 将 `BootThemeStore` 注入到 `BootApplication`，从 Flow 中收集主题模式并传递给 `BootAppTheme`
 
 **Requirements:** R1, R2, R4
 
-**Dependencies:** `bootModule` 必须已在 `BootApplication` 的 Koin 配置中注册（`bootModule` 通过 `bootDataModule` 提供 `ThemeStore` 绑定）；这是实现的前置条件
+**Dependencies:** `bootModule` 必须已在 `BootApplication` 的 Koin 配置中注册（`bootModule` 通过 `bootDataModule` 提供 `BootThemeStore` 绑定）；这是实现的前置条件
 
 **Files:**
 - Modify: `shared/src/commonMain/kotlin/com/yuanjingtech/boot/app/kmp/BootApplication.kt`
 
 **Approach:**
-- 将 `BootApplication.kt` 中的 `pluginModule`（不存在）替换为 `bootModule`（实际注册了 `ThemeStore` 的模块）
-- 在 `BootApplication` 中使用 Koin 注入 `ThemeStore`（通过 `koinInject<ThemeStore>()`）
+- 将 `BootApplication.kt` 中的 `pluginModule`（不存在）替换为 `bootModule`（实际注册了 `BootThemeStore` 的模块）
+- 在 `BootApplication` 中使用 Koin 注入 `BootThemeStore`（通过 `koinInject<BootThemeStore>()`）
 - 通过 `collectAsState` 收集 `themeModeFlow` 的值
 - 将收集到的主题模式传递给 `BootAppTheme`
-- 首次 collect 前使用 `ThemeMode.FOLLOW_SYSTEM` 作为初始值
+- 首次 collect 前使用 `BootThemeMode.FOLLOW_SYSTEM` 作为初始值
 
 **Patterns to follow:**
-- `BootThemeSettingScreenWithStore.kt` 中已有的 Koin 注入和 `collectAsState` 模式
+- `BootThemeSettingScreen.kt` 中的 `BootThemeSettingScreenWithStore` 函数已有的 Koin 注入和 `collectAsState` 模式
 
 **Test scenarios:**
 - Happy path: 应用启动后读取到已保存的主题模式并正确应用
@@ -94,7 +93,7 @@ date: 2026-04-23
 ## System-Wide Impact
 
 - **Interaction graph:** `BootApplication` 作为顶层 Composable，其下所有子组件都会受到主题变化的影响
-- **Error propagation:** 若 `ThemeStore` 初始化失败，应回退到默认主题模式
+- **Error propagation:** 若 `BootThemeStore` 初始化失败，应回退到默认主题模式
 
 ---
 
@@ -111,5 +110,5 @@ date: 2026-04-23
 ## Sources & References
 
 - BootApplication.kt — 应用根入口
-- ThemeStore.kt — 主题数据管理
-- BootThemeSettingScreen.kt — 已有的设置界面
+- BootThemeStore.kt — 主题数据管理
+- BootThemeSettingScreen.kt — 已有的设置界面（含 `BootThemeSettingScreenWithStore` 函数）
