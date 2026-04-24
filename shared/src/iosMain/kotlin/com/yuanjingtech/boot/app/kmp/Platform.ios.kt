@@ -1,5 +1,6 @@
 package com.yuanjingtech.boot.app.kmp
 
+import org.koin.core.module.Module
 import platform.UIKit.UIDevice
 
 class IOSPlatform: Platform {
@@ -7,3 +8,5 @@ class IOSPlatform: Platform {
 }
 
 actual fun getPlatform(): Platform = IOSPlatform()
+actual val bootPlatformModule: Module
+    get() = TODO("Not yet implemented")

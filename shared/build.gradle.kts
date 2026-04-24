@@ -110,8 +110,8 @@ kotlin {
 }
 dependencies {
     androidRuntimeClasspath(libs.compose.ui.tooling.preview)
-    // Platform KSP — generates actual BootDatabaseConstructor for iOS/JS/WASM
-    // JVM and Android use manual actuals (see BootDatabaseConstructor.jvm/android.kt)
+    // KSP generates actual BootDatabaseConstructor for all platforms
+    // iOS/JS/WASM: auto-generated; JVM: can use auto-generated or manual actual
     add("kspIosSimulatorArm64", libs.room3.compiler)
     add("kspIosArm64", libs.room3.compiler)
     add("kspJs", libs.room3.compiler)
