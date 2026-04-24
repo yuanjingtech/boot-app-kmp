@@ -37,9 +37,9 @@ private val themeOptions = listOf(
 
 @Composable
 fun BootThemeSettingScreen(
+    modifier: Modifier = Modifier,
     selectedMode: BootThemeMode,
     onModeSelected: (BootThemeMode) -> Unit,
-    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier
@@ -92,11 +92,11 @@ fun BootThemeSettingScreenWithStore(
     val selectedMode by store.themeModeFlow.collectAsState(initial = BootThemeMode.FOLLOW_SYSTEM)
 
     BootThemeSettingScreen(
+        modifier = modifier,
         selectedMode = selectedMode,
         onModeSelected = { mode ->
             scope.launch { store.setThemeMode(mode) }
         },
-        modifier = modifier,
     )
 }
 

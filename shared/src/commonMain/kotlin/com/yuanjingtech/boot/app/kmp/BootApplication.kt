@@ -19,7 +19,7 @@ import org.koin.dsl.includes
 fun BootApplication(
     config: KoinConfiguration,
     logLevel: Level = Level.INFO,
-    colorScheme: ColorScheme = MaterialTheme.colorScheme,
+    colorScheme: ColorScheme? = null,
     shapes: Shapes = MaterialTheme.shapes,
     typography: Typography = MaterialTheme.typography,
     content: @Composable () -> Unit,
