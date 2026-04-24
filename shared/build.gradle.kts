@@ -35,6 +35,7 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "shared"
             isStatic = true
+            linkerOpts.add("-lsqlite3")
         }
     }
 
@@ -98,15 +99,23 @@ kotlin {
             implementation(libs.sqlite.bundled)
         }
         jsMain.dependencies {
+            implementation(libs.sqlite.web)
+            implementation(npm("sqlite-wasm-worker", file("../sqlite-wasm-worker/worker")))
         }
         wasmJsMain.dependencies {
+            implementation(libs.sqlite.web)
+            implementation(npm("sqlite-wasm-worker", file("../sqlite-wasm-worker/worker")))
         }
     }
 }
 dependencies {
     androidRuntimeClasspath(libs.compose.ui.tooling.preview)
-    // Room KSP for commonMain metadata — generates expect/actual BootDatabaseConstructor
-    kspCommonMainMetadata(libs.room3.compiler)
+    // Platform KSP — generates actual BootDatabaseConstructor for iOS/JS/WASM
+    // JVM and Android use manual actuals (see BootDatabaseConstructor.jvm/android.kt)
+    add("kspIosSimulatorArm64", libs.room3.compiler)
+    add("kspIosArm64", libs.room3.compiler)
+    add("kspJs", libs.room3.compiler)
+    add("kspWasmJs", libs.room3.compiler)
 }
 // sweetspi config start
 kotlin {
