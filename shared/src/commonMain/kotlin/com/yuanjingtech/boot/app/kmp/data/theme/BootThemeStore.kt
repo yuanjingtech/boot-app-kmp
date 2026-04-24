@@ -9,7 +9,7 @@ class BootThemeStore(private val themeDao: ThemeDao) {
 
     val themeModeFlow: Flow<BootThemeMode> = themeDao.getThemeSettings().map { settings ->
         try {
-            BootThemeMode.valueOf(settings.themeMode)
+            settings?.let { BootThemeMode.valueOf(it.themeMode) } ?: BootThemeMode.FOLLOW_SYSTEM
         } catch (e: IllegalArgumentException) {
             BootThemeMode.FOLLOW_SYSTEM
         }

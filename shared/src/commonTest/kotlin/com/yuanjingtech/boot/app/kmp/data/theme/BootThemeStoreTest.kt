@@ -11,9 +11,9 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class FakeThemeDao : ThemeDao {
-    private val settingsFlow = MutableStateFlow(ThemeSettings())
+    private val settingsFlow = MutableStateFlow<ThemeSettings?>(ThemeSettings())
 
-    override fun getThemeSettings(): Flow<ThemeSettings> = settingsFlow
+    override fun getThemeSettings(): Flow<ThemeSettings?> = settingsFlow
 
     override suspend fun insertOrUpdate(newSettings: ThemeSettings) {
         settingsFlow.value = newSettings
@@ -62,11 +62,23 @@ class BootThemeStoreTest {
     @Test
     fun themeStore_invalidBootThemeModeString_defaultsToFollowSystem() = runTest {
         val invalidDao = object : ThemeDao {
-            private val flow = MutableStateFlow(ThemeSettings(themeMode = "INVALID_MODE"))
-            override fun getThemeSettings(): Flow<ThemeSettings> = flow
+            private val flow = MutableStateFlow<ThemeSettings?>(ThemeSettings(themeMode = "INVALID_MODE"))
+            override fun getThemeSettings(): Flow<ThemeSettings?> = flow
             override suspend fun insertOrUpdate(settings: ThemeSettings) {}
         }
         val store = BootThemeStore(invalidDao)
+        val mode = store.themeModeFlow.first()
+        assertEquals(BootThemeMode.FOLLOW_SYSTEM, mode)
+    }
+
+    @Test
+    fun themeStore_nullSettings_defaultsToFollowSystem() = runTest {
+        val emptyDao = object : ThemeDao {
+            private val flow = MutableStateFlow<ThemeSettings?>(null)
+            override fun getThemeSettings(): Flow<ThemeSettings?> = flow
+            override suspend fun insertOrUpdate(settings: ThemeSettings) {}
+        }
+        val store = BootThemeStore(emptyDao)
         val mode = store.themeModeFlow.first()
         assertEquals(BootThemeMode.FOLLOW_SYSTEM, mode)
     }

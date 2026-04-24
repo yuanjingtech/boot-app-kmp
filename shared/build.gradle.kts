@@ -82,10 +82,6 @@ room3 {
 // app dependencies
 kotlin {
     sourceSets {
-        androidMain.dependencies {
-            api(libs.androidx.activity.compose)
-            implementation(libs.sqlite.bundled)
-        }
         commonMain.dependencies {
             // JetBrains Compose - version managed by composeMultiplatform plugin
             api(libs.bundles.compose)
@@ -93,9 +89,16 @@ kotlin {
         commonTest.dependencies {
             api(libs.kotlin.test)
         }
+        androidMain.dependencies {
+            api(libs.androidx.activity.compose)
+            implementation(libs.sqlite.bundled)
+        }
         jvmMain.dependencies {
             api(compose.desktop.currentOs)
             api(libs.kotlinx.coroutinesSwing)
+            implementation(libs.sqlite.bundled)
+        }
+        iosMain.dependencies {
             implementation(libs.sqlite.bundled)
         }
         jsMain.dependencies {
@@ -110,8 +113,12 @@ kotlin {
 }
 dependencies {
     androidRuntimeClasspath(libs.compose.ui.tooling.preview)
+}
+//room3 KSP
+dependencies {
     // KSP generates actual BootDatabaseConstructor for all platforms
-    // iOS/JS/WASM: auto-generated; JVM: can use auto-generated or manual actual
+    add("kspAndroid", libs.room3.compiler)
+    add("kspJvm", libs.room3.compiler)
     add("kspIosSimulatorArm64", libs.room3.compiler)
     add("kspIosArm64", libs.room3.compiler)
     add("kspJs", libs.room3.compiler)

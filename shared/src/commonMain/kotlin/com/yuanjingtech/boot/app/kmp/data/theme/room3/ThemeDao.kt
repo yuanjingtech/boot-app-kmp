@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface ThemeDao {
     @Query("SELECT * FROM theme_settings WHERE id = 1")
-    fun getThemeSettings(): Flow<ThemeSettings>
+    fun getThemeSettings(): Flow<ThemeSettings?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertOrUpdate(settings: ThemeSettings)

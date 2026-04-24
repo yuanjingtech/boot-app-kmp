@@ -5,6 +5,7 @@ import androidx.room3.Database
 import androidx.room3.RoomDatabase
 import com.yuanjingtech.boot.app.kmp.data.theme.room3.ThemeDao
 import com.yuanjingtech.boot.app.kmp.data.theme.room3.ThemeSettings
+import kotlinx.coroutines.Dispatchers
 
 @Database(
     entities = [ThemeSettings::class],
