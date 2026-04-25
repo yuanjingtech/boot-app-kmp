@@ -25,7 +25,10 @@ fun BootModalBottomSheet(
     content: @Composable ColumnScope.() -> Unit = {}
 ) {
     when (LocalUiStyle.current) {
-        BootUiStyle.LIQUID_GLASS -> TODO("LiquidGlass ModalBottomSheet")
+        BootUiStyle.LIQUID_GLASS -> LiquidGlassModalBottomSheet(
+            modifier = modifier,
+            content = content
+        )
         BootUiStyle.MATERIAL3 -> Material3ModalBottomSheet(
             onDismiss = onDismiss,
             modifier = modifier,

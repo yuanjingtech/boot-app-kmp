@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.yuanjingtech.boot.app.kmp.ui.liquidglass.effects.LgEffectConfig
 
 @Composable
 actual fun rememberLiquidGlassBackdrop(
@@ -23,6 +24,7 @@ actual fun Modifier.liquidGlassBackdrop(
     backdrop: LiquidGlassBackdrop,
     cornerRadius: Dp,
     borderAlpha: Float,
+    config: LgEffectConfig,
 ): Modifier {
     val isDark = isSystemInDarkTheme()
     val shape = RoundedCornerShape(cornerRadius)
@@ -52,10 +54,19 @@ actual fun Modifier.liquidGlassBackdrop(
 }
 
 @Composable
+actual fun Modifier.liquidGlassBackdropOrSurface(
+    backdrop: LiquidGlassBackdrop?,
+    cornerRadius: Dp,
+    borderAlpha: Float,
+    config: LgEffectConfig,
+): Modifier = liquidGlassSurface(cornerRadius, borderAlpha)
+
+@Composable
 actual fun Modifier.liquidGlassBackdropCanvas(
     onDraw: DrawScope.() -> Unit,
     cornerRadius: Dp,
     borderAlpha: Float,
+    config: LgEffectConfig,
 ): Modifier {
     val isDark = isSystemInDarkTheme()
     val shape = RoundedCornerShape(cornerRadius)

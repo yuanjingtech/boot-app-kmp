@@ -27,7 +27,13 @@ fun BootTopAppBar(
     actions: @Composable RowScope.() -> Unit = {}
 ) {
     when (LocalUiStyle.current) {
-        BootUiStyle.LIQUID_GLASS -> TODO("LiquidGlass TopAppBar")
+        BootUiStyle.LIQUID_GLASS -> LiquidGlassTopAppBar(
+            title = title,
+            modifier = modifier,
+            navigationIcon = navigationIcon,
+            onNavigationClick = onNavigationClick,
+            actions = actions
+        )
         BootUiStyle.MATERIAL3 -> Material3TopAppBar(
             title = title,
             modifier = modifier,
@@ -44,7 +50,10 @@ fun BootBottomAppBar(
     content: @Composable RowScope.() -> Unit = {}
 ) {
     when (LocalUiStyle.current) {
-        BootUiStyle.LIQUID_GLASS -> TODO("LiquidGlass BottomAppBar")
+        BootUiStyle.LIQUID_GLASS -> LiquidGlassBottomAppBar(
+            modifier = modifier,
+            content = content
+        )
         BootUiStyle.MATERIAL3 -> Material3BottomAppBar(
             modifier = modifier,
             content = content
@@ -60,7 +69,12 @@ fun BootNavigationBar(
     items: List<Pair<ImageVector, String>> = emptyList()
 ) {
     when (LocalUiStyle.current) {
-        BootUiStyle.LIQUID_GLASS -> TODO("LiquidGlass NavigationBar")
+        BootUiStyle.LIQUID_GLASS -> LiquidGlassNavigationBar(
+            selectedIndex = selectedIndex,
+            onItemSelected = onItemSelected,
+            modifier = modifier,
+            items = items
+        )
         BootUiStyle.MATERIAL3 -> Material3NavigationBar(
             selectedIndex = selectedIndex,
             onItemSelected = onItemSelected,
@@ -78,7 +92,12 @@ fun BootNavigationRail(
     items: List<Pair<ImageVector, String>> = emptyList()
 ) {
     when (LocalUiStyle.current) {
-        BootUiStyle.LIQUID_GLASS -> TODO("LiquidGlass NavigationRail")
+        BootUiStyle.LIQUID_GLASS -> LiquidGlassNavRail(
+            selectedIndex = selectedIndex,
+            onItemSelected = onItemSelected,
+            modifier = modifier,
+            items = items
+        )
         BootUiStyle.MATERIAL3 -> Material3NavigationRail(
             selectedIndex = selectedIndex,
             onItemSelected = onItemSelected,
@@ -96,7 +115,12 @@ fun BootTabRow(
     onTabSelected: (Int) -> Unit = {}
 ) {
     when (LocalUiStyle.current) {
-        BootUiStyle.LIQUID_GLASS -> TODO("LiquidGlass TabRow")
+        BootUiStyle.LIQUID_GLASS -> LiquidGlassTabRow(
+            selectedTabIndex = selectedTabIndex,
+            modifier = modifier,
+            tabTitles = tabTitles,
+            onTabSelected = onTabSelected
+        )
         BootUiStyle.MATERIAL3 -> Material3TabRow(
             selectedTabIndex = selectedTabIndex,
             modifier = modifier,

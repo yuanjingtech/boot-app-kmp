@@ -10,6 +10,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.kashif_e.backdrop.Backdrop
@@ -17,6 +18,9 @@ import com.kashif_e.backdrop.backdrops.CanvasBackdrop
 import com.kashif_e.backdrop.backdrops.rememberLayerBackdrop
 import com.kashif_e.backdrop.drawBackdrop
 import com.kashif_e.backdrop.effects.blur
+import com.kashif_e.backdrop.effects.lens
+import com.kashif_e.backdrop.effects.vibrancy
+import com.yuanjingtech.boot.app.kmp.ui.liquidglass.effects.LgEffectConfig
 
 @Composable
 actual fun rememberLiquidGlassBackdrop(
@@ -47,6 +51,7 @@ actual fun Modifier.liquidGlassBackdrop(
     backdrop: LiquidGlassBackdrop,
     cornerRadius: Dp,
     borderAlpha: Float,
+    config: LgEffectConfig,
 ): Modifier {
     val shape = RoundedCornerShape(cornerRadius)
     val native = backdrop.native as? Backdrop ?: return this
@@ -55,7 +60,14 @@ actual fun Modifier.liquidGlassBackdrop(
             backdrop = native,
             shape = { shape },
             effects = {
-                blur(12.dp.toPx())
+                if (config.vibrancy) vibrancy()
+                if (config.blurRadius > 0.dp) blur(config.blurRadius.toPx())
+                if (config.hasLens) lens(
+                    refractionHeight = config.lensRefractionHeight.toPx(),
+                    refractionAmount = config.lensRefractionAmount.toPx(),
+                    depthEffect = config.lensDepthEffect,
+                    chromaticAberration = config.lensChromaticAberration,
+                )
             },
         )
         .clip(shape)
@@ -67,10 +79,25 @@ actual fun Modifier.liquidGlassBackdrop(
 }
 
 @Composable
+actual fun Modifier.liquidGlassBackdropOrSurface(
+    backdrop: LiquidGlassBackdrop?,
+    cornerRadius: Dp,
+    borderAlpha: Float,
+    config: LgEffectConfig,
+): Modifier {
+    return if (backdrop != null) {
+        liquidGlassBackdrop(backdrop, cornerRadius, borderAlpha, config)
+    } else {
+        liquidGlassSurface(cornerRadius, borderAlpha)
+    }
+}
+
+@Composable
 actual fun Modifier.liquidGlassBackdropCanvas(
     onDraw: DrawScope.() -> Unit,
     cornerRadius: Dp,
     borderAlpha: Float,
+    config: LgEffectConfig,
 ): Modifier {
     val shape = RoundedCornerShape(cornerRadius)
     val canvasBackdrop = CanvasBackdrop(onDraw)
@@ -79,7 +106,14 @@ actual fun Modifier.liquidGlassBackdropCanvas(
             backdrop = canvasBackdrop,
             shape = { shape },
             effects = {
-                blur(12.dp.toPx())
+                if (config.vibrancy) vibrancy()
+                if (config.blurRadius > 0.dp) blur(config.blurRadius.toPx())
+                if (config.hasLens) lens(
+                    refractionHeight = config.lensRefractionHeight.toPx(),
+                    refractionAmount = config.lensRefractionAmount.toPx(),
+                    depthEffect = config.lensDepthEffect,
+                    chromaticAberration = config.lensChromaticAberration,
+                )
             },
         )
         .clip(shape)
