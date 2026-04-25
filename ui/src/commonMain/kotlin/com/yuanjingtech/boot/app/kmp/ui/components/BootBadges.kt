@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.*
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
@@ -50,6 +51,30 @@ fun BootBadgedBox(
         )
     }
 }
+
+// ─── Multi-Preview Annotations ────────────────────────────────────────────────
+
+@Preview(name = "LiquidGlass", group = "UI Style")
+@Preview(name = "Material3", group = "UI Style")
+annotation class BootBadgesStylePreviews
+
+@BootBadgesStylePreviews
+@Composable
+private fun BootBadgesStylePreview(
+    @PreviewParameter(BootUiStyleProvider::class) style: BootUiStyle
+) {
+    MaterialTheme {
+        CompositionLocalProvider(LocalUiStyle provides style) {
+            BootBadgedBox(
+                badgeContent = { BootBadge { Text("3") } }
+            ) {
+                Icon(Icons.Default.Notifications, "Notifications")
+            }
+        }
+    }
+}
+
+// ─── Legacy single-style preview ──────────────────────────────────────────────
 
 @Preview
 @Composable

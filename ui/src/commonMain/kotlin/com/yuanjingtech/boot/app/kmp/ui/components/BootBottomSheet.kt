@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.*
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
@@ -32,6 +33,46 @@ fun BootModalBottomSheet(
         )
     }
 }
+
+// ─── Multi-Preview Annotations ────────────────────────────────────────────────
+
+@Preview(name = "LiquidGlass", group = "UI Style")
+@Preview(name = "Material3", group = "UI Style")
+annotation class BootBottomSheetStylePreviews
+
+@BootBottomSheetStylePreviews
+@Composable
+private fun BootBottomSheetStylePreview(
+    @PreviewParameter(BootUiStyleProvider::class) style: BootUiStyle
+) {
+    MaterialTheme {
+        CompositionLocalProvider(LocalUiStyle provides style) {
+            var show by remember { mutableStateOf(false) }
+            Column(modifier = Modifier.padding(16.dp)) {
+                TextButton(onClick = { show = true }) {
+                    Text("Show Bottom Sheet")
+                }
+                if (show) {
+                    BootModalBottomSheet(onDismiss = { show = false }) {
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Text("Bottom Sheet Content")
+                            BootListItem(
+                                headlineContent = "Item 1",
+                                leadingContent = Icons.Default.Star
+                            )
+                            BootListItem(
+                                headlineContent = "Item 2",
+                                leadingContent = Icons.Default.Favorite
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// ─── Legacy single-style preview ──────────────────────────────────────────────
 
 @Preview
 @Composable

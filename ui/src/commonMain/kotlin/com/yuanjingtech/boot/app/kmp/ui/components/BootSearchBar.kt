@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.*
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
@@ -44,6 +45,58 @@ fun BootSearchBar(
         )
     }
 }
+
+// ─── Multi-Preview Annotations ────────────────────────────────────────────────
+
+@Preview(name = "LiquidGlass", group = "UI Style")
+@Preview(name = "Material3", group = "UI Style")
+annotation class BootSearchBarStylePreviews
+
+@Preview(name = "Inactive", group = "State")
+@Preview(name = "Active", group = "State")
+annotation class BootSearchBarStatePreviews
+
+@BootSearchBarStylePreviews
+@Composable
+private fun BootSearchBarStylePreview(
+    @PreviewParameter(BootUiStyleProvider::class) style: BootUiStyle
+) {
+    MaterialTheme {
+        CompositionLocalProvider(LocalUiStyle provides style) {
+            var q by remember { mutableStateOf("") }
+            var a by remember { mutableStateOf(false) }
+            BootSearchBar(
+                query = q,
+                onQueryChange = { q = it },
+                onSearch = { a = false },
+                active = a,
+                onActiveChange = { a = it }
+            )
+        }
+    }
+}
+
+@BootSearchBarStatePreviews
+@Composable
+private fun BootSearchBarStatePreview(
+    @PreviewParameter(BootUiStyleProvider::class) style: BootUiStyle
+) {
+    MaterialTheme {
+        CompositionLocalProvider(LocalUiStyle provides style) {
+            var q by remember { mutableStateOf("") }
+            var a by remember { mutableStateOf(false) }
+            BootSearchBar(
+                query = q,
+                onQueryChange = { q = it },
+                onSearch = { a = false },
+                active = a,
+                onActiveChange = { a = it }
+            )
+        }
+    }
+}
+
+// ─── Legacy single-style preview ──────────────────────────────────────────────
 
 @Preview
 @Composable

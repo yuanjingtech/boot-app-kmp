@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.*
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
@@ -90,6 +91,60 @@ fun BootExtendedFloatingActionButton(
         )
     }
 }
+
+// ─── Multi-Preview Annotations ────────────────────────────────────────────────
+
+@Preview(name = "LiquidGlass", group = "UI Style")
+@Preview(name = "Material3", group = "UI Style")
+annotation class BootFABsStylePreviews
+
+@Preview(name = "Small", group = "Size")
+@Preview(name = "Regular", group = "Size")
+@Preview(name = "Large", group = "Size")
+@Preview(name = "Extended", group = "Size")
+annotation class BootFABsSizePreviews
+
+@BootFABsStylePreviews
+@Composable
+private fun BootFABsStylePreview(
+    @PreviewParameter(BootUiStyleProvider::class) style: BootUiStyle
+) {
+    MaterialTheme {
+        CompositionLocalProvider(LocalUiStyle provides style) {
+            Row(
+                modifier = Modifier.padding(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                BootSmallFloatingActionButton(onClick = {}, icon = Icons.Default.Add)
+                BootFloatingActionButton(onClick = {}, icon = Icons.Default.Add)
+                BootLargeFloatingActionButton(onClick = {}, icon = Icons.Default.Add)
+                BootExtendedFloatingActionButton(onClick = {}, text = "Add", icon = Icons.Default.Add)
+            }
+        }
+    }
+}
+
+@BootFABsSizePreviews
+@Composable
+private fun BootFABsSizePreview(
+    @PreviewParameter(BootUiStyleProvider::class) style: BootUiStyle
+) {
+    MaterialTheme {
+        CompositionLocalProvider(LocalUiStyle provides style) {
+            Row(
+                modifier = Modifier.padding(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                BootSmallFloatingActionButton(onClick = {}, icon = Icons.Default.Add)
+                BootFloatingActionButton(onClick = {}, icon = Icons.Default.Add)
+                BootLargeFloatingActionButton(onClick = {}, icon = Icons.Default.Add)
+                BootExtendedFloatingActionButton(onClick = {}, text = "Add", icon = Icons.Default.Add)
+            }
+        }
+    }
+}
+
+// ─── Legacy single-style preview ──────────────────────────────────────────────
 
 @Preview
 @Composable

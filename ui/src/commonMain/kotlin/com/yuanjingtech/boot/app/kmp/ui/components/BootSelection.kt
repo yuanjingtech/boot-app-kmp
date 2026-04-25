@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.*
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
@@ -98,6 +99,90 @@ fun BootSlider(
         )
     }
 }
+
+// ─── Multi-Preview Annotations ────────────────────────────────────────────────
+
+@Preview(name = "LiquidGlass", group = "UI Style")
+@Preview(name = "Material3", group = "UI Style")
+annotation class BootSelectionStylePreviews
+
+@Preview(name = "Checkbox", group = "Type")
+@Preview(name = "RadioButton", group = "Type")
+@Preview(name = "Switch", group = "Type")
+@Preview(name = "Slider", group = "Type")
+annotation class BootSelectionTypePreviews
+
+@Preview(name = "Enabled", group = "State")
+@Preview(name = "Disabled", group = "State")
+annotation class BootSelectionStatePreviews
+
+@BootSelectionStylePreviews
+@Composable
+private fun BootSelectionStylePreview(
+    @PreviewParameter(BootUiStyleProvider::class) style: BootUiStyle
+) {
+    MaterialTheme {
+        CompositionLocalProvider(LocalUiStyle provides style) {
+            Column(
+                modifier = Modifier.padding(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                var c by remember { mutableStateOf(false) }
+                BootCheckbox(checked = c, onCheckedChange = { c = it }, label = "Checkbox")
+                var r by remember { mutableStateOf(false) }
+                BootRadioButton(selected = r, onClick = { r = !r }, label = "Radio")
+                var s by remember { mutableStateOf(false) }
+                BootSwitch(checked = s, onCheckedChange = { s = it }, label = "Switch")
+                BootSlider(value = 0.5f, onValueChange = {})
+            }
+        }
+    }
+}
+
+@BootSelectionTypePreviews
+@Composable
+private fun BootSelectionTypePreview(
+    @PreviewParameter(BootUiStyleProvider::class) style: BootUiStyle
+) {
+    MaterialTheme {
+        CompositionLocalProvider(LocalUiStyle provides style) {
+            Column(
+                modifier = Modifier.padding(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                var c by remember { mutableStateOf(false) }
+                BootCheckbox(checked = c, onCheckedChange = { c = it }, label = "Checkbox")
+                var r by remember { mutableStateOf(false) }
+                BootRadioButton(selected = r, onClick = { r = !r }, label = "Radio")
+                var s by remember { mutableStateOf(false) }
+                BootSwitch(checked = s, onCheckedChange = { s = it }, label = "Switch")
+                BootSlider(value = 0.5f, onValueChange = {})
+            }
+        }
+    }
+}
+
+@BootSelectionStatePreviews
+@Composable
+private fun BootSelectionStatePreview(
+    @PreviewParameter(BootUiStyleProvider::class) style: BootUiStyle
+) {
+    MaterialTheme {
+        CompositionLocalProvider(LocalUiStyle provides style) {
+            Column(
+                modifier = Modifier.padding(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                var c by remember { mutableStateOf(false) }
+                BootCheckbox(checked = c, onCheckedChange = { c = it }, label = "Enabled", enabled = true)
+                var d by remember { mutableStateOf(false) }
+                BootCheckbox(checked = d, onCheckedChange = { d = it }, label = "Disabled", enabled = false)
+            }
+        }
+    }
+}
+
+// ─── Legacy single-style preview ──────────────────────────────────────────────
 
 @Preview
 @Composable

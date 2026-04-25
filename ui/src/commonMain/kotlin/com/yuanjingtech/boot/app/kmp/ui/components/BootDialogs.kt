@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.*
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
@@ -54,6 +55,61 @@ fun BootSnackbar(
         )
     }
 }
+
+// ─── Multi-Preview Annotations ────────────────────────────────────────────────
+
+@Preview(name = "LiquidGlass", group = "UI Style")
+@Preview(name = "Material3", group = "UI Style")
+annotation class BootDialogsStylePreviews
+
+@Preview(name = "AlertDialog", group = "Type")
+@Preview(name = "Snackbar", group = "Type")
+annotation class BootDialogsTypePreviews
+
+@BootDialogsStylePreviews
+@Composable
+private fun BootDialogsStylePreview(
+    @PreviewParameter(BootUiStyleProvider::class) style: BootUiStyle
+) {
+    MaterialTheme {
+        CompositionLocalProvider(LocalUiStyle provides style) {
+            Column(modifier = Modifier.padding(8.dp)) {
+                BootSnackbar(
+                    message = "Message sent",
+                    action = "Undo",
+                    onActionClick = {}
+                )
+                BootAlertDialog(
+                    onDismissRequest = {},
+                    title = "Dialog Title",
+                    text = "This is a dialog message.",
+                    confirmButton = { TextButton(onClick = {}) { Text("Confirm") } },
+                    dismissButton = { TextButton(onClick = {}) { Text("Cancel") } }
+                )
+            }
+        }
+    }
+}
+
+@BootDialogsTypePreviews
+@Composable
+private fun BootDialogsTypePreview(
+    @PreviewParameter(BootUiStyleProvider::class) style: BootUiStyle
+) {
+    MaterialTheme {
+        CompositionLocalProvider(LocalUiStyle provides style) {
+            Column(modifier = Modifier.padding(8.dp)) {
+                BootSnackbar(
+                    message = "Message sent",
+                    action = "Undo",
+                    onActionClick = {}
+                )
+            }
+        }
+    }
+}
+
+// ─── Legacy single-style preview ──────────────────────────────────────────────
 
 @Preview
 @Composable

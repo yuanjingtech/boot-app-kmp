@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
@@ -37,6 +38,47 @@ fun BootSurface(
         )
     }
 }
+
+// ─── Multi-Preview Annotations ────────────────────────────────────────────────
+
+@Preview(name = "LiquidGlass", group = "UI Style")
+@Preview(name = "Material3", group = "UI Style")
+annotation class BootSurfaceStylePreviews
+
+@Preview(name = "16dp radius", group = "Corner Radius")
+@Preview(name = "8dp radius", group = "Corner Radius")
+annotation class BootSurfaceRadiusPreviews
+
+
+@BootSurfaceStylePreviews
+@Composable
+private fun BootSurfaceStylePreview(
+    @PreviewParameter(BootUiStyleProvider::class) style: BootUiStyle
+) {
+    MaterialTheme {
+        CompositionLocalProvider(LocalUiStyle provides style) {
+            BootSurface(modifier = Modifier.fillMaxWidth()) {
+                Text("Surface Content")
+            }
+        }
+    }
+}
+
+@BootSurfaceRadiusPreviews
+@Composable
+private fun BootSurfaceRadiusPreview(
+    @PreviewParameter(BootUiStyleProvider::class) style: BootUiStyle
+) {
+    MaterialTheme {
+        CompositionLocalProvider(LocalUiStyle provides style) {
+            BootSurface(modifier = Modifier.fillMaxWidth(), cornerRadius = 8.dp) {
+                Text("Small Radius")
+            }
+        }
+    }
+}
+
+// ─── Legacy single-style previews ────────────────────────────────────────────
 
 @Preview
 @Composable

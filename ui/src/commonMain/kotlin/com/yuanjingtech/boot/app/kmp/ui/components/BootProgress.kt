@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.*
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
@@ -46,6 +47,80 @@ fun BootLinearProgressIndicator(
         )
     }
 }
+
+// ─── Multi-Preview Annotations ────────────────────────────────────────────────
+
+@Preview(name = "LiquidGlass", group = "UI Style")
+@Preview(name = "Material3", group = "UI Style")
+annotation class BootProgressStylePreviews
+
+@Preview(name = "Circular", group = "Type")
+@Preview(name = "Linear", group = "Type")
+annotation class BootProgressTypePreviews
+
+@Preview(name = "Indeterminate", group = "Progress")
+@Preview(name = "Determinate", group = "Progress")
+annotation class BootProgressValuePreviews
+
+@BootProgressStylePreviews
+@Composable
+private fun BootProgressStylePreview(
+    @PreviewParameter(BootUiStyleProvider::class) style: BootUiStyle
+) {
+    MaterialTheme {
+        CompositionLocalProvider(LocalUiStyle provides style) {
+            Column(
+                modifier = Modifier.padding(8.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                BootCircularProgressIndicator()
+                BootCircularProgressIndicator(progress = 0.6f)
+                BootLinearProgressIndicator()
+                BootLinearProgressIndicator(progress = 0.4f)
+            }
+        }
+    }
+}
+
+@BootProgressTypePreviews
+@Composable
+private fun BootProgressTypePreview(
+    @PreviewParameter(BootUiStyleProvider::class) style: BootUiStyle
+) {
+    MaterialTheme {
+        CompositionLocalProvider(LocalUiStyle provides style) {
+            Column(
+                modifier = Modifier.padding(8.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                BootCircularProgressIndicator()
+                BootLinearProgressIndicator()
+            }
+        }
+    }
+}
+
+@BootProgressValuePreviews
+@Composable
+private fun BootProgressValuePreview(
+    @PreviewParameter(BootUiStyleProvider::class) style: BootUiStyle
+) {
+    MaterialTheme {
+        CompositionLocalProvider(LocalUiStyle provides style) {
+            Column(
+                modifier = Modifier.padding(8.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                BootCircularProgressIndicator()
+                BootCircularProgressIndicator(progress = 0.6f)
+                BootLinearProgressIndicator()
+                BootLinearProgressIndicator(progress = 0.4f)
+            }
+        }
+    }
+}
+
+// ─── Legacy single-style preview ──────────────────────────────────────────────
 
 @Preview
 @Composable

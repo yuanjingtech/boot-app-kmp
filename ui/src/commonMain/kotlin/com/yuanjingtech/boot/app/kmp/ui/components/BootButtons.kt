@@ -2,20 +2,21 @@ package com.yuanjingtech.boot.app.kmp.ui.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.*
-import androidx.compose.ui.graphics.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.*
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
-import com.yuanjingtech.boot.app.kmp.ui.liquidglass.*
-import com.yuanjingtech.boot.app.kmp.ui.material3.*
+import com.yuanjingtech.boot.app.kmp.ui.material3.Material3FilledTonalButton
+import com.yuanjingtech.boot.app.kmp.ui.material3.Material3IconButton
+import com.yuanjingtech.boot.app.kmp.ui.material3.Material3OutlinedButton
+import com.yuanjingtech.boot.app.kmp.ui.material3.Material3TextButton
+import com.yuanjingtech.boot.app.kmp.ui.material3.Material3ElevatedButton
 
 @Composable
 fun BootFilledTonalButton(
@@ -109,6 +110,38 @@ fun BootIconButton(
     }
 }
 
+// ─── Multi-Preview Annotations ────────────────────────────────────────────────
+
+@Preview(name = "Filled Tonal", group = "Button Variants")
+@Preview(name = "Outlined", group = "Button Variants")
+@Preview(name = "Text", group = "Button Variants")
+@Preview(name = "Elevated", group = "Button Variants")
+@Preview(name = "Icon", group = "Button Variants")
+annotation class BootButtonVariantPreviews
+
+@BootButtonVariantPreviews
+@Composable
+private fun BootButtonVariantPreview(
+    @PreviewParameter(BootUiStyleProvider::class) style: BootUiStyle
+) {
+    MaterialTheme {
+        CompositionLocalProvider(LocalUiStyle provides style) {
+            Column(
+                modifier = Modifier.padding(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                BootFilledTonalButton(onClick = {}) { Text("Tonal") }
+                BootOutlinedButton(onClick = {}) { Text("Outlined") }
+                BootTextButton(onClick = {}) { Text("Text") }
+                BootElevatedButton(onClick = {}) { Text("Elevated") }
+                BootIconButton(onClick = {}, icon = Icons.Default.Add, contentDescription = "Add")
+            }
+        }
+    }
+}
+
+// ─── Legacy preview ────────────────────────────────────────────────────────────
+
 @Preview
 @Composable
 private fun BootButtonVariantsPreview() {
@@ -122,11 +155,7 @@ private fun BootButtonVariantsPreview() {
                 BootOutlinedButton(onClick = {}) { Text("Outlined") }
                 BootTextButton(onClick = {}) { Text("Text") }
                 BootElevatedButton(onClick = {}) { Text("Elevated") }
-                BootIconButton(
-                    onClick = {},
-                    icon = Icons.Default.Add,
-                    contentDescription = "Add"
-                )
+                BootIconButton(onClick = {}, icon = Icons.Default.Add, contentDescription = "Add")
             }
         }
     }

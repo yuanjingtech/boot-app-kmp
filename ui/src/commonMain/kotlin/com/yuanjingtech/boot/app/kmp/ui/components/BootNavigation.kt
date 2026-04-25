@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.*
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
@@ -104,6 +105,76 @@ fun BootTabRow(
         )
     }
 }
+
+// ─── Multi-Preview Annotations ────────────────────────────────────────────────
+
+@Preview(name = "LiquidGlass", group = "UI Style")
+@Preview(name = "Material3", group = "UI Style")
+annotation class BootNavigationStylePreviews
+
+@Preview(name = "TopAppBar", group = "Component")
+@Preview(name = "BottomAppBar", group = "Component")
+@Preview(name = "NavigationBar", group = "Component")
+@Preview(name = "NavigationRail", group = "Component")
+@Preview(name = "TabRow", group = "Component")
+annotation class BootNavigationComponentPreviews
+
+@BootNavigationStylePreviews
+@Composable
+private fun BootNavigationStylePreview(
+    @PreviewParameter(BootUiStyleProvider::class) style: BootUiStyle
+) {
+    MaterialTheme {
+        CompositionLocalProvider(LocalUiStyle provides style) {
+            Column {
+                BootTopAppBar(
+                    title = "Title",
+                    navigationIcon = Icons.AutoMirrored.Filled.ArrowBack,
+                    onNavigationClick = {},
+                    actions = {
+                        IconButton(onClick = {}) { Icon(Icons.Default.Search, "Search") }
+                        IconButton(onClick = {}) { Icon(Icons.Default.Settings, "Settings") }
+                    }
+                )
+                var sel by remember { mutableIntStateOf(0) }
+                BootNavigationBar(
+                    selectedIndex = sel,
+                    onItemSelected = { sel = it },
+                    items = listOf(Icons.Default.Home to "Home", Icons.Default.Favorite to "Favorites", Icons.Default.Person to "Profile")
+                )
+            }
+        }
+    }
+}
+
+@BootNavigationComponentPreviews
+@Composable
+private fun BootNavigationComponentPreview(
+    @PreviewParameter(BootUiStyleProvider::class) style: BootUiStyle
+) {
+    MaterialTheme {
+        CompositionLocalProvider(LocalUiStyle provides style) {
+            Column {
+                BootTopAppBar(
+                    title = "Title",
+                    navigationIcon = Icons.AutoMirrored.Filled.ArrowBack,
+                    onNavigationClick = {},
+                    actions = {
+                        IconButton(onClick = {}) { Icon(Icons.Default.Search, "Search") }
+                    }
+                )
+                var sel by remember { mutableIntStateOf(0) }
+                BootNavigationBar(
+                    selectedIndex = sel,
+                    onItemSelected = { sel = it },
+                    items = listOf(Icons.Default.Home to "Home", Icons.Default.Favorite to "Favorites", Icons.Default.Person to "Profile")
+                )
+            }
+        }
+    }
+}
+
+// ─── Legacy single-style previews ─────────────────────────────────────────────
 
 @Preview
 @Composable
