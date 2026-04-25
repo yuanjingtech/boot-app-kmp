@@ -44,6 +44,7 @@ kotlin {
             implementation(libs.bundles.koin)
             implementation(libs.bundles.compose)
             implementation(libs.bundles.coil)
+            implementation(libs.compose.material.icons.extended)
             implementation(projects.network)
         }
         androidMain.dependencies {

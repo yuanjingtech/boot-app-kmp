@@ -1,8 +1,12 @@
 package com.yuanjingtech.boot.app.kmp.ui.components
 
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassButton
@@ -32,5 +36,41 @@ fun BootButton(
             enabled = enabled,
             content = content,
         )
+    }
+}
+
+@Preview
+@Composable
+private fun BootButtonLiquidGlassPreview() {
+    MaterialTheme {
+        CompositionLocalProvider(LocalUiStyle provides BootUiStyle.LIQUID_GLASS) {
+            BootButton(onClick = {}) {
+                Text("LiquidGlass Button")
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun BootButtonMaterial3Preview() {
+    MaterialTheme {
+        CompositionLocalProvider(LocalUiStyle provides BootUiStyle.MATERIAL3) {
+            BootButton(onClick = {}) {
+                Text("Material3 Button")
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+fun BootButtonDisabledPreview() {
+    MaterialTheme {
+        CompositionLocalProvider(LocalUiStyle provides BootUiStyle.LIQUID_GLASS) {
+            BootButton(onClick = {}, enabled = false) {
+                Text("Disabled Button")
+            }
+        }
     }
 }
