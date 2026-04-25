@@ -3,8 +3,6 @@
 ## 
 follow https://kyant.gitbook.io/backdrop impl liquidglass components
 
-##
-ui/components/liguidglass/ 增加组件,对齐Material3组件
 
 ##
 
