@@ -55,10 +55,7 @@ kotlin {
             implementation(libs.kotlin.test)
         }
         androidMain.dependencies {
-            implementation(libs.compose.ui.tooling.preview)
+            implementation(libs.compose.ui.tooling)
         }
     }
-}
-dependencies {
-    androidRuntimeClasspath(libs.compose.ui.tooling)
 }

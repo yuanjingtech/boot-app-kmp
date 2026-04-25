@@ -46,6 +46,9 @@ kotlin {
             implementation(libs.bundles.coil)
             implementation(projects.network)
         }
+        androidMain.dependencies {
+            implementation(libs.compose.ui.tooling)
+        }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
