@@ -49,6 +49,21 @@ kotlin {
         }
         androidMain.dependencies {
             implementation(libs.compose.ui.tooling)
+            implementation(libs.backdrop)
+        }
+        jvmMain.dependencies {
+            implementation(libs.backdrop)
+        }
+        iosArm64Main.dependencies {
+            implementation(libs.backdrop)
+        }
+        iosSimulatorArm64Main.dependencies {
+            implementation(libs.backdrop)
+        }
+        wasmJsMain.dependencies {
+            implementation(libs.backdrop)
+        }
+        jsMain.dependencies {
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
