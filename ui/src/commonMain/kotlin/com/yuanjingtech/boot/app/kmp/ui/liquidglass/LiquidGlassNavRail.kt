@@ -2,20 +2,41 @@ package com.yuanjingtech.boot.app.kmp.ui.liquidglass
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.effects.LgEffectConfig
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.effects.rememberLgBarEffects
+
+private val DefaultNavRailItems: List<Pair<ImageVector, String>> = listOf(
+    Icons.Filled.Home to "Home",
+    Icons.Filled.Search to "Search",
+    Icons.Filled.Person to "Profile",
+    Icons.Filled.Settings to "Settings",
+)
 
 @Composable
 fun LiquidGlassNavRail(
@@ -23,7 +44,7 @@ fun LiquidGlassNavRail(
     onItemSelected: (Int) -> Unit,
     modifier: Modifier = Modifier,
     backdrop: LiquidGlassBackdrop? = null,
-    items: List<Pair<ImageVector, String>> = emptyList(),
+    items: List<Pair<ImageVector, String>> = DefaultNavRailItems,
     config: LgEffectConfig = rememberLgBarEffects(),
 ) {
     Column(
@@ -81,5 +102,19 @@ private fun LiquidGlassNavRailItem(
             text = label,
             color = Color.White.copy(alpha = alpha),
         )
+    }
+}
+
+@Preview
+@Composable
+private fun LiquidGlassNavRailPreview() {
+    MaterialTheme {
+        Column {
+            var selected by mutableIntStateOf(0)
+            LiquidGlassNavRail(
+                selectedIndex = selected,
+                onItemSelected = { selected = it },
+            )
+        }
     }
 }
