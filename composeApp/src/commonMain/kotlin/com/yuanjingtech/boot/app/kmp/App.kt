@@ -12,7 +12,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.yuanjingtech.boot.app.kmp.ui.components.BootNavigationBar
 import com.yuanjingtech.boot.app.kmp.ui.components.BootScaffold
 import com.yuanjingtech.boot.app.kmp.ui.components.BootTopAppBar
@@ -30,13 +29,13 @@ fun App() {
     }) {
         var selectIndex by remember { mutableIntStateOf(0) }
         val items = listOf(
-            Icons.Filled.Home to "Home",
-            Icons.Filled.Settings to "Settings",
+            Icons.Filled.Home to BootStrings.tabItemMain(),
+            Icons.Filled.Settings to BootStrings.tabItemSetting(),
         )
         BootScaffold(
             topBar = {
                 BootTopAppBar(
-                    title = "Boot App",
+                    title = BootStrings.appName(),
                     modifier = Modifier,
                 )
             },

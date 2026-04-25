@@ -30,6 +30,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_NIGHT_NO
+import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_NIGHT_YES
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -118,7 +120,8 @@ private fun RowScope.LiquidGlassNavItem(
 
 // ─── Preview ──────────────────────────────────────────────────────────────────
 
-@Preview
+@Preview(uiMode = UI_MODE_NIGHT_YES)
+@Preview(uiMode = UI_MODE_NIGHT_NO)
 @Composable
 private fun LiquidGlassNavigationBarPreview() {
     MaterialTheme {

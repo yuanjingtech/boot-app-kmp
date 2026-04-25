@@ -10,6 +10,8 @@ import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.*
+import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_NIGHT_NO
+import androidx.compose.ui.tooling.preview.AndroidUiModes.UI_MODE_NIGHT_YES
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 
@@ -129,7 +131,8 @@ fun Material3TabRow(
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
+@Preview(uiMode = UI_MODE_NIGHT_YES)
+@Preview(uiMode = UI_MODE_NIGHT_NO)
 @Composable
 private fun Material3NavigationPreview() {
     MaterialTheme {
