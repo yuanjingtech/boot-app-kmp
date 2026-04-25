@@ -10,6 +10,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.text.input.KeyboardType
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
+import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassTextField
 import com.yuanjingtech.boot.app.kmp.ui.material3.Material3TextField
 
 /**
@@ -27,7 +28,15 @@ fun BootTextField(
     keyboardType: KeyboardType = KeyboardType.Text
 ) {
     when (LocalUiStyle.current) {
-        BootUiStyle.LIQUID_GLASS -> TODO("LiquidGlass TextField")
+        BootUiStyle.LIQUID_GLASS -> LiquidGlassTextField(
+            value = value,
+            onValueChange = onValueChange,
+            modifier = modifier,
+            enabled = enabled,
+            placeholder = placeholder,
+            isPassword = isPassword,
+            keyboardType = keyboardType
+        )
         BootUiStyle.MATERIAL3 -> Material3TextField(
             value = value,
             onValueChange = onValueChange,

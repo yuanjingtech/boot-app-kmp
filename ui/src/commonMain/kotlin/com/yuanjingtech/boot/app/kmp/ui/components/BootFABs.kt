@@ -15,7 +15,10 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.*
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
-import com.yuanjingtech.boot.app.kmp.ui.liquidglass.*
+import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassFAB
+import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassSmallFAB
+import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassLargeFAB
+import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassExtendedFAB
 import com.yuanjingtech.boot.app.kmp.ui.material3.*
 
 @Composable
@@ -26,7 +29,12 @@ fun BootFloatingActionButton(
     contentDescription: String = "Add"
 ) {
     when (LocalUiStyle.current) {
-        BootUiStyle.LIQUID_GLASS -> TODO("LiquidGlass FloatingActionButton")
+        BootUiStyle.LIQUID_GLASS -> LiquidGlassFAB(
+            onClick = onClick,
+            modifier = modifier,
+            icon = icon,
+            contentDescription = contentDescription
+        )
         BootUiStyle.MATERIAL3 -> Material3FloatingActionButton(
             onClick = onClick,
             modifier = modifier,
@@ -44,7 +52,12 @@ fun BootSmallFloatingActionButton(
     contentDescription: String = "Add"
 ) {
     when (LocalUiStyle.current) {
-        BootUiStyle.LIQUID_GLASS -> TODO("LiquidGlass SmallFloatingActionButton")
+        BootUiStyle.LIQUID_GLASS -> LiquidGlassSmallFAB(
+            onClick = onClick,
+            modifier = modifier,
+            icon = icon,
+            contentDescription = contentDescription
+        )
         BootUiStyle.MATERIAL3 -> Material3SmallFloatingActionButton(
             onClick = onClick,
             modifier = modifier,
@@ -62,7 +75,12 @@ fun BootLargeFloatingActionButton(
     contentDescription: String = "Add"
 ) {
     when (LocalUiStyle.current) {
-        BootUiStyle.LIQUID_GLASS -> TODO("LiquidGlass LargeFloatingActionButton")
+        BootUiStyle.LIQUID_GLASS -> LiquidGlassLargeFAB(
+            onClick = onClick,
+            modifier = modifier,
+            icon = icon,
+            contentDescription = contentDescription
+        )
         BootUiStyle.MATERIAL3 -> Material3LargeFloatingActionButton(
             onClick = onClick,
             modifier = modifier,
@@ -81,7 +99,12 @@ fun BootExtendedFloatingActionButton(
     expanded: Boolean = true
 ) {
     when (LocalUiStyle.current) {
-        BootUiStyle.LIQUID_GLASS -> TODO("LiquidGlass ExtendedFloatingActionButton")
+        BootUiStyle.LIQUID_GLASS -> LiquidGlassExtendedFAB(
+            onClick = onClick,
+            text = text,
+            modifier = modifier,
+            icon = icon
+        )
         BootUiStyle.MATERIAL3 -> Material3ExtendedFloatingActionButton(
             onClick = onClick,
             text = text,

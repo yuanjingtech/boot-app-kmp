@@ -15,7 +15,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.*
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
-import com.yuanjingtech.boot.app.kmp.ui.liquidglass.*
+import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassCard
 import com.yuanjingtech.boot.app.kmp.ui.material3.*
 
 @Composable
@@ -24,7 +24,10 @@ fun BootElevatedCard(
     content: @Composable ColumnScope.() -> Unit = {}
 ) {
     when (LocalUiStyle.current) {
-        BootUiStyle.LIQUID_GLASS -> TODO("LiquidGlass ElevatedCard")
+        BootUiStyle.LIQUID_GLASS -> LiquidGlassCard(
+            modifier = modifier,
+            content = content
+        )
         BootUiStyle.MATERIAL3 -> Material3ElevatedCard(
             modifier = modifier,
             content = content
@@ -38,7 +41,10 @@ fun BootOutlinedCard(
     content: @Composable ColumnScope.() -> Unit = {}
 ) {
     when (LocalUiStyle.current) {
-        BootUiStyle.LIQUID_GLASS -> TODO("LiquidGlass OutlinedCard")
+        BootUiStyle.LIQUID_GLASS -> LiquidGlassCard(
+            modifier = modifier,
+            content = content
+        )
         BootUiStyle.MATERIAL3 -> Material3OutlinedCard(
             modifier = modifier,
             content = content

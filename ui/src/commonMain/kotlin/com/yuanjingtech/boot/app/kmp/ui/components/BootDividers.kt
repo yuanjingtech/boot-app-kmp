@@ -15,7 +15,9 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.*
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
-import com.yuanjingtech.boot.app.kmp.ui.liquidglass.*
+import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassHorizontalDivider
+import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassListItem
+import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassVerticalDivider
 import com.yuanjingtech.boot.app.kmp.ui.material3.*
 
 @Composable
@@ -24,7 +26,10 @@ fun BootHorizontalDivider(
     thickness: Dp = 1.dp
 ) {
     when (LocalUiStyle.current) {
-        BootUiStyle.LIQUID_GLASS -> TODO("LiquidGlass HorizontalDivider")
+        BootUiStyle.LIQUID_GLASS -> LiquidGlassHorizontalDivider(
+            modifier = modifier,
+            thickness = thickness
+        )
         BootUiStyle.MATERIAL3 -> Material3HorizontalDivider(
             modifier = modifier,
             thickness = thickness
@@ -38,7 +43,10 @@ fun BootVerticalDivider(
     thickness: Dp = 1.dp
 ) {
     when (LocalUiStyle.current) {
-        BootUiStyle.LIQUID_GLASS -> TODO("LiquidGlass VerticalDivider")
+        BootUiStyle.LIQUID_GLASS -> LiquidGlassVerticalDivider(
+            modifier = modifier,
+            thickness = thickness
+        )
         BootUiStyle.MATERIAL3 -> Material3VerticalDivider(
             modifier = modifier,
             thickness = thickness
@@ -56,7 +64,14 @@ fun BootListItem(
     trailingContent: String = ""
 ) {
     when (LocalUiStyle.current) {
-        BootUiStyle.LIQUID_GLASS -> TODO("LiquidGlass ListItem")
+        BootUiStyle.LIQUID_GLASS -> LiquidGlassListItem(
+            headlineContent = headlineContent,
+            modifier = modifier,
+            overlineContent = overlineContent,
+            supportingContent = supportingContent,
+            leadingContent = leadingContent,
+            trailingContent = trailingContent
+        )
         BootUiStyle.MATERIAL3 -> Material3ListItem(
             headlineContent = headlineContent,
             modifier = modifier,

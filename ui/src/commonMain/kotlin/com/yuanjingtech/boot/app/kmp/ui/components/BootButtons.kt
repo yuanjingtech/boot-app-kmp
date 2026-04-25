@@ -6,12 +6,14 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
+import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassButton
 import com.yuanjingtech.boot.app.kmp.ui.material3.Material3FilledTonalButton
 import com.yuanjingtech.boot.app.kmp.ui.material3.Material3IconButton
 import com.yuanjingtech.boot.app.kmp.ui.material3.Material3OutlinedButton
@@ -26,7 +28,12 @@ fun BootFilledTonalButton(
     content: @Composable RowScope.() -> Unit = {}
 ) {
     when (LocalUiStyle.current) {
-        BootUiStyle.LIQUID_GLASS -> TODO("LiquidGlass FilledTonalButton")
+        BootUiStyle.LIQUID_GLASS -> LiquidGlassButton(
+            onClick = onClick,
+            modifier = modifier,
+            enabled = enabled,
+            content = content
+        )
         BootUiStyle.MATERIAL3 -> Material3FilledTonalButton(
             onClick = onClick,
             modifier = modifier,
@@ -44,7 +51,12 @@ fun BootOutlinedButton(
     content: @Composable RowScope.() -> Unit = {}
 ) {
     when (LocalUiStyle.current) {
-        BootUiStyle.LIQUID_GLASS -> TODO("LiquidGlass OutlinedButton")
+        BootUiStyle.LIQUID_GLASS -> LiquidGlassButton(
+            onClick = onClick,
+            modifier = modifier,
+            enabled = enabled,
+            content = content
+        )
         BootUiStyle.MATERIAL3 -> Material3OutlinedButton(
             onClick = onClick,
             modifier = modifier,
@@ -62,7 +74,12 @@ fun BootTextButton(
     content: @Composable RowScope.() -> Unit = {}
 ) {
     when (LocalUiStyle.current) {
-        BootUiStyle.LIQUID_GLASS -> TODO("LiquidGlass TextButton")
+        BootUiStyle.LIQUID_GLASS -> LiquidGlassButton(
+            onClick = onClick,
+            modifier = modifier,
+            enabled = enabled,
+            content = content
+        )
         BootUiStyle.MATERIAL3 -> Material3TextButton(
             onClick = onClick,
             modifier = modifier,
@@ -80,7 +97,12 @@ fun BootElevatedButton(
     content: @Composable RowScope.() -> Unit = {}
 ) {
     when (LocalUiStyle.current) {
-        BootUiStyle.LIQUID_GLASS -> TODO("LiquidGlass ElevatedButton")
+        BootUiStyle.LIQUID_GLASS -> LiquidGlassButton(
+            onClick = onClick,
+            modifier = modifier,
+            enabled = enabled,
+            content = content
+        )
         BootUiStyle.MATERIAL3 -> Material3ElevatedButton(
             onClick = onClick,
             modifier = modifier,
@@ -99,7 +121,18 @@ fun BootIconButton(
     contentDescription: String
 ) {
     when (LocalUiStyle.current) {
-        BootUiStyle.LIQUID_GLASS -> TODO("LiquidGlass IconButton")
+        BootUiStyle.LIQUID_GLASS -> LiquidGlassButton(
+            onClick = onClick,
+            modifier = modifier,
+            enabled = enabled,
+            content = {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = contentDescription,
+                    tint = Color.White,
+                )
+            }
+        )
         BootUiStyle.MATERIAL3 -> Material3IconButton(
             onClick = onClick,
             modifier = modifier,

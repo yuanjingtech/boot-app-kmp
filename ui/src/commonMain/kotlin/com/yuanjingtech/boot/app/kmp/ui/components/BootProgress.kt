@@ -15,7 +15,8 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.*
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
-import com.yuanjingtech.boot.app.kmp.ui.liquidglass.*
+import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassCircularProgressIndicator
+import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassLinearProgressIndicator
 import com.yuanjingtech.boot.app.kmp.ui.material3.*
 
 @Composable
@@ -25,7 +26,11 @@ fun BootCircularProgressIndicator(
     color: Color = Color.Unspecified
 ) {
     when (LocalUiStyle.current) {
-        BootUiStyle.LIQUID_GLASS -> TODO("LiquidGlass CircularProgressIndicator")
+        BootUiStyle.LIQUID_GLASS -> LiquidGlassCircularProgressIndicator(
+            modifier = modifier,
+            progress = progress,
+            color = color
+        )
         BootUiStyle.MATERIAL3 -> Material3CircularProgressIndicator(
             modifier = modifier,
             progress = progress,
@@ -40,7 +45,10 @@ fun BootLinearProgressIndicator(
     progress: Float? = null
 ) {
     when (LocalUiStyle.current) {
-        BootUiStyle.LIQUID_GLASS -> TODO("LiquidGlass LinearProgressIndicator")
+        BootUiStyle.LIQUID_GLASS -> LiquidGlassLinearProgressIndicator(
+            modifier = modifier,
+            progress = progress
+        )
         BootUiStyle.MATERIAL3 -> Material3LinearProgressIndicator(
             modifier = modifier,
             progress = progress

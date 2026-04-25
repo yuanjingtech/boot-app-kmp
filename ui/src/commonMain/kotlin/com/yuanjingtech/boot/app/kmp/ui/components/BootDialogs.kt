@@ -15,7 +15,8 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.*
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
-import com.yuanjingtech.boot.app.kmp.ui.liquidglass.*
+import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassAlertDialog
+import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassSnackbar
 import com.yuanjingtech.boot.app.kmp.ui.material3.*
 
 @Composable
@@ -27,7 +28,13 @@ fun BootAlertDialog(
     dismissButton: @Composable () -> Unit = {}
 ) {
     when (LocalUiStyle.current) {
-        BootUiStyle.LIQUID_GLASS -> TODO("LiquidGlass AlertDialog")
+        BootUiStyle.LIQUID_GLASS -> LiquidGlassAlertDialog(
+            onDismissRequest = onDismissRequest,
+            title = title,
+            text = text,
+            confirmButton = confirmButton,
+            dismissButton = dismissButton
+        )
         BootUiStyle.MATERIAL3 -> Material3AlertDialog(
             onDismissRequest = onDismissRequest,
             title = title,
@@ -46,7 +53,12 @@ fun BootSnackbar(
     onActionClick: (() -> Unit)? = null
 ) {
     when (LocalUiStyle.current) {
-        BootUiStyle.LIQUID_GLASS -> TODO("LiquidGlass Snackbar")
+        BootUiStyle.LIQUID_GLASS -> LiquidGlassSnackbar(
+            message = message,
+            modifier = modifier,
+            action = action,
+            onActionClick = onActionClick
+        )
         BootUiStyle.MATERIAL3 -> Material3Snackbar(
             message = message,
             modifier = modifier,

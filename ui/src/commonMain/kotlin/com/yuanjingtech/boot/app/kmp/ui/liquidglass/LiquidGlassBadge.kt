@@ -2,6 +2,8 @@ package com.yuanjingtech.boot.app.kmp.ui.liquidglass
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -14,14 +16,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.yuanjingtech.boot.app.kmp.ui.liquidglass.effects.rememberLgEffects
 
 @Composable
 fun LiquidGlassBadge(
     modifier: Modifier = Modifier,
     backgroundColor: Color = Color.White.copy(alpha = 0.9f),
     contentColor: Color = Color.Black,
-    content: @Composable BoxScope.() -> Unit,
+    content: @Composable RowScope.() -> Unit,
 ) {
     Box(
         modifier = modifier
@@ -30,7 +31,7 @@ fun LiquidGlassBadge(
             .liquidGlassSurface(cornerRadius = 8.dp, borderAlpha = 0.4f),
         contentAlignment = Alignment.Center,
     ) {
-        Box(modifier = Modifier) { content() }
+        Row { content() }
     }
 }
 
