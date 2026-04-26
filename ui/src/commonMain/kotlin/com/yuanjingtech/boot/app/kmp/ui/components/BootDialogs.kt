@@ -9,9 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.*
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
@@ -28,20 +26,8 @@ fun BootAlertDialog(
     dismissButton: @Composable () -> Unit = {}
 ) {
     when (LocalUiStyle.current) {
-        BootUiStyle.LIQUID_GLASS -> LiquidGlassAlertDialog(
-            onDismissRequest = onDismissRequest,
-            title = title,
-            text = text,
-            confirmButton = confirmButton,
-            dismissButton = dismissButton
-        )
-        BootUiStyle.MATERIAL3 -> Material3AlertDialog(
-            onDismissRequest = onDismissRequest,
-            title = title,
-            text = text,
-            confirmButton = confirmButton,
-            dismissButton = dismissButton
-        )
+        BootUiStyle.LIQUID_GLASS -> LiquidGlassAlertDialog(onDismissRequest = onDismissRequest, title = title, text = text, confirmButton = confirmButton, dismissButton = dismissButton)
+        BootUiStyle.MATERIAL3 -> Material3AlertDialog(onDismissRequest = onDismissRequest, title = title, text = text, confirmButton = confirmButton, dismissButton = dismissButton)
     }
 }
 
@@ -53,44 +39,20 @@ fun BootSnackbar(
     onActionClick: (() -> Unit)? = null
 ) {
     when (LocalUiStyle.current) {
-        BootUiStyle.LIQUID_GLASS -> LiquidGlassSnackbar(
-            message = message,
-            modifier = modifier,
-            action = action,
-            onActionClick = onActionClick
-        )
-        BootUiStyle.MATERIAL3 -> Material3Snackbar(
-            message = message,
-            modifier = modifier,
-            action = action,
-            onActionClick = onActionClick
-        )
+        BootUiStyle.LIQUID_GLASS -> LiquidGlassSnackbar(message = message, modifier = modifier, action = action, onActionClick = onActionClick)
+        BootUiStyle.MATERIAL3 -> Material3Snackbar(message = message, modifier = modifier, action = action, onActionClick = onActionClick)
     }
 }
 
 // ─── Multi-Preview Annotations ────────────────────────────────────────────────
 
-@Preview(name = "LiquidGlass", group = "UI Style")
-@Preview(name = "Material3", group = "UI Style")
-annotation class BootDialogsStylePreviews
-
-@Preview(name = "AlertDialog", group = "Type")
-@Preview(name = "Snackbar", group = "Type")
-annotation class BootDialogsTypePreviews
-
-@BootDialogsStylePreviews
+@StylePreviews
 @Composable
-private fun BootDialogsStylePreview(
-    @PreviewParameter(BootUiStyleProvider::class) style: BootUiStyle
-) {
+private fun BootDialogsStylePreview() {
     MaterialTheme {
-        CompositionLocalProvider(LocalUiStyle provides style) {
+        CompositionLocalProvider(LocalUiStyle provides LocalUiStyle.current) {
             Column(modifier = Modifier.padding(8.dp)) {
-                BootSnackbar(
-                    message = "Message sent",
-                    action = "Undo",
-                    onActionClick = {}
-                )
+                BootSnackbar(message = "Message sent", action = "Undo", onActionClick = {})
                 BootAlertDialog(
                     onDismissRequest = {},
                     title = "Dialog Title",
@@ -103,19 +65,17 @@ private fun BootDialogsStylePreview(
     }
 }
 
+@Preview(name = "AlertDialog", group = "Type")
+@Preview(name = "Snackbar", group = "Type")
+annotation class BootDialogsTypePreviews
+
 @BootDialogsTypePreviews
 @Composable
-private fun BootDialogsTypePreview(
-    @PreviewParameter(BootUiStyleProvider::class) style: BootUiStyle
-) {
+private fun BootDialogsTypePreview() {
     MaterialTheme {
-        CompositionLocalProvider(LocalUiStyle provides style) {
+        CompositionLocalProvider(LocalUiStyle provides BootUiStyle.MATERIAL3) {
             Column(modifier = Modifier.padding(8.dp)) {
-                BootSnackbar(
-                    message = "Message sent",
-                    action = "Undo",
-                    onActionClick = {}
-                )
+                BootSnackbar(message = "Message sent", action = "Undo", onActionClick = {})
             }
         }
     }
@@ -129,21 +89,13 @@ private fun BootDialogsPreview() {
     MaterialTheme {
         CompositionLocalProvider(LocalUiStyle provides BootUiStyle.MATERIAL3) {
             Column(modifier = Modifier.padding(8.dp)) {
-                BootSnackbar(
-                    message = "Message sent",
-                    action = "Undo",
-                    onActionClick = {}
-                )
+                BootSnackbar(message = "Message sent", action = "Undo", onActionClick = {})
                 BootAlertDialog(
                     onDismissRequest = {},
                     title = "Dialog Title",
                     text = "This is a dialog message.",
-                    confirmButton = {
-                        TextButton(onClick = {}) { Text("Confirm") }
-                    },
-                    dismissButton = {
-                        TextButton(onClick = {}) { Text("Cancel") }
-                    }
+                    confirmButton = { TextButton(onClick = {}) { Text("Confirm") } },
+                    dismissButton = { TextButton(onClick = {}) { Text("Cancel") } }
                 )
             }
         }

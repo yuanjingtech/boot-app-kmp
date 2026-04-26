@@ -9,9 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.*
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
@@ -32,66 +30,36 @@ fun BootSearchBar(
 ) {
     when (LocalUiStyle.current) {
         BootUiStyle.LIQUID_GLASS -> TODO("LiquidGlass SearchBar")
-        BootUiStyle.MATERIAL3 -> Material3SearchBar(
-            query = query,
-            onQueryChange = onQueryChange,
-            onSearch = onSearch,
-            active = active,
-            onActiveChange = onActiveChange,
-            modifier = modifier,
-            placeholder = placeholder,
-            leadingIcon = leadingIcon ?: Icons.Default.Search,
-            trailingIcon = trailingIcon
-        )
+        BootUiStyle.MATERIAL3 -> Material3SearchBar(query = query, onQueryChange = onQueryChange, onSearch = onSearch, active = active, onActiveChange = onActiveChange, modifier = modifier, placeholder = placeholder, leadingIcon = leadingIcon ?: Icons.Default.Search, trailingIcon = trailingIcon)
     }
 }
 
 // ─── Multi-Preview Annotations ────────────────────────────────────────────────
 
-@Preview(name = "LiquidGlass", group = "UI Style")
-@Preview(name = "Material3", group = "UI Style")
-annotation class BootSearchBarStylePreviews
+@StylePreviews
+@Composable
+private fun BootSearchBarStylePreview() {
+    MaterialTheme {
+        CompositionLocalProvider(LocalUiStyle provides LocalUiStyle.current) {
+            var q by remember { mutableStateOf("") }
+            var a by remember { mutableStateOf(false) }
+            BootSearchBar(query = q, onQueryChange = { q = it }, onSearch = { a = false }, active = a, onActiveChange = { a = it })
+        }
+    }
+}
 
 @Preview(name = "Inactive", group = "State")
 @Preview(name = "Active", group = "State")
 annotation class BootSearchBarStatePreviews
 
-@BootSearchBarStylePreviews
-@Composable
-private fun BootSearchBarStylePreview(
-    @PreviewParameter(BootUiStyleProvider::class) style: BootUiStyle
-) {
-    MaterialTheme {
-        CompositionLocalProvider(LocalUiStyle provides style) {
-            var q by remember { mutableStateOf("") }
-            var a by remember { mutableStateOf(false) }
-            BootSearchBar(
-                query = q,
-                onQueryChange = { q = it },
-                onSearch = { a = false },
-                active = a,
-                onActiveChange = { a = it }
-            )
-        }
-    }
-}
-
 @BootSearchBarStatePreviews
 @Composable
-private fun BootSearchBarStatePreview(
-    @PreviewParameter(BootUiStyleProvider::class) style: BootUiStyle
-) {
+private fun BootSearchBarStatePreview() {
     MaterialTheme {
-        CompositionLocalProvider(LocalUiStyle provides style) {
+        CompositionLocalProvider(LocalUiStyle provides BootUiStyle.MATERIAL3) {
             var q by remember { mutableStateOf("") }
             var a by remember { mutableStateOf(false) }
-            BootSearchBar(
-                query = q,
-                onQueryChange = { q = it },
-                onSearch = { a = false },
-                active = a,
-                onActiveChange = { a = it }
-            )
+            BootSearchBar(query = q, onQueryChange = { q = it }, onSearch = { a = false }, active = a, onActiveChange = { a = it })
         }
     }
 }
@@ -105,13 +73,7 @@ private fun BootSearchBarPreview() {
         CompositionLocalProvider(LocalUiStyle provides BootUiStyle.MATERIAL3) {
             var q by remember { mutableStateOf("") }
             var a by remember { mutableStateOf(false) }
-            BootSearchBar(
-                query = q,
-                onQueryChange = { q = it },
-                onSearch = { a = false },
-                active = a,
-                onActiveChange = { a = it }
-            )
+            BootSearchBar(query = q, onQueryChange = { q = it }, onSearch = { a = false }, active = a, onActiveChange = { a = it })
         }
     }
 }

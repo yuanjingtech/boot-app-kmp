@@ -9,9 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.*
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
@@ -24,14 +22,8 @@ fun BootElevatedCard(
     content: @Composable ColumnScope.() -> Unit = {}
 ) {
     when (LocalUiStyle.current) {
-        BootUiStyle.LIQUID_GLASS -> LiquidGlassCard(
-            modifier = modifier,
-            content = content
-        )
-        BootUiStyle.MATERIAL3 -> Material3ElevatedCard(
-            modifier = modifier,
-            content = content
-        )
+        BootUiStyle.LIQUID_GLASS -> LiquidGlassCard(modifier = modifier, content = content)
+        BootUiStyle.MATERIAL3 -> Material3ElevatedCard(modifier = modifier, content = content)
     }
 }
 
@@ -41,38 +33,19 @@ fun BootOutlinedCard(
     content: @Composable ColumnScope.() -> Unit = {}
 ) {
     when (LocalUiStyle.current) {
-        BootUiStyle.LIQUID_GLASS -> LiquidGlassCard(
-            modifier = modifier,
-            content = content
-        )
-        BootUiStyle.MATERIAL3 -> Material3OutlinedCard(
-            modifier = modifier,
-            content = content
-        )
+        BootUiStyle.LIQUID_GLASS -> LiquidGlassCard(modifier = modifier, content = content)
+        BootUiStyle.MATERIAL3 -> Material3OutlinedCard(modifier = modifier, content = content)
     }
 }
 
 // ─── Multi-Preview Annotations ────────────────────────────────────────────────
 
-@Preview(name = "LiquidGlass", group = "UI Style")
-@Preview(name = "Material3", group = "UI Style")
-annotation class BootCardsStylePreviews
-
-@Preview(name = "Elevated", group = "Variant")
-@Preview(name = "Outlined", group = "Variant")
-annotation class BootCardsVariantPreviews
-
-@BootCardsStylePreviews
+@StylePreviews
 @Composable
-private fun BootCardsStylePreview(
-    @PreviewParameter(BootUiStyleProvider::class) style: BootUiStyle
-) {
+private fun BootCardsStylePreview() {
     MaterialTheme {
-        CompositionLocalProvider(LocalUiStyle provides style) {
-            Column(
-                modifier = Modifier.padding(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
+        CompositionLocalProvider(LocalUiStyle provides LocalUiStyle.current) {
+            Column(modifier = Modifier.padding(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 BootElevatedCard { Text("Elevated Card") }
                 BootOutlinedCard { Text("Outlined Card") }
             }
@@ -80,17 +53,16 @@ private fun BootCardsStylePreview(
     }
 }
 
+@Preview(name = "Elevated", group = "Variant")
+@Preview(name = "Outlined", group = "Variant")
+annotation class BootCardsVariantPreviews
+
 @BootCardsVariantPreviews
 @Composable
-private fun BootCardsVariantPreview(
-    @PreviewParameter(BootUiStyleProvider::class) style: BootUiStyle
-) {
+private fun BootCardsVariantPreview() {
     MaterialTheme {
-        CompositionLocalProvider(LocalUiStyle provides style) {
-            Column(
-                modifier = Modifier.padding(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
+        CompositionLocalProvider(LocalUiStyle provides BootUiStyle.MATERIAL3) {
+            Column(modifier = Modifier.padding(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 BootElevatedCard { Text("Elevated Card") }
                 BootOutlinedCard { Text("Outlined Card") }
             }
@@ -105,10 +77,7 @@ private fun BootCardsVariantPreview(
 private fun BootCardVariantsPreview() {
     MaterialTheme {
         CompositionLocalProvider(LocalUiStyle provides BootUiStyle.MATERIAL3) {
-            Column(
-                modifier = Modifier.padding(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
+            Column(modifier = Modifier.padding(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 BootElevatedCard { Text("Elevated Card") }
                 BootOutlinedCard { Text("Outlined Card") }
             }

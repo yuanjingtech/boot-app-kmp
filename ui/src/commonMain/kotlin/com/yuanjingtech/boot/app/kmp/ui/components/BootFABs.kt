@@ -9,15 +9,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.*
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassFAB
-import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassSmallFAB
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassLargeFAB
+import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassSmallFAB
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassExtendedFAB
 import com.yuanjingtech.boot.app.kmp.ui.material3.*
 
@@ -29,18 +27,8 @@ fun BootFloatingActionButton(
     contentDescription: String = "Add"
 ) {
     when (LocalUiStyle.current) {
-        BootUiStyle.LIQUID_GLASS -> LiquidGlassFAB(
-            onClick = onClick,
-            modifier = modifier,
-            icon = icon,
-            contentDescription = contentDescription
-        )
-        BootUiStyle.MATERIAL3 -> Material3FloatingActionButton(
-            onClick = onClick,
-            modifier = modifier,
-            icon = icon,
-            contentDescription = contentDescription
-        )
+        BootUiStyle.LIQUID_GLASS -> LiquidGlassFAB(onClick = onClick, modifier = modifier, icon = icon, contentDescription = contentDescription)
+        BootUiStyle.MATERIAL3 -> Material3FloatingActionButton(onClick = onClick, modifier = modifier, icon = icon, contentDescription = contentDescription)
     }
 }
 
@@ -52,18 +40,8 @@ fun BootSmallFloatingActionButton(
     contentDescription: String = "Add"
 ) {
     when (LocalUiStyle.current) {
-        BootUiStyle.LIQUID_GLASS -> LiquidGlassSmallFAB(
-            onClick = onClick,
-            modifier = modifier,
-            icon = icon,
-            contentDescription = contentDescription
-        )
-        BootUiStyle.MATERIAL3 -> Material3SmallFloatingActionButton(
-            onClick = onClick,
-            modifier = modifier,
-            icon = icon,
-            contentDescription = contentDescription
-        )
+        BootUiStyle.LIQUID_GLASS -> LiquidGlassSmallFAB(onClick = onClick, modifier = modifier, icon = icon, contentDescription = contentDescription)
+        BootUiStyle.MATERIAL3 -> Material3SmallFloatingActionButton(onClick = onClick, modifier = modifier, icon = icon, contentDescription = contentDescription)
     }
 }
 
@@ -75,18 +53,8 @@ fun BootLargeFloatingActionButton(
     contentDescription: String = "Add"
 ) {
     when (LocalUiStyle.current) {
-        BootUiStyle.LIQUID_GLASS -> LiquidGlassLargeFAB(
-            onClick = onClick,
-            modifier = modifier,
-            icon = icon,
-            contentDescription = contentDescription
-        )
-        BootUiStyle.MATERIAL3 -> Material3LargeFloatingActionButton(
-            onClick = onClick,
-            modifier = modifier,
-            icon = icon,
-            contentDescription = contentDescription
-        )
+        BootUiStyle.LIQUID_GLASS -> LiquidGlassLargeFAB(onClick = onClick, modifier = modifier, icon = icon, contentDescription = contentDescription)
+        BootUiStyle.MATERIAL3 -> Material3LargeFloatingActionButton(onClick = onClick, modifier = modifier, icon = icon, contentDescription = contentDescription)
     }
 }
 
@@ -99,45 +67,19 @@ fun BootExtendedFloatingActionButton(
     expanded: Boolean = true
 ) {
     when (LocalUiStyle.current) {
-        BootUiStyle.LIQUID_GLASS -> LiquidGlassExtendedFAB(
-            onClick = onClick,
-            text = text,
-            modifier = modifier,
-            icon = icon
-        )
-        BootUiStyle.MATERIAL3 -> Material3ExtendedFloatingActionButton(
-            onClick = onClick,
-            text = text,
-            modifier = modifier,
-            icon = icon,
-            expanded = expanded
-        )
+        BootUiStyle.LIQUID_GLASS -> LiquidGlassExtendedFAB(onClick = onClick, text = text, modifier = modifier, icon = icon)
+        BootUiStyle.MATERIAL3 -> Material3ExtendedFloatingActionButton(onClick = onClick, text = text, modifier = modifier, icon = icon, expanded = expanded)
     }
 }
 
 // ─── Multi-Preview Annotations ────────────────────────────────────────────────
 
-@Preview(name = "LiquidGlass", group = "UI Style")
-@Preview(name = "Material3", group = "UI Style")
-annotation class BootFABsStylePreviews
-
-@Preview(name = "Small", group = "Size")
-@Preview(name = "Regular", group = "Size")
-@Preview(name = "Large", group = "Size")
-@Preview(name = "Extended", group = "Size")
-annotation class BootFABsSizePreviews
-
-@BootFABsStylePreviews
+@StylePreviews
 @Composable
-private fun BootFABsStylePreview(
-    @PreviewParameter(BootUiStyleProvider::class) style: BootUiStyle
-) {
+private fun BootFABsStylePreview() {
     MaterialTheme {
-        CompositionLocalProvider(LocalUiStyle provides style) {
-            Row(
-                modifier = Modifier.padding(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
+        CompositionLocalProvider(LocalUiStyle provides LocalUiStyle.current) {
+            Row(modifier = Modifier.padding(16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 BootSmallFloatingActionButton(onClick = {}, icon = Icons.Default.Add)
                 BootFloatingActionButton(onClick = {}, icon = Icons.Default.Add)
                 BootLargeFloatingActionButton(onClick = {}, icon = Icons.Default.Add)
@@ -147,17 +89,18 @@ private fun BootFABsStylePreview(
     }
 }
 
+@Preview(name = "Small", group = "Size")
+@Preview(name = "Regular", group = "Size")
+@Preview(name = "Large", group = "Size")
+@Preview(name = "Extended", group = "Size")
+annotation class BootFABsSizePreviews
+
 @BootFABsSizePreviews
 @Composable
-private fun BootFABsSizePreview(
-    @PreviewParameter(BootUiStyleProvider::class) style: BootUiStyle
-) {
+private fun BootFABsSizePreview() {
     MaterialTheme {
-        CompositionLocalProvider(LocalUiStyle provides style) {
-            Row(
-                modifier = Modifier.padding(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
+        CompositionLocalProvider(LocalUiStyle provides BootUiStyle.MATERIAL3) {
+            Row(modifier = Modifier.padding(16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 BootSmallFloatingActionButton(onClick = {}, icon = Icons.Default.Add)
                 BootFloatingActionButton(onClick = {}, icon = Icons.Default.Add)
                 BootLargeFloatingActionButton(onClick = {}, icon = Icons.Default.Add)
@@ -174,27 +117,11 @@ private fun BootFABsSizePreview(
 private fun BootFABPreview() {
     MaterialTheme {
         CompositionLocalProvider(LocalUiStyle provides BootUiStyle.MATERIAL3) {
-            Row(
-                modifier = Modifier.padding(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                BootSmallFloatingActionButton(
-                    onClick = {},
-                    icon = Icons.Default.Add
-                )
-                BootFloatingActionButton(
-                    onClick = {},
-                    icon = Icons.Default.Add
-                )
-                BootLargeFloatingActionButton(
-                    onClick = {},
-                    icon = Icons.Default.Add
-                )
-                BootExtendedFloatingActionButton(
-                    onClick = {},
-                    text = "Add Item",
-                    icon = Icons.Default.Add
-                )
+            Row(modifier = Modifier.padding(16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                BootSmallFloatingActionButton(onClick = {}, icon = Icons.Default.Add)
+                BootFloatingActionButton(onClick = {}, icon = Icons.Default.Add)
+                BootLargeFloatingActionButton(onClick = {}, icon = Icons.Default.Add)
+                BootExtendedFloatingActionButton(onClick = {}, text = "Add Item", icon = Icons.Default.Add)
             }
         }
     }

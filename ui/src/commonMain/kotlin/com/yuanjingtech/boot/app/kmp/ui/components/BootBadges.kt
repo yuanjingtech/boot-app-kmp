@@ -1,23 +1,23 @@
 package com.yuanjingtech.boot.app.kmp.ui.components
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.*
-import androidx.compose.ui.graphics.*
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.input.*
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.unit.*
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassBadge
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassBadgedBox
-import com.yuanjingtech.boot.app.kmp.ui.material3.*
+import com.yuanjingtech.boot.app.kmp.ui.material3.Material3Badge
+import com.yuanjingtech.boot.app.kmp.ui.material3.Material3BadgedBox
 
 @Composable
 fun BootBadge(
@@ -27,18 +27,8 @@ fun BootBadge(
     content: @Composable RowScope.() -> Unit = {}
 ) {
     when (LocalUiStyle.current) {
-        BootUiStyle.LIQUID_GLASS -> LiquidGlassBadge(
-            modifier = modifier,
-            backgroundColor = containerColor,
-            contentColor = contentColor,
-            content = content
-        )
-        BootUiStyle.MATERIAL3 -> Material3Badge(
-            modifier = modifier,
-            containerColor = containerColor,
-            contentColor = contentColor,
-            content = content
-        )
+        BootUiStyle.LIQUID_GLASS -> LiquidGlassBadge(modifier = modifier, backgroundColor = containerColor, contentColor = contentColor, content = content)
+        BootUiStyle.MATERIAL3 -> Material3Badge(modifier = modifier, containerColor = containerColor, contentColor = contentColor, content = content)
     }
 }
 
@@ -49,35 +39,19 @@ fun BootBadgedBox(
     content: @Composable BoxScope.() -> Unit = {}
 ) {
     when (LocalUiStyle.current) {
-        BootUiStyle.LIQUID_GLASS -> LiquidGlassBadgedBox(
-            badgeContent = badgeContent,
-            modifier = modifier,
-            content = content
-        )
-        BootUiStyle.MATERIAL3 -> Material3BadgedBox(
-            badgeContent = badgeContent,
-            modifier = modifier,
-            content = content
-        )
+        BootUiStyle.LIQUID_GLASS -> LiquidGlassBadgedBox(badgeContent = badgeContent, modifier = modifier, content = content)
+        BootUiStyle.MATERIAL3 -> Material3BadgedBox(badgeContent = badgeContent, modifier = modifier, content = content)
     }
 }
 
 // ─── Multi-Preview Annotations ────────────────────────────────────────────────
 
-@Preview(name = "LiquidGlass", group = "UI Style")
-@Preview(name = "Material3", group = "UI Style")
-annotation class BootBadgesStylePreviews
-
-@BootBadgesStylePreviews
+@BootPreviews
 @Composable
-private fun BootBadgesStylePreview(
-    @PreviewParameter(BootUiStyleProvider::class) style: BootUiStyle
-) {
+private fun BootBadgesStylePreview() {
     MaterialTheme {
-        CompositionLocalProvider(LocalUiStyle provides style) {
-            BootBadgedBox(
-                badgeContent = { BootBadge { Text("3") } }
-            ) {
+        CompositionLocalProvider(LocalUiStyle provides LocalUiStyle.current) {
+            BootBadgedBox(badgeContent = { BootBadge { Text("3") } }) {
                 Icon(Icons.Default.Notifications, "Notifications")
             }
         }
@@ -91,9 +65,7 @@ private fun BootBadgesStylePreview(
 private fun BootBadgePreview() {
     MaterialTheme {
         CompositionLocalProvider(LocalUiStyle provides BootUiStyle.MATERIAL3) {
-            BootBadgedBox(
-                badgeContent = { BootBadge { Text("3") } }
-            ) {
+            BootBadgedBox(badgeContent = { BootBadge { Text("3") } }) {
                 Icon(Icons.Default.Notifications, "Notifications")
             }
         }

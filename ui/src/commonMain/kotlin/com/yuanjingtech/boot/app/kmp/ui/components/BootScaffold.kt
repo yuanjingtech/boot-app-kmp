@@ -9,8 +9,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.*
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
@@ -25,35 +25,19 @@ fun BootScaffold(
     content: @Composable (PaddingValues) -> Unit = { _ -> }
 ) {
     when (LocalUiStyle.current) {
-        BootUiStyle.LIQUID_GLASS -> LiquidGlassScaffold(
-            modifier = modifier,
-            topBar = topBar,
-            bottomBar = bottomBar,
-            content = content
-        )
-        BootUiStyle.MATERIAL3 -> Material3Scaffold(
-            modifier = modifier,
-            topBar = topBar,
-            bottomBar = bottomBar,
-            content = content
-        )
+        BootUiStyle.LIQUID_GLASS -> LiquidGlassScaffold(modifier = modifier, topBar = topBar, bottomBar = bottomBar, content = content)
+        BootUiStyle.MATERIAL3 -> Material3Scaffold(modifier = modifier, topBar = topBar, bottomBar = bottomBar, content = content)
     }
 }
 
 // ─── Multi-Preview Annotations ────────────────────────────────────────────────
 
-@Preview(name = "LiquidGlass", group = "UI Style")
-@Preview(name = "Material3", group = "UI Style")
-annotation class BootScaffoldStylePreviews
-
-@BootScaffoldStylePreviews
+@StylePreviews
 @Composable
-private fun BootScaffoldStylePreview(
-    @PreviewParameter(BootUiStyleProvider::class) style: BootUiStyle
-) {
+private fun BootScaffoldStylePreview() {
     MaterialTheme {
-        CompositionLocalProvider(LocalUiStyle provides style) {
-            when (style) {
+        CompositionLocalProvider(LocalUiStyle provides LocalUiStyle.current) {
+            when (LocalUiStyle.current) {
                 BootUiStyle.LIQUID_GLASS -> {
                     com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassScaffold(
                         topBar = {
@@ -76,11 +60,7 @@ private fun BootScaffoldStylePreview(
                 BootUiStyle.MATERIAL3 -> {
                     Material3Scaffold(
                         topBar = {
-                            Material3TopAppBar(
-                                title = "Title",
-                                navigationIcon = Icons.AutoMirrored.Filled.ArrowBack,
-                                onNavigationClick = {},
-                            )
+                            Material3TopAppBar(title = "Title", navigationIcon = Icons.AutoMirrored.Filled.ArrowBack, onNavigationClick = {})
                         },
                         bottomBar = {
                             var sel by remember { mutableIntStateOf(0) }
@@ -98,6 +78,32 @@ private fun BootScaffoldStylePreview(
     }
 }
 
+@Preview(name = "Empty", group = "Variant")
+@Preview(name = "With TopBar", group = "Variant")
+@Preview(name = "With BottomBar", group = "Variant")
+annotation class BootScaffoldVariantPreviews
+
+@BootScaffoldVariantPreviews
+@Composable
+private fun BootScaffoldVariantPreview() {
+    MaterialTheme {
+        CompositionLocalProvider(LocalUiStyle provides BootUiStyle.MATERIAL3) {
+            Material3Scaffold(
+                topBar = { Material3TopAppBar(title = "Title", navigationIcon = Icons.AutoMirrored.Filled.ArrowBack, onNavigationClick = {}) },
+                bottomBar = {
+                    var sel by remember { mutableIntStateOf(0) }
+                    Material3NavigationBar(selectedIndex = sel, onItemSelected = { sel = it })
+                },
+                content = { padding ->
+                    Column(modifier = Modifier.padding(padding).fillMaxSize()) {
+                        Text("Content", modifier = Modifier.padding(16.dp))
+                    }
+                }
+            )
+        }
+    }
+}
+
 // ─── Legacy single-style preview ──────────────────────────────────────────────
 
 @Preview
@@ -106,13 +112,7 @@ private fun BootScaffoldPreview() {
     MaterialTheme {
         CompositionLocalProvider(LocalUiStyle provides BootUiStyle.MATERIAL3) {
             Material3Scaffold(
-                topBar = {
-                    Material3TopAppBar(
-                        title = "Title",
-                        navigationIcon = Icons.AutoMirrored.Filled.ArrowBack,
-                        onNavigationClick = {},
-                    )
-                },
+                topBar = { Material3TopAppBar(title = "Title", navigationIcon = Icons.AutoMirrored.Filled.ArrowBack, onNavigationClick = {}) },
                 bottomBar = {
                     var sel by remember { mutableIntStateOf(0) }
                     Material3NavigationBar(selectedIndex = sel, onItemSelected = { sel = it })

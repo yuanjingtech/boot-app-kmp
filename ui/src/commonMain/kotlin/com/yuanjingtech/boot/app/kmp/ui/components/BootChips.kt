@@ -9,9 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.*
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
@@ -29,20 +27,8 @@ fun BootAssistChip(
     enabled: Boolean = true
 ) {
     when (LocalUiStyle.current) {
-        BootUiStyle.LIQUID_GLASS -> LiquidGlassAssistChip(
-            onClick = onClick,
-            label = label,
-            modifier = modifier,
-            leadingIcon = leadingIcon,
-            enabled = enabled
-        )
-        BootUiStyle.MATERIAL3 -> Material3AssistChip(
-            onClick = onClick,
-            label = label,
-            modifier = modifier,
-            leadingIcon = leadingIcon,
-            enabled = enabled
-        )
+        BootUiStyle.LIQUID_GLASS -> LiquidGlassAssistChip(onClick = onClick, label = label, modifier = modifier, leadingIcon = leadingIcon, enabled = enabled)
+        BootUiStyle.MATERIAL3 -> Material3AssistChip(onClick = onClick, label = label, modifier = modifier, leadingIcon = leadingIcon, enabled = enabled)
     }
 }
 
@@ -56,22 +42,8 @@ fun BootFilterChip(
     enabled: Boolean = true
 ) {
     when (LocalUiStyle.current) {
-        BootUiStyle.LIQUID_GLASS -> LiquidGlassFilterChip(
-            selected = selected,
-            onClick = onClick,
-            label = label,
-            modifier = modifier,
-            leadingIcon = leadingIcon,
-            enabled = enabled
-        )
-        BootUiStyle.MATERIAL3 -> Material3FilterChip(
-            selected = selected,
-            onClick = onClick,
-            label = label,
-            modifier = modifier,
-            leadingIcon = leadingIcon,
-            enabled = enabled
-        )
+        BootUiStyle.LIQUID_GLASS -> LiquidGlassFilterChip(selected = selected, onClick = onClick, label = label, modifier = modifier, leadingIcon = leadingIcon, enabled = enabled)
+        BootUiStyle.MATERIAL3 -> Material3FilterChip(selected = selected, onClick = onClick, label = label, modifier = modifier, leadingIcon = leadingIcon, enabled = enabled)
     }
 }
 
@@ -84,49 +56,19 @@ fun BootSuggestionChip(
     enabled: Boolean = true
 ) {
     when (LocalUiStyle.current) {
-        BootUiStyle.LIQUID_GLASS -> LiquidGlassSuggestionChip(
-            onClick = onClick,
-            label = label,
-            modifier = modifier,
-            icon = icon,
-            enabled = enabled
-        )
-        BootUiStyle.MATERIAL3 -> Material3SuggestionChip(
-            onClick = onClick,
-            label = label,
-            modifier = modifier,
-            icon = icon,
-            enabled = enabled
-        )
+        BootUiStyle.LIQUID_GLASS -> LiquidGlassSuggestionChip(onClick = onClick, label = label, modifier = modifier, icon = icon, enabled = enabled)
+        BootUiStyle.MATERIAL3 -> Material3SuggestionChip(onClick = onClick, label = label, modifier = modifier, icon = icon, enabled = enabled)
     }
 }
 
 // ─── Multi-Preview Annotations ────────────────────────────────────────────────
 
-@Preview(name = "LiquidGlass", group = "UI Style")
-@Preview(name = "Material3", group = "UI Style")
-annotation class BootChipsStylePreviews
-
-@Preview(name = "Assist", group = "Type")
-@Preview(name = "Filter", group = "Type")
-@Preview(name = "Suggestion", group = "Type")
-annotation class BootChipsTypePreviews
-
-@Preview(name = "Unselected", group = "State")
-@Preview(name = "Selected", group = "State")
-annotation class BootChipsSelectedPreviews
-
-@BootChipsStylePreviews
+@StylePreviews
 @Composable
-private fun BootChipsStylePreview(
-    @PreviewParameter(BootUiStyleProvider::class) style: BootUiStyle
-) {
+private fun BootChipsStylePreview() {
     MaterialTheme {
-        CompositionLocalProvider(LocalUiStyle provides style) {
-            Column(
-                modifier = Modifier.padding(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
+        CompositionLocalProvider(LocalUiStyle provides LocalUiStyle.current) {
+            Column(modifier = Modifier.padding(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     BootAssistChip(onClick = {}, label = "Assist", leadingIcon = Icons.Default.Add)
                     BootSuggestionChip(onClick = {}, label = "Suggestion", icon = Icons.Default.Star)
@@ -140,17 +82,17 @@ private fun BootChipsStylePreview(
     }
 }
 
+@Preview(name = "Assist", group = "Type")
+@Preview(name = "Filter", group = "Type")
+@Preview(name = "Suggestion", group = "Type")
+annotation class BootChipsTypePreviews
+
 @BootChipsTypePreviews
 @Composable
-private fun BootChipsTypePreview(
-    @PreviewParameter(BootUiStyleProvider::class) style: BootUiStyle
-) {
+private fun BootChipsTypePreview() {
     MaterialTheme {
-        CompositionLocalProvider(LocalUiStyle provides style) {
-            Column(
-                modifier = Modifier.padding(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
+        CompositionLocalProvider(LocalUiStyle provides BootUiStyle.MATERIAL3) {
+            Column(modifier = Modifier.padding(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     BootAssistChip(onClick = {}, label = "Assist", leadingIcon = Icons.Default.Add)
                 }
@@ -165,17 +107,16 @@ private fun BootChipsTypePreview(
     }
 }
 
+@Preview(name = "Unselected", group = "State")
+@Preview(name = "Selected", group = "State")
+annotation class BootChipsSelectedPreviews
+
 @BootChipsSelectedPreviews
 @Composable
-private fun BootChipsSelectedPreview(
-    @PreviewParameter(BootUiStyleProvider::class) style: BootUiStyle
-) {
+private fun BootChipsSelectedPreview() {
     MaterialTheme {
-        CompositionLocalProvider(LocalUiStyle provides style) {
-            Column(
-                modifier = Modifier.padding(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
+        CompositionLocalProvider(LocalUiStyle provides BootUiStyle.MATERIAL3) {
+            Column(modifier = Modifier.padding(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     BootFilterChip(selected = false, onClick = {}, label = "Unselected")
                     BootFilterChip(selected = true, onClick = {}, label = "Selected", leadingIcon = Icons.Default.Check)
@@ -192,36 +133,14 @@ private fun BootChipsSelectedPreview(
 private fun BootChipPreview() {
     MaterialTheme {
         CompositionLocalProvider(LocalUiStyle provides BootUiStyle.MATERIAL3) {
-            Column(
-                modifier = Modifier.padding(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
+            Column(modifier = Modifier.padding(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    BootAssistChip(
-                        onClick = {},
-                        label = "Assist",
-                        leadingIcon = Icons.Default.Add
-                    )
-                    BootSuggestionChip(
-                        onClick = {},
-                        label = "Suggestion",
-                        icon = Icons.Default.Star
-                    )
+                    BootAssistChip(onClick = {}, label = "Assist", leadingIcon = Icons.Default.Add)
+                    BootSuggestionChip(onClick = {}, label = "Suggestion", icon = Icons.Default.Star)
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    var s1 by remember { mutableStateOf(false) }
-                    BootFilterChip(
-                        selected = s1,
-                        onClick = { s1 = !s1 },
-                        label = "Filter"
-                    )
-                    var s2 by remember { mutableStateOf(true) }
-                    BootFilterChip(
-                        selected = s2,
-                        onClick = { s2 = !s2 },
-                        label = "Selected",
-                        leadingIcon = Icons.Default.Check
-                    )
+                    BootFilterChip(selected = false, onClick = {}, label = "Filter")
+                    BootFilterChip(selected = true, onClick = {}, label = "Selected", leadingIcon = Icons.Default.Check)
                 }
             }
         }
