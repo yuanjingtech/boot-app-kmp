@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -23,7 +24,10 @@ import androidx.compose.ui.tooling.preview.Preview
 fun LiquidGlassText(
     text: String,
     modifier: Modifier = Modifier,
-    color: Color = Color.White,
+    color: Color? = null,
+    onLightBackground: Color = Color(0xFF1C1B1F),
+    onDarkBackground: Color = Color.White,
+    backgroundColor: Color? = null,
     fontSize: TextUnit = 16.sp,
     fontWeight: FontWeight = FontWeight.Normal,
     fontStyle: FontStyle = FontStyle.Normal,
@@ -33,10 +37,15 @@ fun LiquidGlassText(
     overflow: TextOverflow = TextOverflow.Clip,
     maxLines: Int = Int.MAX_VALUE,
 ) {
+    val resolvedColor = color ?: when {
+        backgroundColor != null -> if (backgroundColor.luminance() > 0.5f) onLightBackground else onDarkBackground
+        else -> onDarkBackground
+    }
+
     Text(
         text = text,
         modifier = modifier,
-        color = color,
+        color = resolvedColor,
         fontSize = fontSize,
         fontWeight = fontWeight,
         fontStyle = fontStyle,
@@ -53,7 +62,7 @@ fun LiquidGlassText(
 private fun LiquidGlassTextPreview() {
     MaterialTheme {
         Column(modifier = Modifier.padding(16.dp)) {
-            LiquidGlassText(text = "Heading", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+            LiquidGlassText(text = "Default (dark bg)", fontSize = 24.sp, fontWeight = FontWeight.Bold)
             LiquidGlassText(text = "Body text", fontSize = 16.sp)
             LiquidGlassText(text = "Caption", fontSize = 12.sp, color = Color.White.copy(alpha = 0.6f))
             LiquidGlassText(text = "Bold text", fontWeight = FontWeight.Bold)
@@ -61,6 +70,8 @@ private fun LiquidGlassTextPreview() {
             LiquidGlassText(text = "Underlined text", textDecoration = TextDecoration.Underline)
             LiquidGlassText(text = "Centered text", textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
             LiquidGlassText(text = "Max lines text that is very long and should be truncated when it exceeds the maximum number of lines", maxLines = 2)
+            LiquidGlassText(text = "On light background", backgroundColor = Color(0xFFF5F5F5), fontSize = 16.sp)
+            LiquidGlassText(text = "On dark background", backgroundColor = Color(0xFF1C1B1F), fontSize = 16.sp)
         }
     }
 }
