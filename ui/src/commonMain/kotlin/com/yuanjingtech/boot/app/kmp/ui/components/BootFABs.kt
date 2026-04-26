@@ -1,8 +1,8 @@
 package com.yuanjingtech.boot.app.kmp.ui.components
+import com.yuanjingtech.boot.app.kmp.ui.preview.*
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -10,6 +10,7 @@ import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.*
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
@@ -17,7 +18,10 @@ import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassFAB
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassLargeFAB
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassSmallFAB
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassExtendedFAB
-import com.yuanjingtech.boot.app.kmp.ui.material3.*
+import com.yuanjingtech.boot.app.kmp.ui.material3.Material3FloatingActionButton
+import com.yuanjingtech.boot.app.kmp.ui.material3.Material3SmallFloatingActionButton
+import com.yuanjingtech.boot.app.kmp.ui.material3.Material3LargeFloatingActionButton
+import com.yuanjingtech.boot.app.kmp.ui.material3.Material3ExtendedFloatingActionButton
 
 @Composable
 fun BootFloatingActionButton(
@@ -72,57 +76,28 @@ fun BootExtendedFloatingActionButton(
     }
 }
 
-// ─── Multi-Preview Annotations ────────────────────────────────────────────────
-
-@StylePreviews
-@Composable
-private fun BootFABsStylePreview() {
-    MaterialTheme {
-        CompositionLocalProvider(LocalUiStyle provides LocalUiStyle.current) {
-            Row(modifier = Modifier.padding(16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                BootSmallFloatingActionButton(onClick = {}, icon = Icons.Default.Add)
-                BootFloatingActionButton(onClick = {}, icon = Icons.Default.Add)
-                BootLargeFloatingActionButton(onClick = {}, icon = Icons.Default.Add)
-                BootExtendedFloatingActionButton(onClick = {}, text = "Add", icon = Icons.Default.Add)
-            }
-        }
-    }
-}
-
-@Preview(name = "Small", group = "Size")
-@Preview(name = "Regular", group = "Size")
-@Preview(name = "Large", group = "Size")
-@Preview(name = "Extended", group = "Size")
-annotation class BootFABsSizePreviews
-
-@BootFABsSizePreviews
-@Composable
-private fun BootFABsSizePreview() {
-    MaterialTheme {
-        CompositionLocalProvider(LocalUiStyle provides BootUiStyle.MATERIAL3) {
-            Row(modifier = Modifier.padding(16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                BootSmallFloatingActionButton(onClick = {}, icon = Icons.Default.Add)
-                BootFloatingActionButton(onClick = {}, icon = Icons.Default.Add)
-                BootLargeFloatingActionButton(onClick = {}, icon = Icons.Default.Add)
-                BootExtendedFloatingActionButton(onClick = {}, text = "Add", icon = Icons.Default.Add)
-            }
-        }
-    }
-}
-
-// ─── Legacy single-style preview ──────────────────────────────────────────────
+// ─── Previews ─────────────────────────────────────────────────────────────────
 
 @Preview
 @Composable
-private fun BootFABPreview() {
-    MaterialTheme {
-        CompositionLocalProvider(LocalUiStyle provides BootUiStyle.MATERIAL3) {
-            Row(modifier = Modifier.padding(16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                BootSmallFloatingActionButton(onClick = {}, icon = Icons.Default.Add)
-                BootFloatingActionButton(onClick = {}, icon = Icons.Default.Add)
-                BootLargeFloatingActionButton(onClick = {}, icon = Icons.Default.Add)
-                BootExtendedFloatingActionButton(onClick = {}, text = "Add Item", icon = Icons.Default.Add)
-            }
-        }
+@PreviewWrapper(wrapper = LiquidGlassPreviewWrapper::class)
+private fun BootFABsLiquidGlassPreview() {
+    Row(modifier = Modifier.padding(16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        BootSmallFloatingActionButton(onClick = {}, icon = Icons.Default.Add)
+        BootFloatingActionButton(onClick = {}, icon = Icons.Default.Add)
+        BootLargeFloatingActionButton(onClick = {}, icon = Icons.Default.Add)
+        BootExtendedFloatingActionButton(onClick = {}, text = "Add", icon = Icons.Default.Add)
+    }
+}
+
+@Preview
+@Composable
+@PreviewWrapper(wrapper = Material3PreviewWrapper::class)
+private fun BootFABsMaterial3Preview() {
+    Row(modifier = Modifier.padding(16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        BootSmallFloatingActionButton(onClick = {}, icon = Icons.Default.Add)
+        BootFloatingActionButton(onClick = {}, icon = Icons.Default.Add)
+        BootLargeFloatingActionButton(onClick = {}, icon = Icons.Default.Add)
+        BootExtendedFloatingActionButton(onClick = {}, text = "Add", icon = Icons.Default.Add)
     }
 }

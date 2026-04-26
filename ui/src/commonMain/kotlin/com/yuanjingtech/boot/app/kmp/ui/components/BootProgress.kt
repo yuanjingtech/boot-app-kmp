@@ -1,8 +1,8 @@
 package com.yuanjingtech.boot.app.kmp.ui.components
+import com.yuanjingtech.boot.app.kmp.ui.preview.*
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -10,12 +10,14 @@ import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.*
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassCircularProgressIndicator
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassLinearProgressIndicator
-import com.yuanjingtech.boot.app.kmp.ui.material3.*
+import com.yuanjingtech.boot.app.kmp.ui.material3.Material3CircularProgressIndicator
+import com.yuanjingtech.boot.app.kmp.ui.material3.Material3LinearProgressIndicator
 
 @Composable
 fun BootCircularProgressIndicator(modifier: Modifier = Modifier, progress: Float? = null, color: Color = Color.Unspecified) {
@@ -33,72 +35,28 @@ fun BootLinearProgressIndicator(modifier: Modifier = Modifier, progress: Float? 
     }
 }
 
-// ─── Multi-Preview Annotations ────────────────────────────────────────────────
-
-@StylePreviews
-@Composable
-private fun BootProgressStylePreview() {
-    MaterialTheme {
-        CompositionLocalProvider(LocalUiStyle provides LocalUiStyle.current) {
-            Column(modifier = Modifier.padding(8.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                BootCircularProgressIndicator()
-                BootCircularProgressIndicator(progress = 0.6f)
-                BootLinearProgressIndicator()
-                BootLinearProgressIndicator(progress = 0.4f)
-            }
-        }
-    }
-}
-
-@Preview(name = "Circular", group = "Type")
-@Preview(name = "Linear", group = "Type")
-annotation class BootProgressTypePreviews
-
-@BootProgressTypePreviews
-@Composable
-private fun BootProgressTypePreview() {
-    MaterialTheme {
-        CompositionLocalProvider(LocalUiStyle provides BootUiStyle.MATERIAL3) {
-            Column(modifier = Modifier.padding(8.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                BootCircularProgressIndicator()
-                BootLinearProgressIndicator()
-            }
-        }
-    }
-}
-
-@Preview(name = "Indeterminate", group = "Progress")
-@Preview(name = "Determinate", group = "Progress")
-annotation class BootProgressValuePreviews
-
-@BootProgressValuePreviews
-@Composable
-private fun BootProgressValuePreview() {
-    MaterialTheme {
-        CompositionLocalProvider(LocalUiStyle provides BootUiStyle.MATERIAL3) {
-            Column(modifier = Modifier.padding(8.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                BootCircularProgressIndicator()
-                BootCircularProgressIndicator(progress = 0.6f)
-                BootLinearProgressIndicator()
-                BootLinearProgressIndicator(progress = 0.4f)
-            }
-        }
-    }
-}
-
-// ─── Legacy single-style preview ──────────────────────────────────────────────
+// ─── Previews ─────────────────────────────────────────────────────────────────
 
 @Preview
 @Composable
-private fun BootProgressPreview() {
-    MaterialTheme {
-        CompositionLocalProvider(LocalUiStyle provides BootUiStyle.MATERIAL3) {
-            Column(modifier = Modifier.padding(8.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                BootCircularProgressIndicator()
-                BootCircularProgressIndicator(progress = 0.6f)
-                BootLinearProgressIndicator()
-                BootLinearProgressIndicator(progress = 0.4f)
-            }
-        }
+@PreviewWrapper(wrapper = LiquidGlassPreviewWrapper::class)
+private fun BootProgressLiquidGlassPreview() {
+    Column(modifier = Modifier.padding(8.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        BootCircularProgressIndicator()
+        BootCircularProgressIndicator(progress = 0.6f)
+        BootLinearProgressIndicator()
+        BootLinearProgressIndicator(progress = 0.4f)
+    }
+}
+
+@Preview
+@Composable
+@PreviewWrapper(wrapper = Material3PreviewWrapper::class)
+private fun BootProgressMaterial3Preview() {
+    Column(modifier = Modifier.padding(8.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        BootCircularProgressIndicator()
+        BootCircularProgressIndicator(progress = 0.6f)
+        BootLinearProgressIndicator()
+        BootLinearProgressIndicator(progress = 0.4f)
     }
 }

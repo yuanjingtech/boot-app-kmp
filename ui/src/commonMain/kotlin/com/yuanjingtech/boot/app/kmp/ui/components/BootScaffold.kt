@@ -1,4 +1,5 @@
 package com.yuanjingtech.boot.app.kmp.ui.components
+import com.yuanjingtech.boot.app.kmp.ui.preview.*
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -9,13 +10,17 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.*
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassScaffold
-import com.yuanjingtech.boot.app.kmp.ui.material3.*
+import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassScaffoldTopBar
+import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassScaffoldBottomBar
+import com.yuanjingtech.boot.app.kmp.ui.material3.Material3Scaffold
+import com.yuanjingtech.boot.app.kmp.ui.material3.Material3TopAppBar
+import com.yuanjingtech.boot.app.kmp.ui.material3.Material3NavigationBar
 
 @Composable
 fun BootScaffold(
@@ -30,99 +35,47 @@ fun BootScaffold(
     }
 }
 
-// ─── Multi-Preview Annotations ────────────────────────────────────────────────
-
-@StylePreviews
-@Composable
-private fun BootScaffoldStylePreview() {
-    MaterialTheme {
-        CompositionLocalProvider(LocalUiStyle provides LocalUiStyle.current) {
-            when (LocalUiStyle.current) {
-                BootUiStyle.LIQUID_GLASS -> {
-                    com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassScaffold(
-                        topBar = {
-                            com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassScaffoldTopBar {
-                                Text("Title", color = Color.White, modifier = Modifier.padding(16.dp))
-                            }
-                        },
-                        bottomBar = {
-                            com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassScaffoldBottomBar {
-                                Text("Bottom", color = Color.White, modifier = Modifier.padding(16.dp))
-                            }
-                        },
-                        content = { _ ->
-                            Box(modifier = Modifier.fillMaxSize()) {
-                                Text("Content", color = Color.White, modifier = Modifier.padding(16.dp))
-                            }
-                        }
-                    )
-                }
-                BootUiStyle.MATERIAL3 -> {
-                    Material3Scaffold(
-                        topBar = {
-                            Material3TopAppBar(title = "Title", navigationIcon = Icons.AutoMirrored.Filled.ArrowBack, onNavigationClick = {})
-                        },
-                        bottomBar = {
-                            var sel by remember { mutableIntStateOf(0) }
-                            Material3NavigationBar(selectedIndex = sel, onItemSelected = { sel = it })
-                        },
-                        content = { padding ->
-                            Column(modifier = Modifier.padding(padding).fillMaxSize()) {
-                                Text("Content", modifier = Modifier.padding(16.dp))
-                            }
-                        }
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Preview(name = "Empty", group = "Variant")
-@Preview(name = "With TopBar", group = "Variant")
-@Preview(name = "With BottomBar", group = "Variant")
-annotation class BootScaffoldVariantPreviews
-
-@BootScaffoldVariantPreviews
-@Composable
-private fun BootScaffoldVariantPreview() {
-    MaterialTheme {
-        CompositionLocalProvider(LocalUiStyle provides BootUiStyle.MATERIAL3) {
-            Material3Scaffold(
-                topBar = { Material3TopAppBar(title = "Title", navigationIcon = Icons.AutoMirrored.Filled.ArrowBack, onNavigationClick = {}) },
-                bottomBar = {
-                    var sel by remember { mutableIntStateOf(0) }
-                    Material3NavigationBar(selectedIndex = sel, onItemSelected = { sel = it })
-                },
-                content = { padding ->
-                    Column(modifier = Modifier.padding(padding).fillMaxSize()) {
-                        Text("Content", modifier = Modifier.padding(16.dp))
-                    }
-                }
-            )
-        }
-    }
-}
-
-// ─── Legacy single-style preview ──────────────────────────────────────────────
+// ─── Previews ─────────────────────────────────────────────────────────────────
 
 @Preview
 @Composable
-private fun BootScaffoldPreview() {
-    MaterialTheme {
-        CompositionLocalProvider(LocalUiStyle provides BootUiStyle.MATERIAL3) {
-            Material3Scaffold(
-                topBar = { Material3TopAppBar(title = "Title", navigationIcon = Icons.AutoMirrored.Filled.ArrowBack, onNavigationClick = {}) },
-                bottomBar = {
-                    var sel by remember { mutableIntStateOf(0) }
-                    Material3NavigationBar(selectedIndex = sel, onItemSelected = { sel = it })
-                },
-                content = { padding ->
-                    Column(modifier = Modifier.padding(padding).fillMaxSize()) {
-                        Text("Content", modifier = Modifier.padding(16.dp))
-                    }
-                }
-            )
+@PreviewWrapper(wrapper = LiquidGlassPreviewWrapper::class)
+private fun BootScaffoldLiquidGlassPreview() {
+    LiquidGlassScaffold(
+        topBar = {
+            LiquidGlassScaffoldTopBar {
+                Text("Title", color = Color.White, modifier = Modifier.padding(16.dp))
+            }
+        },
+        bottomBar = {
+            LiquidGlassScaffoldBottomBar {
+                Text("Bottom", color = Color.White, modifier = Modifier.padding(16.dp))
+            }
+        },
+        content = { _ ->
+            Box(modifier = Modifier.fillMaxSize()) {
+                Text("Content", color = Color.White, modifier = Modifier.padding(16.dp))
+            }
         }
-    }
+    )
+}
+
+@Preview
+@Composable
+@PreviewWrapper(wrapper = Material3PreviewWrapper::class)
+private fun BootScaffoldMaterial3Preview() {
+    Material3Scaffold(
+        topBar = {
+            Material3TopAppBar(title = "Title", navigationIcon = Icons.AutoMirrored.Filled.ArrowBack, onNavigationClick = {})
+        },
+        bottomBar = {
+            var sel by remember { mutableIntStateOf(0) }
+            Material3NavigationBar(selectedIndex = sel, onItemSelected = { sel = it })
+        },
+        content = { padding ->
+            Column(modifier = Modifier.padding(padding).fillMaxSize()) {
+                Text("Content", modifier = Modifier.padding(16.dp))
+            }
+        }
+    )
 }

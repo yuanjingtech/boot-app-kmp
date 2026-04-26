@@ -5,19 +5,20 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassBadge
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassBadgedBox
 import com.yuanjingtech.boot.app.kmp.ui.material3.Material3Badge
 import com.yuanjingtech.boot.app.kmp.ui.material3.Material3BadgedBox
+import com.yuanjingtech.boot.app.kmp.ui.preview.LiquidGlassPreviewWrapper
+import com.yuanjingtech.boot.app.kmp.ui.preview.Material3PreviewWrapper
 
 @Composable
 fun BootBadge(
@@ -44,30 +45,22 @@ fun BootBadgedBox(
     }
 }
 
-// ─── Multi-Preview Annotations ────────────────────────────────────────────────
-
-@BootPreviews
-@Composable
-private fun BootBadgesStylePreview() {
-    MaterialTheme {
-        CompositionLocalProvider(LocalUiStyle provides LocalUiStyle.current) {
-            BootBadgedBox(badgeContent = { BootBadge { Text("3") } }) {
-                Icon(Icons.Default.Notifications, "Notifications")
-            }
-        }
-    }
-}
-
-// ─── Legacy single-style preview ──────────────────────────────────────────────
+// ─── Previews ─────────────────────────────────────────────────────────────────
 
 @Preview
 @Composable
-private fun BootBadgePreview() {
-    MaterialTheme {
-        CompositionLocalProvider(LocalUiStyle provides BootUiStyle.MATERIAL3) {
-            BootBadgedBox(badgeContent = { BootBadge { Text("3") } }) {
-                Icon(Icons.Default.Notifications, "Notifications")
-            }
-        }
+@PreviewWrapper(wrapper = LiquidGlassPreviewWrapper::class)
+private fun BootBadgesLiquidGlassPreview() {
+    BootBadgedBox(badgeContent = { BootBadge { Text("3") } }) {
+        Icon(Icons.Default.Notifications, "Notifications")
+    }
+}
+
+@Preview
+@Composable
+@PreviewWrapper(wrapper = Material3PreviewWrapper::class)
+private fun BootBadgesMaterial3Preview() {
+    BootBadgedBox(badgeContent = { BootBadge { Text("3") } }) {
+        Icon(Icons.Default.Notifications, "Notifications")
     }
 }

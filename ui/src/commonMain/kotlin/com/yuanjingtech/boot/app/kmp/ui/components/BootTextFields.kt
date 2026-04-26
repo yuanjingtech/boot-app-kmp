@@ -1,10 +1,12 @@
 package com.yuanjingtech.boot.app.kmp.ui.components
+import com.yuanjingtech.boot.app.kmp.ui.preview.*
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
@@ -28,50 +30,24 @@ fun BootTextField(
     }
 }
 
-// ─── Multi-Preview Annotations ────────────────────────────────────────────────
-
-@StylePreviews
-@Composable
-private fun BootTextFieldStylePreview() {
-    MaterialTheme {
-        CompositionLocalProvider(LocalUiStyle provides LocalUiStyle.current) {
-            Column(modifier = Modifier.padding(8.dp).fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                var t by remember { mutableStateOf("") }
-                BootTextField(value = t, onValueChange = { t = it }, placeholder = "Enter text...", modifier = Modifier.fillMaxWidth())
-            }
-        }
-    }
-}
-
-@Preview(name = "Text input", group = "Type")
-@Preview(name = "Password", group = "Type")
-annotation class BootTextFieldTypePreviews
-
-@BootTextFieldTypePreviews
-@Composable
-private fun BootTextFieldTypePreview() {
-    MaterialTheme {
-        CompositionLocalProvider(LocalUiStyle provides BootUiStyle.MATERIAL3) {
-            Column(modifier = Modifier.padding(8.dp).fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                BootTextField(value = "Sample Text", onValueChange = {}, placeholder = "Enter text...", modifier = Modifier.fillMaxWidth())
-                BootTextField(value = "password", onValueChange = {}, placeholder = "Password", isPassword = true, modifier = Modifier.fillMaxWidth())
-            }
-        }
-    }
-}
-
-// ─── Legacy single-style preview ───────────────────────────────────────────────
+// ─── Previews ─────────────────────────────────────────────────────────────────
 
 @Preview
 @Composable
-private fun BootTextFieldPreview() {
-    MaterialTheme {
-        CompositionLocalProvider(LocalUiStyle provides BootUiStyle.MATERIAL3) {
-            Column(modifier = Modifier.padding(8.dp).fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                var t by remember { mutableStateOf("") }
-                BootTextField(value = t, onValueChange = { t = it }, placeholder = "Enter text...", modifier = Modifier.fillMaxWidth())
-                BootTextField(value = "password", onValueChange = {}, placeholder = "Password", isPassword = true, modifier = Modifier.fillMaxWidth())
-            }
-        }
+@PreviewWrapper(wrapper = LiquidGlassPreviewWrapper::class)
+private fun BootTextFieldLiquidGlassPreview() {
+    Column(modifier = Modifier.padding(8.dp).fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        var t by remember { mutableStateOf("") }
+        BootTextField(value = t, onValueChange = { t = it }, placeholder = "Enter text...", modifier = Modifier.fillMaxWidth())
+    }
+}
+
+@Preview
+@Composable
+@PreviewWrapper(wrapper = Material3PreviewWrapper::class)
+private fun BootTextFieldMaterial3Preview() {
+    Column(modifier = Modifier.padding(8.dp).fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        var t by remember { mutableStateOf("") }
+        BootTextField(value = t, onValueChange = { t = it }, placeholder = "Enter text...", modifier = Modifier.fillMaxWidth())
     }
 }

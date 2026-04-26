@@ -1,16 +1,18 @@
 package com.yuanjingtech.boot.app.kmp.ui.components
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassButton
 import com.yuanjingtech.boot.app.kmp.ui.material3.Material3Button
+import com.yuanjingtech.boot.app.kmp.ui.preview.LiquidGlassPreviewWrapper
+import com.yuanjingtech.boot.app.kmp.ui.preview.Material3PreviewWrapper
 
 @Composable
 fun BootButton(onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, content: @Composable RowScope.() -> Unit = {}) {
@@ -20,46 +22,25 @@ fun BootButton(onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Bool
     }
 }
 
-// ─── Multi-Preview Annotations ────────────────────────────────────────────────
-
-@BootPreviews
-@Composable
-private fun BootButtonStyleAndModePreview() {
-    MaterialTheme {
-        CompositionLocalProvider(LocalUiStyle provides LocalUiStyle.current) {
-            BootButton(onClick = {}) { Text("Boot Button") }
-        }
-    }
-}
-
-// ─── Legacy single-style previews ────────────────────────────────────────────
+// ─── Previews ─────────────────────────────────────────────────────────────────
 
 @Preview
 @Composable
+@PreviewWrapper(wrapper = LiquidGlassPreviewWrapper::class)
 private fun BootButtonLiquidGlassPreview() {
-    MaterialTheme {
-        CompositionLocalProvider(LocalUiStyle provides BootUiStyle.LIQUID_GLASS) {
-            BootButton(onClick = {}) { Text("LiquidGlass Button") }
-        }
+    Column {
+        BootButton(onClick = {}) { Text("LiquidGlass Button") }
+        BootButton(onClick = {}, enabled = false) { Text("Disabled Button") }
     }
 }
 
 @Preview
 @Composable
+@PreviewWrapper(wrapper = Material3PreviewWrapper::class)
 private fun BootButtonMaterial3Preview() {
-    MaterialTheme {
-        CompositionLocalProvider(LocalUiStyle provides BootUiStyle.MATERIAL3) {
-            BootButton(onClick = {}) { Text("Material3 Button") }
-        }
+    Column {
+        BootButton(onClick = {}) { Text("Material3 Button") }
+        BootButton(onClick = {}, enabled = false) { Text("Disabled Button") }
     }
 }
 
-@Preview
-@Composable
-fun BootButtonDisabledPreview() {
-    MaterialTheme {
-        CompositionLocalProvider(LocalUiStyle provides BootUiStyle.LIQUID_GLASS) {
-            BootButton(onClick = {}, enabled = false) { Text("Disabled Button") }
-        }
-    }
-}

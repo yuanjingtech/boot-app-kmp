@@ -1,26 +1,72 @@
-package com.yuanjingtech.boot.app.kmp.ui.components
+package com.yuanjingtech.boot.app.kmp.ui.preview
 
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.tooling.preview.PreviewWrapper
+import androidx.compose.ui.tooling.preview.PreviewWrapperProvider
+import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
+import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
+
+// ─── PreviewWrapperProvider Implementations (compose 1.11+) ────────────────────
+
+class LiquidGlassPreviewWrapper : PreviewWrapperProvider {
+    @Composable
+    override fun Wrap(content: @Composable () -> Unit) {
+        CompositionLocalProvider(LocalUiStyle provides BootUiStyle.LIQUID_GLASS) {
+            MaterialTheme {
+                content()
+            }
+        }
+    }
+}
+
+class Material3PreviewWrapper : PreviewWrapperProvider {
+    @Composable
+    override fun Wrap(content: @Composable () -> Unit) {
+        CompositionLocalProvider(LocalUiStyle provides BootUiStyle.MATERIAL3) {
+            MaterialTheme {
+                content()
+            }
+        }
+    }
+}
+
+// ─── BootPreviewUtils ──────────────────────────────────────────────────────────
 
 /**
- * Preview at both UI styles (light mode).
+ * Boot UI previews helper — provides [BootUiStyle] via [LocalUiStyle] to preview functions.
+ *
+ * **用法示例:**
+ * ```kotlin
+ * // 1. 只用 UI 风格（无参数）
+ * @Preview
+ * @Composable
+ * @PreviewWrapper(wrapper = LiquidGlassPreviewWrapper::class)
+ * fun MyComponentPreview()
+ *
+ * // 2. UI 风格 + 示例数据
+ * @Preview
+ * @Composable
+ * @PreviewWrapper(wrapper = Material3PreviewWrapper::class)
+ * fun MyListPreview(
+ *     @PreviewParameter(SampleDataProvider::class) item: Item
+ * )
+ *
+ * // 3. 多变体预览（Light + Dark）
+ * @Preview(name = "Light", group = "Material3")
+ * @Preview(name = "Dark", group = "Material3")
+ * @Composable
+ * @PreviewWrapper(wrapper = Material3PreviewWrapper::class)
+ * fun MyCardPreview()
+ * ```
+ *
+ * **为什么不直接用 annotation class？**
+ * `@PreviewWrapper` 的 `@Target` 是 `FUNCTION`，不能放在 annotation class 上。
+ * 因此 wrapper 注解必须放在 `@Composable fun` 上，而不是 MultiPreview annotation class 上。
+ *
+ * @see PreviewWrapper
+ * @see PreviewWrapperProvider
+ * @see PreviewParameter
  */
-@Preview(name = "LiquidGlass", group = "UI Style")
-@Preview(name = "Material3", group = "UI Style")
-annotation class StylePreviews
-
-/**
- * Preview at light and dark mode.
- */
-@Preview(name = "Light", group = "Night Mode")
-@Preview(name = "Dark", group = "Night Mode")
-annotation class UiModePreviews
-
-/**
- * All 4 combinations: 2 styles × 2 modes.
- */
-@Preview(name = "LiquidGlass Light", group = "Style+Mode")
-@Preview(name = "LiquidGlass Dark", group = "Style+Mode")
-@Preview(name = "Material3 Light", group = "Style+Mode")
-@Preview(name = "Material3 Dark", group = "Style+Mode")
-annotation class BootPreviews
+object BootPreviewUtils
