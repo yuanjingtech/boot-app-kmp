@@ -41,7 +41,7 @@ fun BootScaffold(
 @Composable
 @PreviewWrapper(wrapper = LiquidGlassPreviewWrapper::class)
 private fun BootScaffoldLiquidGlassPreview() {
-    LiquidGlassScaffold(
+    BootScaffold(
         topBar = {
             LiquidGlassScaffoldTopBar {
                 Text("Title", color = Color.White, modifier = Modifier.padding(16.dp))
@@ -64,7 +64,7 @@ private fun BootScaffoldLiquidGlassPreview() {
 @Composable
 @PreviewWrapper(wrapper = Material3PreviewWrapper::class)
 private fun BootScaffoldMaterial3Preview() {
-    Material3Scaffold(
+    BootScaffold(
         topBar = {
             Material3TopAppBar(title = "Title", navigationIcon = Icons.AutoMirrored.Filled.ArrowBack, onNavigationClick = {})
         },
