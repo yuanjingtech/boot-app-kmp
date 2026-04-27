@@ -82,6 +82,7 @@ fun LiquidGlassScaffold(
             }
             Box(
                 modifier = Modifier.fillMaxWidth()
+                    .navigationBarsPadding()
                     .align(BottomCenter),
                 contentAlignment = Center,
             ) {
