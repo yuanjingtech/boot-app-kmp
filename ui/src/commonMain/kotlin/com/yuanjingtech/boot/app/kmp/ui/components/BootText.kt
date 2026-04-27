@@ -30,9 +30,6 @@ fun BootText(
     text: String,
     modifier: Modifier = Modifier,
     color: Color? = null,
-    onLightBackground: Color = Color(0xFF1C1B1F),
-    onDarkBackground: Color = Color.White,
-    backgroundColor: Color? = null,
     fontSize: TextUnit = TextUnit.Unspecified,
     fontWeight: FontWeight = FontWeight.Normal,
     fontStyle: FontStyle = FontStyle.Normal,
@@ -47,9 +44,6 @@ fun BootText(
             text = text,
             modifier = modifier,
             color = color,
-            onLightBackground = onLightBackground,
-            onDarkBackground = onDarkBackground,
-            backgroundColor = backgroundColor,
             fontSize = fontSize,
             fontWeight = fontWeight,
             fontStyle = fontStyle,
@@ -82,7 +76,7 @@ fun BootText(
 @PreviewWrapper(wrapper = LiquidGlassPreviewWrapper::class)
 private fun BootTextLiquidGlassPreview() {
     Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        BootText(text = "Default (dark bg)", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+        BootText(text = "Heading", fontSize = 24.sp, fontWeight = FontWeight.Bold)
         BootText(text = "Body text", fontSize = 16.sp)
         BootText(text = "Caption", fontSize = 12.sp, color = Color.White.copy(alpha = 0.6f))
         BootText(text = "Bold text", fontWeight = FontWeight.Bold)
@@ -90,8 +84,6 @@ private fun BootTextLiquidGlassPreview() {
         BootText(text = "Underlined text", textDecoration = TextDecoration.Underline)
         BootText(text = "Centered text", textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
         BootText(text = "Max lines text", maxLines = 2)
-        BootText(text = "On light bg", backgroundColor = Color(0xFFF5F5F5))
-        BootText(text = "On dark bg", backgroundColor = Color(0xFF1C1B1F))
     }
 }
 
