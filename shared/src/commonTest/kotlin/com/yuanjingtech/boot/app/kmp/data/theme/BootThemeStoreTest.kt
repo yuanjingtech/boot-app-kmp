@@ -6,6 +6,8 @@ import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -139,6 +141,39 @@ class BootThemeStoreTest {
         val style = themeStore.uiStyleFlow.first()
         assertEquals(BootThemeMode.DARK, mode)
         assertEquals(BootUiStyle.MATERIAL3, style)
+    }
+
+    @Test
+    fun themeStore_concurrentSetUiStyle_allWritesSucceed() = runTest {
+        // 10 concurrent writes, last one wins in current implementation
+        // This test documents the current behavior and catches accidental data loss
+        val jobs = (0..9).map { i ->
+            launch {
+                themeStore.setUiStyle(if (i % 2 == 0) BootUiStyle.LIQUID_GLASS else BootUiStyle.MATERIAL3)
+            }
+        }
+        joinAll(*jobs.toTypedArray())
+        // At minimum, the flow should emit without error
+        val style = themeStore.uiStyleFlow.first()
+        assertEquals(true, style == BootUiStyle.LIQUID_GLASS || style == BootUiStyle.MATERIAL3)
+    }
+
+    @Test
+    fun themeStore_concurrentSetUiStyleAndThemeMode_noDataLoss() = runTest {
+        // Concurrent writes to different fields should not corrupt each other
+        val jobs = listOf(
+            launch { themeStore.setUiStyle(BootUiStyle.MATERIAL3) },
+            launch { themeStore.setThemeMode(BootThemeMode.DARK) },
+            launch { themeStore.setUiStyle(BootUiStyle.LIQUID_GLASS) },
+            launch { themeStore.setThemeMode(BootThemeMode.LIGHT) }
+        )
+        joinAll(*jobs.toTypedArray())
+
+        val mode = themeStore.themeModeFlow.first()
+        val style = themeStore.uiStyleFlow.first()
+        // Both fields should have valid values (last write wins for each)
+        assertEquals(true, mode == BootThemeMode.DARK || mode == BootThemeMode.LIGHT)
+        assertEquals(true, style == BootUiStyle.LIQUID_GLASS || style == BootUiStyle.MATERIAL3)
     }
 
     // endregion

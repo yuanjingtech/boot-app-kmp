@@ -13,8 +13,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
-private fun Modifier.fillMaxWidth(): Modifier = this.fillMaxWidth()
-
 @Composable
 fun Modifier.liquidGlassSurface(
     cornerRadius: Dp = 16.dp,

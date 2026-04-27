@@ -29,7 +29,7 @@ fun BootAppTheme(
     typography: Typography = MaterialTheme.typography,
     content: @Composable () -> Unit,
 ) {
-    val themeMode by themeStore.themeModeFlow.map { it }.collectAsState(initial = BootThemeMode.FOLLOW_SYSTEM)
+    val themeMode by themeStore.themeModeFlow.collectAsState(initial = BootThemeMode.FOLLOW_SYSTEM)
     val uiStyle by themeStore.uiStyleFlow.collectAsState(initial = defaultUiStyle)
     val isDarkTheme = when (themeMode) {
         BootThemeMode.FOLLOW_SYSTEM -> isSystemInDarkTheme()

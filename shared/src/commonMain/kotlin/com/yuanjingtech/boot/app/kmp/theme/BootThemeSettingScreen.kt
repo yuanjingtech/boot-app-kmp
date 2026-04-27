@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -146,8 +147,7 @@ fun BootThemeSettingScreen(
 }
 
 @Composable
-private fun rememberScrollState() =
-    androidx.compose.foundation.ScrollState(0)
+private fun rememberScrollState() = remember { androidx.compose.foundation.ScrollState(0) }
 
 @Composable
 fun BootThemeSettingScreenWithStore(
