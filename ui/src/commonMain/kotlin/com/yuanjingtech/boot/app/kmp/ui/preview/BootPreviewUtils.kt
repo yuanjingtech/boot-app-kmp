@@ -1,12 +1,27 @@
 package com.yuanjingtech.boot.app.kmp.ui.preview
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.tooling.preview.PreviewWrapperProvider
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
+import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassTheme
+
+// ─── Preview Color Schemes ────────────────────────────────────────────────────
+
+private val DarkColorScheme = darkColorScheme(
+    surface = Color(0xFF1C1B1F),
+)
+
+private val LightColorScheme = lightColorScheme(
+    surface = Color(0xFFFFFBFE),
+)
 
 // ─── PreviewWrapperProvider Implementations (compose 1.11+) ────────────────────
 
@@ -14,8 +29,23 @@ class LiquidGlassPreviewWrapper : PreviewWrapperProvider {
     @Composable
     override fun Wrap(content: @Composable () -> Unit) {
         CompositionLocalProvider(LocalUiStyle provides BootUiStyle.LIQUID_GLASS) {
-            MaterialTheme {
-                content()
+            MaterialTheme(colorScheme = DarkColorScheme) {
+                LiquidGlassTheme {
+                    content()
+                }
+            }
+        }
+    }
+}
+
+class LiquidGlassLightPreviewWrapper : PreviewWrapperProvider {
+    @Composable
+    override fun Wrap(content: @Composable () -> Unit) {
+        CompositionLocalProvider(LocalUiStyle provides BootUiStyle.LIQUID_GLASS) {
+            MaterialTheme(colorScheme = LightColorScheme) {
+                LiquidGlassTheme {
+                    content()
+                }
             }
         }
     }

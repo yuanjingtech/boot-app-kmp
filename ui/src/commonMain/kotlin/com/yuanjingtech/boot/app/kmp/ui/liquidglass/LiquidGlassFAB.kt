@@ -35,6 +35,7 @@ fun LiquidGlassFAB(
     contentDescription: String = "Add"
 ) {
     val interactionSource = remember { MutableInteractionSource() }
+    val colors = LocalLiquidGlassColors.current
     Box(
         modifier = modifier
             .size(56.dp)
@@ -50,7 +51,7 @@ fun LiquidGlassFAB(
         Icon(
             imageVector = icon,
             contentDescription = contentDescription,
-            tint = Color.White,
+            tint = colors.content,
         )
     }
 }
@@ -63,6 +64,7 @@ fun LiquidGlassSmallFAB(
     contentDescription: String = "Add"
 ) {
     val interactionSource = remember { MutableInteractionSource() }
+    val colors = LocalLiquidGlassColors.current
     Box(
         modifier = modifier
             .size(40.dp)
@@ -78,7 +80,7 @@ fun LiquidGlassSmallFAB(
         Icon(
             imageVector = icon,
             contentDescription = contentDescription,
-            tint = Color.White,
+            tint = colors.content,
             modifier = Modifier.size(20.dp),
         )
     }
@@ -92,6 +94,7 @@ fun LiquidGlassLargeFAB(
     contentDescription: String = "Add"
 ) {
     val interactionSource = remember { MutableInteractionSource() }
+    val colors = LocalLiquidGlassColors.current
     Box(
         modifier = modifier
             .size(96.dp)
@@ -107,7 +110,7 @@ fun LiquidGlassLargeFAB(
         Icon(
             imageVector = icon,
             contentDescription = contentDescription,
-            tint = Color.White,
+            tint = colors.content,
             modifier = Modifier.size(36.dp),
         )
     }
@@ -121,6 +124,7 @@ fun LiquidGlassExtendedFAB(
     icon: ImageVector = Icons.Filled.Add,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
+    val colors = LocalLiquidGlassColors.current
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
@@ -136,10 +140,10 @@ fun LiquidGlassExtendedFAB(
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = Color.White,
+            tint = colors.content,
         )
         Box(modifier = Modifier.width(8.dp))
-        Text(text, color = Color.White)
+        Text(text, color = colors.content)
     }
 }
 

@@ -44,6 +44,7 @@ fun LiquidGlassSearchBar(
     leadingIcon: ImageVector = Icons.Default.Search,
     trailingIcon: ImageVector? = null,
 ) {
+    val colors = LocalLiquidGlassColors.current
     val focusManager = LocalFocusManager.current
     val suggestions = defaultSuggestions
 
@@ -63,15 +64,15 @@ fun LiquidGlassSearchBar(
                 Icon(
                     imageVector = leadingIcon,
                     contentDescription = null,
-                    tint = Color.White.copy(alpha = 0.7f),
+                    tint = colors.secondary.copy(alpha = 0.7f),
                     modifier = Modifier.size(24.dp),
                 )
                 Spacer(modifier = Modifier.width(12.dp))
                 BasicTextField(
                     value = query,
                     onValueChange = onQueryChange,
-                    textStyle = TextStyle(color = Color.White.copy(alpha = 0.9f)),
-                    cursorBrush = SolidColor(Color.White),
+                    textStyle = TextStyle(color = colors.content.copy(alpha = colors.contentAlpha)),
+                    cursorBrush = SolidColor(colors.content),
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text,
@@ -95,7 +96,7 @@ fun LiquidGlassSearchBar(
                             if (query.isEmpty()) {
                                 Text(
                                     text = placeholder,
-                                    color = Color.White.copy(alpha = 0.5f),
+                                    color = colors.secondary.copy(alpha = colors.secondaryAlpha),
                                 )
                             }
                             innerTextField()
@@ -110,7 +111,7 @@ fun LiquidGlassSearchBar(
                         Icon(
                             imageVector = Icons.Default.Clear,
                             contentDescription = "Clear",
-                            tint = Color.White.copy(alpha = 0.7f),
+                            tint = colors.secondary.copy(alpha = 0.7f),
                             modifier = Modifier.size(20.dp),
                         )
                     }
@@ -123,7 +124,7 @@ fun LiquidGlassSearchBar(
                         Icon(
                             imageVector = trailingIcon,
                             contentDescription = "Search",
-                            tint = Color.White.copy(alpha = 0.7f),
+                            tint = colors.secondary.copy(alpha = 0.7f),
                             modifier = Modifier.size(20.dp),
                         )
                     }
@@ -141,7 +142,7 @@ fun LiquidGlassSearchBar(
             ) {
                 Text(
                     text = "Suggestions",
-                    color = Color.White.copy(alpha = 0.5f),
+                    color = colors.secondary.copy(alpha = colors.secondaryAlpha),
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                 )
                 suggestions.forEach { suggestion ->
@@ -159,13 +160,13 @@ fun LiquidGlassSearchBar(
                         Icon(
                             imageVector = Icons.Default.Search,
                             contentDescription = null,
-                            tint = Color.White.copy(alpha = 0.5f),
+                            tint = colors.secondary.copy(alpha = colors.secondaryAlpha),
                             modifier = Modifier.size(18.dp),
                         )
                         Spacer(modifier = Modifier.width(12.dp))
                         Text(
                             text = suggestion,
-                            color = Color.White.copy(alpha = 0.85f),
+                            color = colors.content.copy(alpha = colors.contentAlpha),
                         )
                     }
                 }

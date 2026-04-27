@@ -36,8 +36,9 @@ fun LiquidGlassTextField(
         isPassword -> PasswordVisualTransformation()
         else -> VisualTransformation.None
     }
-    val textColor = Color.White.copy(alpha = if (enabled) 0.9f else 0.5f)
-    val placeholderColor = Color.White.copy(alpha = 0.5f)
+    val colors = LocalLiquidGlassColors.current
+    val textColor = colors.content.copy(alpha = if (enabled) colors.contentAlpha else colors.disabledAlpha)
+    val placeholderColor = colors.secondary.copy(alpha = colors.secondaryAlpha)
 
     Box(
         modifier = modifier
@@ -49,7 +50,7 @@ fun LiquidGlassTextField(
             onValueChange = onValueChange,
             enabled = enabled,
             textStyle = TextStyle(color = textColor),
-            cursorBrush = SolidColor(Color.White),
+            cursorBrush = SolidColor(colors.content),
             visualTransformation = visualTransformation,
             keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
             singleLine = true,

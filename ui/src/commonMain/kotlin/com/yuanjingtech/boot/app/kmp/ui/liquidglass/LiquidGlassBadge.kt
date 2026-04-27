@@ -24,6 +24,7 @@ fun LiquidGlassBadge(
     contentColor: Color = Color.Black,
     content: @Composable RowScope.() -> Unit,
 ) {
+    val colors = LocalLiquidGlassColors.current
     Box(
         modifier = modifier
             .size(16.dp)

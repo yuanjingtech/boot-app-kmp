@@ -36,6 +36,7 @@ fun LiquidGlassTopAppBar(
     config: LgEffectConfig = rememberLgBarEffects(),
     actions: @Composable RowScope.() -> Unit = {},
 ) {
+    val colors = LocalLiquidGlassColors.current
     val shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp)
     Box(
         modifier = modifier
@@ -62,14 +63,14 @@ fun LiquidGlassTopAppBar(
                     Icon(
                         imageVector = navigationIcon,
                         contentDescription = "Navigation",
-                        tint = Color.White,
+                        tint = colors.content,
                     )
                 }
             }
             Box(modifier = Modifier.weight(1f).padding(start = if (navigationIcon != null) 0.dp else 16.dp)) {
                 Text(
                     text = title,
-                    color = Color.White,
+                    color = colors.content,
                     modifier = Modifier.align(Alignment.CenterStart),
                 )
             }
@@ -86,6 +87,20 @@ fun LiquidGlassTopAppBar(
 private fun LiquidGlassTopAppBarPreview() {
     MaterialTheme {
         Box(modifier = Modifier.padding(0.dp)) {
+            LiquidGlassTopAppBar(
+                title = "Title",
+                navigationIcon = Icons.Filled.Menu,
+                onNavigationClick = {},
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun LiquidGlassTopAppBarLightPreview() {
+    MaterialTheme(colorScheme = androidx.compose.material3.lightColorScheme(surface = androidx.compose.ui.graphics.Color(0xFFFFFBFE))) {
+        LiquidGlassTheme {
             LiquidGlassTopAppBar(
                 title = "Title",
                 navigationIcon = Icons.Filled.Menu,

@@ -79,6 +79,7 @@ private fun LiquidGlassNavRailItem(
     onClick: () -> Unit,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
+    val colors = LocalLiquidGlassColors.current
     val alpha = if (selected) 1f else 0.55f
 
     Column(
@@ -95,12 +96,12 @@ private fun LiquidGlassNavRailItem(
         Icon(
             imageVector = icon,
             contentDescription = label,
-            tint = Color.White.copy(alpha = alpha),
+            tint = colors.content.copy(alpha = alpha),
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = label,
-            color = Color.White.copy(alpha = alpha),
+            color = colors.content.copy(alpha = alpha),
         )
     }
 }

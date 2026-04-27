@@ -37,11 +37,12 @@ fun LiquidGlassHorizontalDivider(
     modifier: Modifier = Modifier,
     thickness: Dp = 1.dp,
 ) {
+    val colors = LocalLiquidGlassColors.current
     Box(
         modifier = modifier
             .fillMaxWidth()
             .height(thickness)
-            .background(Color.White.copy(alpha = 0.15f)),
+            .background(colors.surfaceBorder.copy(alpha = colors.surfaceBorderAlpha * 0.6f)),
     )
 }
 
@@ -50,11 +51,12 @@ fun LiquidGlassVerticalDivider(
     modifier: Modifier = Modifier,
     thickness: Dp = 1.dp,
 ) {
+    val colors = LocalLiquidGlassColors.current
     Box(
         modifier = modifier
             .fillMaxHeight()
             .width(thickness)
-            .background(Color.White.copy(alpha = 0.15f)),
+            .background(colors.surfaceBorder.copy(alpha = colors.surfaceBorderAlpha * 0.6f)),
     )
 }
 

@@ -26,6 +26,7 @@ fun LiquidGlassModalBottomSheet(
     config: LgEffectConfig = rememberLgBottomSheetEffects(),
     content: @Composable ColumnScope.() -> Unit,
 ) {
+    val colors = LocalLiquidGlassColors.current
     val shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp, bottomStart = 0.dp, bottomEnd = 0.dp)
     Column(
         modifier = modifier
@@ -49,7 +50,7 @@ fun LiquidGlassModalBottomSheet(
             Box(
                 modifier = Modifier
                     .background(
-                        Color.White.copy(alpha = 0.4f),
+                        colors.surfaceBorder.copy(alpha = 0.4f),
                         shape = RoundedCornerShape(2.dp),
                     )
                     .padding(horizontal = 32.dp, vertical = 4.dp),

@@ -28,6 +28,7 @@ fun LiquidGlassAlertDialog(
     confirmButton: @Composable () -> Unit,
     dismissButton: @Composable () -> Unit = {},
 ) {
+    val colors = LocalLiquidGlassColors.current
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -39,12 +40,12 @@ fun LiquidGlassAlertDialog(
     ) {
         Text(
             text = title,
-            color = Color.White,
+            color = colors.content,
             modifier = Modifier.padding(bottom = 16.dp),
         )
         Text(
             text = text,
-            color = Color.White.copy(alpha = 0.8f),
+            color = colors.secondary.copy(alpha = colors.secondaryAlpha),
             modifier = Modifier.padding(bottom = 24.dp),
         )
         Row(
@@ -65,6 +66,7 @@ fun LiquidGlassSnackbar(
     action: String? = null,
     onActionClick: (() -> Unit)? = null,
 ) {
+    val colors = LocalLiquidGlassColors.current
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -75,12 +77,12 @@ fun LiquidGlassSnackbar(
     ) {
         Text(
             text = message,
-            color = Color.White,
+            color = colors.content,
             modifier = Modifier.weight(1f),
         )
         if (action != null && onActionClick != null) {
             TextButton(onClick = onActionClick) {
-                Text(action, color = Color.White.copy(alpha = 0.9f))
+                Text(action, color = colors.content.copy(alpha = 0.9f))
             }
         }
     }

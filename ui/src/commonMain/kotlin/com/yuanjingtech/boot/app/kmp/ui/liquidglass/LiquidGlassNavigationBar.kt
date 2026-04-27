@@ -94,6 +94,7 @@ private fun RowScope.LiquidGlassNavItem(
     val interactionSource = remember { MutableInteractionSource() }
     val alpha = if (selected) 1f else 0.6f
 
+    val colors = LocalLiquidGlassColors.current
     Column(
         modifier = modifier
             .clip(CircleShape)
@@ -108,11 +109,11 @@ private fun RowScope.LiquidGlassNavItem(
         Icon(
             imageVector = icon,
             contentDescription = label,
-            tint = Color.White.copy(alpha = alpha),
+            tint = colors.content.copy(alpha = alpha),
         )
         Text(
             text = label,
-            color = Color.White.copy(alpha = alpha),
+            color = colors.content.copy(alpha = alpha),
             modifier = Modifier.padding(top = 4.dp),
         )
     }
@@ -131,6 +132,22 @@ private fun LiquidGlassNavigationBarPreview() {
                 selectedIndex = selected,
                 onItemSelected = { selected = it },
             )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun LiquidGlassNavigationBarLightPreview() {
+    MaterialTheme(colorScheme = androidx.compose.material3.lightColorScheme(surface = androidx.compose.ui.graphics.Color(0xFFFFFBFE))) {
+        LiquidGlassTheme {
+            Box(modifier = Modifier.padding(0.dp)) {
+                var selected by mutableIntStateOf(0)
+                LiquidGlassNavigationBar(
+                    selectedIndex = selected,
+                    onItemSelected = { selected = it },
+                )
+            }
         }
     }
 }

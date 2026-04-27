@@ -36,6 +36,7 @@ fun LiquidGlassCheckbox(
     label: String = "",
 ) {
     val interactionSource = remember { MutableInteractionSource() }
+    val colors = LocalLiquidGlassColors.current
     val alpha = if (enabled) 1f else 0.4f
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -55,7 +56,7 @@ fun LiquidGlassCheckbox(
                 .clip(RoundedCornerShape(4.dp))
                 .liquidGlassSurface(cornerRadius = 4.dp, borderAlpha = 0.3f)
                 .then(
-                    if (checked) Modifier.background(Color.White.copy(alpha = 0.3f)) else Modifier
+                    if (checked) Modifier.background(colors.checkedFill.copy(alpha = colors.checkedFillAlpha)) else Modifier
                 ),
             contentAlignment = Alignment.Center,
         ) {
@@ -64,14 +65,14 @@ fun LiquidGlassCheckbox(
                     modifier = Modifier
                         .size(10.dp)
                         .clip(CircleShape)
-                        .background(Color.White.copy(alpha = alpha)),
+                        .background(colors.content.copy(alpha = alpha)),
                 )
             }
         }
         if (label.isNotEmpty()) {
             Box(modifier = Modifier.padding(start = 8.dp))
             Box(modifier = Modifier) {
-                androidx.compose.material3.Text(label, color = Color.White.copy(alpha = alpha))
+                androidx.compose.material3.Text(label, color = colors.content.copy(alpha = alpha))
             }
         }
     }
@@ -86,6 +87,7 @@ fun LiquidGlassRadioButton(
     label: String = "",
 ) {
     val interactionSource = remember { MutableInteractionSource() }
+    val colors = LocalLiquidGlassColors.current
     val alpha = if (enabled) 1f else 0.4f
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -111,14 +113,14 @@ fun LiquidGlassRadioButton(
                     modifier = Modifier
                         .size(10.dp)
                         .clip(CircleShape)
-                        .background(Color.White.copy(alpha = alpha)),
+                        .background(colors.content.copy(alpha = alpha)),
                 )
             }
         }
         if (label.isNotEmpty()) {
             Box(modifier = Modifier.padding(start = 8.dp))
             Box(modifier = Modifier) {
-                androidx.compose.material3.Text(label, color = Color.White.copy(alpha = alpha))
+                androidx.compose.material3.Text(label, color = colors.content.copy(alpha = alpha))
             }
         }
     }
@@ -133,6 +135,7 @@ fun LiquidGlassSwitch(
     label: String = "",
 ) {
     val interactionSource = remember { MutableInteractionSource() }
+    val colors = LocalLiquidGlassColors.current
     val alpha = if (enabled) 1f else 0.4f
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -158,13 +161,13 @@ fun LiquidGlassSwitch(
                     .padding(2.dp)
                     .size(20.dp)
                     .clip(CircleShape)
-                    .background(Color.White.copy(alpha = alpha)),
+                    .background(colors.thumb.copy(alpha = alpha)),
             )
         }
         if (label.isNotEmpty()) {
             Box(modifier = Modifier.padding(start = 8.dp))
             Box(modifier = Modifier) {
-                androidx.compose.material3.Text(label, color = Color.White.copy(alpha = alpha))
+                androidx.compose.material3.Text(label, color = colors.content.copy(alpha = alpha))
             }
         }
     }
@@ -180,6 +183,7 @@ fun LiquidGlassSlider(
     enabled: Boolean = true,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
+    val colors = LocalLiquidGlassColors.current
     val alpha = if (enabled) 1f else 0.4f
     Box(
         modifier = modifier
@@ -201,7 +205,7 @@ fun LiquidGlassSlider(
                 .fillMaxWidth(normalized.coerceIn(0f, 1f))
                 .height(4.dp)
                 .clip(CircleShape)
-                .background(Color.White.copy(alpha = alpha * 0.6f)),
+                .background(colors.content.copy(alpha = alpha * 0.6f)),
         )
     }
 }

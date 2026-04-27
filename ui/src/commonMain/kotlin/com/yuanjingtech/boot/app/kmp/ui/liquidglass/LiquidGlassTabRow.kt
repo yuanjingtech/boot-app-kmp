@@ -33,6 +33,7 @@ fun LiquidGlassTabRow(
     config: LgEffectConfig = rememberLgBarEffects(),
     onTabSelected: (Int) -> Unit = {},
 ) {
+    val colors = LocalLiquidGlassColors.current
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -61,7 +62,7 @@ fun LiquidGlassTabRow(
             ) {
                 Text(
                     text = title,
-                    color = Color.White.copy(alpha = alpha),
+                    color = colors.content.copy(alpha = alpha),
                     modifier = Modifier.align(Alignment.Center),
                 )
             }

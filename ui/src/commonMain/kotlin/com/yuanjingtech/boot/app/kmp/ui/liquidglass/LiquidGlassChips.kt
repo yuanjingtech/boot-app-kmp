@@ -36,6 +36,7 @@ fun LiquidGlassAssistChip(
     enabled: Boolean = true,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
+    val colors = LocalLiquidGlassColors.current
     val alpha = if (enabled) 1f else 0.4f
     Row(
         modifier = modifier
@@ -54,12 +55,12 @@ fun LiquidGlassAssistChip(
             Icon(
                 imageVector = leadingIcon,
                 contentDescription = null,
-                tint = Color.White.copy(alpha = alpha),
+                tint = colors.content.copy(alpha = alpha),
                 modifier = Modifier.size(18.dp),
             )
             Box(modifier = Modifier.padding(end = 6.dp))
         }
-        Text(text = label, color = Color.White.copy(alpha = alpha))
+        Text(text = label, color = colors.content.copy(alpha = alpha))
     }
 }
 
@@ -73,6 +74,7 @@ fun LiquidGlassFilterChip(
     enabled: Boolean = true,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
+    val colors = LocalLiquidGlassColors.current
     val alpha = if (enabled) 1f else 0.4f
     Row(
         modifier = modifier
@@ -81,7 +83,7 @@ fun LiquidGlassFilterChip(
                 if (selected) {
                     Modifier.border(
                         width = 1.5.dp,
-                        color = Color.White.copy(alpha = 0.5f),
+                        color = colors.surfaceBorder.copy(alpha = colors.surfaceBorderAlpha),
                         shape = RoundedCornerShape(8.dp),
                     )
                 } else Modifier
@@ -101,12 +103,12 @@ fun LiquidGlassFilterChip(
             Icon(
                 imageVector = iconToShow,
                 contentDescription = null,
-                tint = Color.White.copy(alpha = alpha),
+                tint = colors.content.copy(alpha = alpha),
                 modifier = Modifier.size(18.dp),
             )
             Box(modifier = Modifier.padding(end = 6.dp))
         }
-        Text(text = label, color = Color.White.copy(alpha = alpha))
+        Text(text = label, color = colors.content.copy(alpha = alpha))
     }
 }
 
@@ -119,6 +121,7 @@ fun LiquidGlassSuggestionChip(
     enabled: Boolean = true,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
+    val colors = LocalLiquidGlassColors.current
     val alpha = if (enabled) 1f else 0.4f
     Row(
         modifier = modifier
@@ -137,12 +140,12 @@ fun LiquidGlassSuggestionChip(
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                tint = Color.White.copy(alpha = alpha),
+                tint = colors.content.copy(alpha = alpha),
                 modifier = Modifier.size(18.dp),
             )
             Box(modifier = Modifier.padding(end = 6.dp))
         }
-        Text(text = label, color = Color.White.copy(alpha = alpha))
+        Text(text = label, color = colors.content.copy(alpha = alpha))
     }
 }
 
