@@ -1,26 +1,20 @@
 package com.yuanjingtech.boot.app.kmp
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.PrimaryTabRow
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Tab
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.navigation.Navigator
+import com.yuanjingtech.boot.app.kmp.ui.components.BootNavigationBar
+import com.yuanjingtech.boot.app.kmp.ui.components.BootScaffold
+import com.yuanjingtech.boot.app.kmp.ui.components.BootTopAppBar
 import com.yuanjingtech.boot.app.kmp.ui.setting.BootSettingScreen
 import org.koin.dsl.KoinConfiguration
 import org.koin.dsl.includes
@@ -33,27 +27,31 @@ fun App() {
         printLogger()
         includes(koinConfiguration<BootApp>())
     }) {
-        var selectIndex by remember { mutableStateOf(0) }
-        val items = listOf("Home", "Settings")
-        Scaffold(
+        var selectIndex by remember { mutableIntStateOf(0) }
+        val items = listOf(
+            Icons.Filled.Home to BootStrings.tabItemMain(),
+            Icons.Filled.Settings to BootStrings.tabItemSetting(),
+        )
+        BootScaffold(
+            topBar = {
+                BootTopAppBar(
+                    title = BootStrings.appName(),
+                    modifier = Modifier,
+                )
+            },
             bottomBar = {
-                PrimaryTabRow(selectIndex) {
-                    items.forEachIndexed { index, item ->
-                        Text(
-                            text = item,
-                            modifier = Modifier
-                                .padding(16.dp)
-                                .clickable { selectIndex = index }
-                        )
-                    }
+                BootNavigationBar(
+                    selectedIndex = selectIndex,
+                    onItemSelected = { selectIndex = it },
+                    items = items,
+                )
+            },
+            content = { padding ->
+                when (selectIndex) {
+                    0 -> Content(modifier = Modifier.fillMaxSize().padding(padding))
+                    else -> BootSettingScreen(modifier = Modifier.fillMaxSize().padding(padding))
                 }
             }
-        ) { innerPadding ->
-            when (selectIndex) {
-                0 -> Content(modifier = Modifier.fillMaxSize().padding(innerPadding))
-
-                else -> BootSettingScreen(modifier = Modifier.fillMaxSize().padding(innerPadding))
-            }
-        }
+        )
     }
 }

@@ -14,6 +14,8 @@ import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import com.yuanjingtech.boot.app.kmp.data.theme.BootThemeMode
 import com.yuanjingtech.boot.app.kmp.data.theme.BootThemeStore
+import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
+import com.yuanjingtech.boot.app.kmp.ui.defaultUiStyle
 import kotlinx.coroutines.flow.map
 import org.koin.compose.koinInject
 
@@ -27,7 +29,8 @@ fun BootAppTheme(
     typography: Typography = MaterialTheme.typography,
     content: @Composable () -> Unit,
 ) {
-    val themeMode by themeStore.themeModeFlow.map { it }.collectAsState(initial = BootThemeMode.FOLLOW_SYSTEM)
+    val themeMode by themeStore.themeModeFlow.collectAsState(initial = BootThemeMode.FOLLOW_SYSTEM)
+    val uiStyle by themeStore.uiStyleFlow.collectAsState(initial = defaultUiStyle)
     val isDarkTheme = when (themeMode) {
         BootThemeMode.FOLLOW_SYSTEM -> isSystemInDarkTheme()
         BootThemeMode.LIGHT -> false
@@ -35,7 +38,10 @@ fun BootAppTheme(
     }
 
     val resolvedColorScheme = colorScheme ?: if (isDarkTheme) darkColorScheme() else lightColorScheme()
-    CompositionLocalProvider(LocalDarkTheme provides isDarkTheme) {
+    CompositionLocalProvider(
+        LocalDarkTheme provides isDarkTheme,
+        LocalUiStyle provides uiStyle,
+    ) {
         MaterialTheme(
             colorScheme = resolvedColorScheme,
             shapes = shapes,
