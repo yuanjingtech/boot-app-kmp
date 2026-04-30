@@ -1,11 +1,11 @@
----
+------
 name: boot-app-kmp
 description: 当第三方项目需要集成或使用 boot-app-kmp Kotlin Multiplatform 库时使用。提供依赖配置、组件使用、Koin DI 配置、主题设置等集成指南。
 license: Apache-2.0
 metadata:
   author: Yuanjing Tech
   version: "1.0.0"
----
+------
 
 # boot-app-kmp 集成指南
 
@@ -388,7 +388,185 @@ com.yuanjingtech.boot.app.kmp.shared.di.*
 
 ---
 
-## 11. 联系方式
+## 12. SweetSPI 插件使用
+
+[SweetSPI](https://github.com/whyoleg/sweetspi) 是一个 KMP ServiceLoader 插件，用于自动生成 `META-INF/services` 文件，实现跨平台的服务发现机制。
+
+### 12.1 添加依赖
+
+```kotlin
+// gradle/libs.versions.toml
+[versions]
+sweetspi = "0.1.3"
+
+[libraries]
+sweetspi-processor = { module = "dev.whyoleg.sweetspi:sweetspi-processor", version.ref = "sweetspi" }
+sweetspi-runtime = { module = "dev.whyoleg.sweetspi:sweetspi-runtime", version.ref = "sweetspi" }
+
+[plugins]
+sweetspi = { id = "dev.whyoleg.sweetspi", version.ref = "sweetspi" }
+```
+
+### 12.2 配置模块
+
+在需要使用服务发现的模块 `build.gradle.kts` 中：
+
+```kotlin
+import dev.whyoleg.sweetspi.gradle.*
+
+plugins {
+    alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.sweetspi)
+    // ... 其他插件
+}
+
+kotlin {
+    // 在 kotlin 块顶部调用
+    withSweetSpi()
+
+    android {
+        namespace = "com.example.app"
+        compileSdk = 35
+        // ...
+        // 在 android 块内也要调用
+        withSweetSpi()
+    }
+
+    // iOS, JVM, JS, WASM 目标会自动配置
+}
+```
+
+### 12.3 定义服务接口
+
+在 `commonMain` 中定义服务接口：
+
+```kotlin
+// commonMain/kotlin/com/example/Logger.kt
+package com.example
+
+interface Logger {
+    fun log(message: String)
+}
+```
+
+### 12.4 实现服务
+
+创建多个平台实现：
+
+```kotlin
+// androidMain/kotlin/com/example/AndroidLogger.kt
+package com.example
+
+import android.util.Log
+
+class AndroidLogger : Logger {
+    override fun log(message: String) {
+        Log.d("App", message)
+    }
+}
+
+// jvmMain/kotlin/com/example/JvmLogger.kt
+package com.example
+
+class JvmLogger : Logger {
+    override fun log(message: String) {
+        println("[JVM] $message")
+    }
+}
+```
+
+### 12.5 注册实现
+
+在服务发现文件中注册：
+
+```
+# src/commonMain/resources/META-INF/services/com.example.Logger
+com.example.AndroidLogger
+com.example.JvmLogger
+```
+
+### 12.6 使用服务
+
+```kotlin
+// commonMain/kotlin/com/example/ServiceLocator.kt
+package com.example
+
+import dev.whyoleg.sweetspi.ServiceLoader
+
+object ServiceLocator {
+    private val loggerLoader = ServiceLoader<Logger>()
+
+    val logger: Logger
+        get() = loggerLoader.loadFirst()
+            ?: error("No Logger implementation found")
+}
+```
+
+### 12.7 Android 资源打包配置
+
+由于 KSP 生成的 `META-INF/services/` 文件不会被 `androidResources` 自动包含，需要额外配置：
+
+```kotlin
+kotlin {
+    sourceSets {
+        androidMain {
+            // 注册 KSP 生成的服务文件目录
+            resources.srcDir(layout.buildDirectory.dir("generated/ksp/android/androidMain/resources"))
+        }
+    }
+}
+```
+
+### 12.8 完整示例
+
+```kotlin
+// build.gradle.kts
+import dev.whyoleg.sweetspi.gradle.*
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
+plugins {
+    alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.android.kotlin.multiplatform.library)
+    alias(libs.plugins.sweetspi)
+}
+
+kotlin {
+    withSweetSpi()  // 全局启用
+
+    android {
+        namespace = "com.example"
+        compileSdk = 35
+        minSdk = 24
+        withSweetSpi()  // Android 特定配置
+    }
+
+    iosArm64()
+    iosSimulatorArm64()
+    jvm()
+    js { browser() }
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs { browser() }
+}
+
+kotlin {
+    sourceSets {
+        androidMain {
+            resources.srcDir(layout.buildDirectory.dir("generated/ksp/android/androidMain/resources"))
+        }
+    }
+}
+```
+
+### 12.9 注意事项
+
+1. **服务接口必须在 `commonMain`**，才能被各平台实现
+2. **实现类必须在对应平台的 source set** 中（如 `androidMain`、`jvmMain`）
+3. **服务注册文件在 `commonMain/resources/META-INF/services/`**
+4. **Android 必须配置 KSP 资源目录**，否则服务发现会失败
+
+---
+
+## 13. 联系方式
 
 - 文档问题：`docs/solutions/`
 - 已知问题：`docs/solutions/` 中的解决方案
