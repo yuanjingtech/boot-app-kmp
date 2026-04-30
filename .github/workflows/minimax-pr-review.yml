@@ -8,7 +8,6 @@ on:
 permissions:
   contents: read
   pull-requests: write
-  issues: write
 
 env:
   MINIMAX_BASE_URL: "https://api.minimax.chat/v1"
@@ -19,126 +18,85 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
-    # Skip reviews triggered by bots
     if: |
       github.event.pull_request.user.login != 'dependabot[bot]' &&
-      github.event.pull_request.user.login != 'claude[bot]' &&
-      !contains(github.event.pull_request.title, '[skip-review]')
+      github.event.pull_request.user.login != 'claude[bot]'
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.sha }}
 
-      - name: Fetch base branch
-        run: git fetch origin ${{ github.event.pull_request.base.ref }}
+      - run: git fetch origin ${{ github.event.pull_request.base.ref }}
 
-      - name: Get PR diff
-        id: diff
+      - name: Get diff
         run: |
-          echo "diff=$(git diff origin/${{ github.event.pull_request.base.ref }}...HEAD -- '*.kt' '*.kts' | head -c 120000)" >> $GITHUB_OUTPUT
+          DIFF=$(git diff origin/${{ github.event.pull_request.base.ref }}...HEAD -- '*.kt' '*.kts' | head -c 100000)
+          echo "$DIFF" > /tmp/pr_diff.txt
+          FILES=$(git diff --name-only origin/${{ github.event.pull_request.base.ref }}...HEAD | tr '\n' ' ')
+          echo "FILES=$FILES" >> $GITHUB_ENV
 
-      - name: Get changed files
-        id: files
-        run: |
-          echo "files=$(git diff --name-only origin/${{ github.event.pull_request.base.ref }}...HEAD | tr '\n' ' ')" >> $GITHUB_OUTPUT
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
 
-      - name: Review with MiniMax
-        id: review
+      - name: Review
         env:
           MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
           PR_TITLE: ${{ github.event.pull_request.title }}
-          PR_BODY: ${{ github.event.pull_request.body }}
-          CHANGED_FILES: ${{ steps.files.outputs.files }}
-          PR_DIFF: ${{ steps.diff.outputs.diff }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
         run: |
-          # Create review prompt
-          REVIEW_PROMPT=$(cat <<'PROMPT_EOF'
-你是 Kotlin Multiplatform 项目的代码审查专家。请审查以下 PR 的变更：
+          python3 << 'PYEND'
+import os, json, urllib.request
 
-PR 标题: ${PR_TITLE}
-变更文件: ${CHANGED_FILES}
+base_url = os.environ["MINIMAX_BASE_URL"]
+model = os.environ["MINIMAX_MODEL"]
+api_key = os.environ["MINIMAX_API_KEY"]
 
-代码变更（仅展示前1000行）:
-${PR_DIFF:0:100000}
+with open("/tmp/pr_diff.txt", "r") as f:
+    diff = f.read()
 
-请审查以下方面：
-1. 架构一致性 - 单数据源、UDF、层级边界
-2. 业务逻辑位置 - 不能在 composables 或 Android 组件中
-3. 状态和模型边界 - 明确的 UI 状态，区分一次性事件
-4. KMP source-set 正确性 - commonMain 应在所有目标平台有效
-5. Compose/UI 性能 - 不必要的重组、缺少 keys
-6. 协程/取消/并发问题
-7. 回归风险 - 边界情况、错误处理
-8. 新业务规则的测试覆盖
+files = os.environ.get("FILES", "")
+pr_title = os.environ["PR_TITLE"]
+pr_number = os.environ["PR_NUMBER"]
+repo = os.environ["REPO"]
 
-请以 JSON 格式输出审查结果：
-{
-  "summary": "总体评估",
-  "high_issues": [{"file": "文件路径", "line": 行号, "issue": "问题描述"}],
-  "medium_issues": [{"file": "文件路径", "line": 行号, "issue": "问题描述"}],
-  "low_issues": [{"file": "文件路径", "line": 行号, "issue": "问题描述"}],
-  "positive": "做得好的地方"
-}
+prompt = "你是 Kotlin Multiplatform 项目的代码审查专家。请审查以下 PR 的变更：\n\nPR 标题: " + pr_title + "\n变更文件: " + files + "\n\n代码变更：\n" + diff + "\n\n请审查以下方面：\n1. 架构一致性\n2. 业务逻辑位置\n3. KMP source-set 正确性\n4. Compose/UI 性能\n5. 协程/并发问题\n6. 回归风险\n\n请以 Markdown 格式输出审查结果，包含：总体评估、高/中/低严重性问题、做得好的地方。仅审查 Kotlin 文件，不要应用修复。"
 
-重要：
-- 仅审查 Kotlin/KotlinScript 文件
-- 不要应用任何修复
-- 如果差异太大，只分析前 1000 行变更
-PROMPT_EOF
-          )
+messages = [
+    {"role": "system", "content": "你是一个严格的代码审查专家。"},
+    {"role": "user", "content": prompt}
+]
 
-          # Make API call to MiniMax
-          RESPONSE=$(curl -s -X POST "$MINIMAX_BASE_URL/chat/completions" \
-            -H "Authorization: Bearer $MINIMAX_API_KEY" \
-            -H "Content-Type: application/json" \
-            -d "{
-              \"model\": \"$MINIMAX_MODEL\",
-              \"messages\": [
-                {\"role\": \"system\", \"content\": \"你是一个严格的代码审查专家，擅长 Kotlin、Kotlin Multiplatform 和 Jetpack Compose。\"},
-                {\"role\": \"user\", \"content\": $(echo "$REVIEW_PROMPT" | jq -Rs .)}
-              ],
-              \"temperature\": 0.3,
-              \"max_tokens\": 4000
-            }")
+payload = {"model": model, "messages": messages, "temperature": 0.3, "max_tokens": 4000}
 
-          echo "Response: $RESPONSE" >> $GITHUB_STEP_SUMMARY
+req = urllib.request.Request(
+    base_url + "/chat/completions",
+    data=json.dumps(payload).encode("utf-8"),
+    headers={"Authorization": "Bearer " + api_key, "Content-Type": "application/json"},
+    method="POST"
+)
 
-      - name: Post review comment
-        if: success() && steps.review.outputs.response
-        env:
-          REVIEW_RESPONSE: ${{ steps.review.outputs.response }}
-        run: |
-          # Extract content from MiniMax response and post as PR comment
-          CONTENT=$(echo '${{ steps.review.outputs.response }}' | jq -r '.choices[0].message.content' 2>/dev/null || echo "Review completed. Check workflow logs for details.")
+with urllib.request.urlopen(req, timeout=60) as resp:
+    result = json.loads(resp.read().decode("utf-8"))
+    content = result.get("choices", [{}])[0].get("message", {}).get("content", "")
+    body = "## MiniMax AI Review\n\n" + content + "\n\n---\n*This review was generated by MiniMax AI*\n"
+    comment_req = urllib.request.Request(
+        "https://api.github.com/repos/" + repo + "/issues/" + pr_number + "/comments",
+        data=json.dumps({"body": body}).encode("utf-8"),
+        headers={"Authorization": "token " + os.environ["GITHUB_TOKEN"], "Content-Type": "application/json"},
+        method="POST"
+    )
+    with urllib.request.urlopen(comment_req) as comment_resp:
+        print("Comment posted")
+PYEND
 
-          # Format as PR comment
-          COMMENT_BODY=$(cat <<EOF
-## MiniMax AI Review
-
-### 审查结果
-
-$CONTENT
-
----
-*This review was generated by MiniMax AI*
-EOF
-          )
-
-          # Post comment via GitHub API
-          curl -s -X POST "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments" \
-            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            -H "Content-Type: application/json" \
-            -d "{\"body\": $(echo $COMMENT_BODY | jq -Rs .)}"
-
-      - name: Post summary
+      - name: Summary
         if: always()
         run: |
           echo "## PR Review Summary" >> $GITHUB_STEP_SUMMARY
           echo "- PR: #${{ github.event.pull_request.number }}" >> $GITHUB_STEP_SUMMARY
           echo "- Title: ${{ github.event.pull_request.title }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Author: ${{ github.event.pull_request.user.login }}" >> $GITHUB_STEP_SUMMARY
           echo "- Status: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
