@@ -1,9 +1,8 @@
 package com.yuanjingtech.boot.app.kmp.ui.components
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import com.yuanjingtech.boot.app.kmp.ui.preview.*
+
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -31,6 +30,8 @@ import com.yuanjingtech.boot.app.kmp.ui.preview.Material3PreviewWrapper
 fun BootText(
     text: String,
     modifier: Modifier = Modifier,
+    isLoading: Boolean = false,
+    loadingWidthFraction: Float = 0.6f,
     color: Color? = null,
     fontSize: TextUnit = TextUnit.Unspecified,
     fontWeight: FontWeight = FontWeight.Normal,
@@ -45,6 +46,8 @@ fun BootText(
         BootUiStyle.LIQUID_GLASS -> LiquidGlassText(
             text = text,
             modifier = modifier,
+            isLoading = isLoading,
+            loadingWidthFraction = loadingWidthFraction,
             color = color,
             fontSize = fontSize,
             fontWeight = fontWeight,
@@ -58,6 +61,8 @@ fun BootText(
         BootUiStyle.MATERIAL3 -> Material3Text(
             text = text,
             modifier = modifier,
+            isLoading = isLoading,
+            loadingWidthFraction = loadingWidthFraction,
             color = color ?: MaterialTheme.colorScheme.onSurface,
             fontSize = fontSize,
             fontWeight = fontWeight,
@@ -115,5 +120,27 @@ private fun BootTextMaterial3Preview() {
         BootText(text = "Underlined text", textDecoration = TextDecoration.Underline)
         BootText(text = "Centered text", textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
         BootText(text = "Max lines text that is very long and should be truncated when it exceeds the maximum number of lines", maxLines = 2)
+    }
+}
+
+@Preview
+@Composable
+@PreviewWrapper(wrapper = LiquidGlassPreviewWrapper::class)
+private fun BootTextLoadingPreview() {
+    Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        BootText(text = "Title", fontSize = 20.sp, fontWeight = FontWeight.Bold, isLoading = true)
+        BootText(text = "Description", fontSize = 16.sp, isLoading = true)
+        BootText(text = "Caption", fontSize = 12.sp, isLoading = true, loadingWidthFraction = 0.4f)
+    }
+}
+
+@Preview
+@Composable
+@PreviewWrapper(wrapper = Material3PreviewWrapper::class)
+private fun BootTextLoadingMaterial3Preview() {
+    Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        BootText(text = "Title", fontSize = 20.sp, fontWeight = FontWeight.Bold, isLoading = true)
+        BootText(text = "Description", fontSize = 16.sp, isLoading = true)
+        BootText(text = "Caption", fontSize = 12.sp, isLoading = true, loadingWidthFraction = 0.4f)
     }
 }

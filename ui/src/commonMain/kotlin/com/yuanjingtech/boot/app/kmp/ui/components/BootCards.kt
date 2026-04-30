@@ -24,11 +24,12 @@ import com.yuanjingtech.boot.app.kmp.ui.material3.Material3OutlinedCard
 @Composable
 fun BootElevatedCard(
     modifier: Modifier = Modifier,
+    isLoading: Boolean = false,
     content: @Composable ColumnScope.() -> Unit = {}
 ) {
     when (LocalUiStyle.current) {
-        BootUiStyle.LIQUID_GLASS -> LiquidGlassCard(modifier = modifier, content = content)
-        BootUiStyle.MATERIAL3 -> Material3ElevatedCard(modifier = modifier, content = content)
+        BootUiStyle.LIQUID_GLASS -> LiquidGlassCard(modifier = modifier, isLoading = isLoading, content = content)
+        BootUiStyle.MATERIAL3 -> Material3ElevatedCard(modifier = modifier, isLoading = isLoading, content = content)
         BootUiStyle.FLUENT -> FluentElevatedCard(modifier = modifier, content = content)
     }
 }
@@ -36,11 +37,12 @@ fun BootElevatedCard(
 @Composable
 fun BootOutlinedCard(
     modifier: Modifier = Modifier,
+    isLoading: Boolean = false,
     content: @Composable ColumnScope.() -> Unit = {}
 ) {
     when (LocalUiStyle.current) {
-        BootUiStyle.LIQUID_GLASS -> LiquidGlassCard(modifier = modifier, content = content)
-        BootUiStyle.MATERIAL3 -> Material3OutlinedCard(modifier = modifier, content = content)
+        BootUiStyle.LIQUID_GLASS -> LiquidGlassCard(modifier = modifier, isLoading = isLoading, content = content)
+        BootUiStyle.MATERIAL3 -> Material3OutlinedCard(modifier = modifier, isLoading = isLoading, content = content)
         BootUiStyle.FLUENT -> FluentCard(modifier = modifier, content = content)
     }
 }

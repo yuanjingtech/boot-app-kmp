@@ -12,11 +12,13 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
+import com.yuanjingtech.boot.app.kmp.ui.components.shimmerEffect
 
 // ─── Material3Card ───────────────────────────────────────────────────────────
 @Composable
 fun Material3Card(
     modifier: Modifier = Modifier,
+    isLoading: Boolean = false,
     content: @Composable ColumnScope.() -> Unit
 ) {
     Card(
@@ -26,13 +28,41 @@ fun Material3Card(
             contentColor = MaterialTheme.colorScheme.onSurface
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        content = content
-    )
+    ) {
+        if (isLoading) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.7f)
+                        .height(20.dp)
+                        .shimmerEffect(visible = true, cornerRadius = 6.dp),
+                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.5f)
+                        .height(16.dp)
+                        .shimmerEffect(visible = true, cornerRadius = 6.dp),
+                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(14.dp)
+                        .shimmerEffect(visible = true, cornerRadius = 6.dp),
+                )
+            }
+        } else {
+            Column(content = content)
+        }
+    }
 }
 
 @Composable
 fun Material3ElevatedCard(
     modifier: Modifier = Modifier,
+    isLoading: Boolean = false,
     content: @Composable ColumnScope.() -> Unit
 ) {
     ElevatedCard(
@@ -42,13 +72,35 @@ fun Material3ElevatedCard(
             contentColor = MaterialTheme.colorScheme.onSurface
         ),
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 2.dp),
-        content = content
-    )
+    ) {
+        if (isLoading) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.7f)
+                        .height(20.dp)
+                        .shimmerEffect(visible = true, cornerRadius = 6.dp),
+                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(14.dp)
+                        .shimmerEffect(visible = true, cornerRadius = 6.dp),
+                )
+            }
+        } else {
+            Column(content = content)
+        }
+    }
 }
 
 @Composable
 fun Material3OutlinedCard(
     modifier: Modifier = Modifier,
+    isLoading: Boolean = false,
     content: @Composable ColumnScope.() -> Unit
 ) {
     OutlinedCard(
@@ -57,8 +109,29 @@ fun Material3OutlinedCard(
             containerColor = MaterialTheme.colorScheme.surface,
             contentColor = MaterialTheme.colorScheme.onSurface
         ),
-        content = content
-    )
+    ) {
+        if (isLoading) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.7f)
+                        .height(20.dp)
+                        .shimmerEffect(visible = true, cornerRadius = 6.dp),
+                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(14.dp)
+                        .shimmerEffect(visible = true, cornerRadius = 6.dp),
+                )
+            }
+        } else {
+            Column(content = content)
+        }
+    }
 }
 
 @Preview

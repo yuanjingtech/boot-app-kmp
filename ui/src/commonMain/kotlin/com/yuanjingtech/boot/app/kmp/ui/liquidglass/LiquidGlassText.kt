@@ -1,15 +1,18 @@
 package com.yuanjingtech.boot.app.kmp.ui.liquidglass
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -19,11 +22,15 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.foundation.shape.RoundedCornerShape
+import com.yuanjingtech.boot.app.kmp.ui.components.shimmerEffect
 
 @Composable
 fun LiquidGlassText(
     text: String,
     modifier: Modifier = Modifier,
+    isLoading: Boolean = false,
+    loadingWidthFraction: Float = 0.6f,
     color: Color? = null,
     onLightBackground: Color = Color(0xFF1C1B1F),
     onDarkBackground: Color = Color.White,
@@ -42,19 +49,35 @@ fun LiquidGlassText(
         else -> onDarkBackground
     }
 
-    Text(
-        text = text,
-        modifier = modifier,
-        color = resolvedColor,
-        fontSize = fontSize,
-        fontWeight = fontWeight,
-        fontStyle = fontStyle,
-        textDecoration = textDecoration,
-        textAlign = textAlign,
-        lineHeight = lineHeight,
-        overflow = overflow,
-        maxLines = maxLines,
-    )
+    if (isLoading) {
+        val density = LocalDensity.current
+        val heightDp = if (lineHeight != TextUnit.Unspecified) {
+            with(density) { lineHeight.toDp() }
+        } else {
+            24.dp
+        }
+        Box(
+            modifier = modifier
+                .fillMaxWidth(loadingWidthFraction)
+                .height(heightDp)
+                .clip(RoundedCornerShape(4.dp))
+                .shimmerEffect(visible = true, cornerRadius = 4.dp),
+        )
+    } else {
+        Text(
+            text = text,
+            modifier = modifier,
+            color = resolvedColor,
+            fontSize = fontSize,
+            fontWeight = fontWeight,
+            fontStyle = fontStyle,
+            textDecoration = textDecoration,
+            textAlign = textAlign,
+            lineHeight = lineHeight,
+            overflow = overflow,
+            maxLines = maxLines,
+        )
+    }
 }
 
 @Preview
