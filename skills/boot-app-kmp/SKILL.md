@@ -1,195 +1,394 @@
 ---
 name: boot-app-kmp
-description: Use when working on boot-app-kmp Kotlin Multiplatform project. Provides project structure, UI component library patterns (LiquidGlass/Material3), KMP module boundaries, and development workflow guidance.
+description: 当第三方项目需要集成或使用 boot-app-kmp Kotlin Multiplatform 库时使用。提供依赖配置、组件使用、Koin DI 配置、主题设置等集成指南。
 license: Apache-2.0
 metadata:
   author: Yuanjing Tech
   version: "1.0.0"
 ---
 
-# boot-app-kmp Development Guide
+# boot-app-kmp 集成指南
 
-Use this skill when working on the boot-app-kmp Kotlin Multiplatform project.
-
----
-
-## Project Overview
-
-**Type**: Kotlin Multiplatform Library + Application
-**Purpose**: Base shared library with UI component system supporting LiquidGlass and Material3 styles
-**Structure**: Multi-module KMP with composeApp as main application
+本文档描述第三方项目如何集成和使用 boot-app-kmp 框架与库。
 
 ---
 
-## Module Structure
+## 1. 项目结构
 
+boot-app-kmp 是一个 Kotlin Multiplatform 库，包含以下模块：
+
+| 模块 | 用途 | 产出 |
+|------|------|------|
+| `composeApp` | 主应用程序模块 | 可执行的 App |
+| `shared` | 业务逻辑层 | 跨平台库（数据库、网络、DI 等） |
+| `ui` | UI 组件库 | LiquidGlass/Material3 组件 |
+| `webview` | WebView 集成 | WebView 支持 |
+| `webviewParkwoocheol` | 外部 WebView | 第三方 WebView 集成 |
+
+---
+
+## 2. 添加依赖
+
+### 2.1 设置 Kotlin Multiplatform 项目
+
+确保你的项目使用 Kotlin Multiplatform 插件：
+
+```kotlin
+// settings.gradle.kts
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
 ```
-boot-app-kmp/
-├── composeApp/          # Main application (Compose Multiplatform)
-│   ├── src/
-│   │   ├── androidMain/     # Android-specific code
-│   │   ├── commonMain/      # Shared code (Kotlin + Compose)
-│   │   ├── iosMain/         # iOS-specific code
-│   │   ├── desktopMain/     # Desktop-specific code
-│   │   └── wasmJsMain/      # WebAssembly-specific code
-│   └── build.gradle.kts
-├── shared/              # Shared business logic module
-├── ui/                  # UI component library
-│   └── src/commonMain/kotlin/com/yuanjingtech/boot/app/kmp/ui/components/
-│       ├── liquidglass/     # LiquidGlass component implementations
-│       └── material3/       # Material3 component wrappers
-├── webview/             # WebView integration module
-├── webviewParkwoocheol/ # External webview integration
-└── build.gradle.kts
+
+### 2.2 添加 boot-app-kmp 依赖
+
+**方式一：通过源码模块依赖**
+
+如果你将 boot-app-kmp 作为 monorepo 的一部分：
+
+```kotlin
+// build.gradle.kts (根项目)
+pluginManagement {
+    includeBuild("../boot-app-kmp")
+}
+
+// settings.gradle.kts
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+    }
+}
+
+// 模块 build.gradle.kts
+dependencies {
+    // UI 组件库（推荐）
+    implementation("com.yuanjingtech.boot.app.kmp:ui:1.0.0")
+
+    // 共享业务逻辑
+    implementation("com.yuanjingtech.boot.app.kmp:shared:1.0.0")
+
+    // Compose BOM（推荐版本）
+    implementation(libs.compose.bom)
+}
+```
+
+**方式二：通过发布仓库**
+
+```kotlin
+// settings.gradle.kts
+dependencyResolutionManagement {
+    repositories {
+        maven {
+            url = uri("https://maven.pkg.github.com/your-org/boot-app-kmp")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+}
+```
+
+### 2.3 iOS CocoaPods 集成（可选）
+
+```ruby
+# Podfile
+pod 'BootAppKmp', :git => 'https://github.com/your-org/boot-app-kmp.git', :branch => 'main'
 ```
 
 ---
 
-## UI Component Library Architecture
+## 3. 使用 UI 组件库
 
-### Component Style System
+### 3.1 组件导入
 
-The UI component library supports dual-style theming:
+```kotlin
+import com.yuanjingtech.boot.app.kmp.ui.components.liquidglass.*
+import com.yuanjingtech.boot.app.kmp.ui.components.material3.*
+import com.yuanjingtech.boot.app.kmp.ui.components.PreviewWrapper
+```
 
-1. **LiquidGlass Style** - Glassmorphism-inspired components with frosted glass effects
-2. **Material3 Style** - Standard Material Design 3 components
+### 3.2 LiquidGlass 风格组件
 
-### Preview System
+LiquidGlass 提供毛玻璃风格的 UI 组件：
 
-All UI components use `@PreviewWrapper` for IDE preview with style switching:
+```kotlin
+@Composable
+fun MyScreen() {
+    LiquidGlassScaffold(
+        topBar = {
+            LiquidGlassTopAppBar(title = "标题")
+        },
+        bottomBar = {
+            LiquidGlassBottomNavigation(items = items)
+        }
+    ) { paddingValues ->
+        // 内容区域
+        Box(modifier = Modifier.padding(paddingValues)) {
+            // ...
+        }
+    }
+}
+```
+
+**常用 LiquidGlass 组件：**
+
+| 组件 | 用途 |
+|------|------|
+| `LiquidGlassScaffold` | 毛玻璃风格脚手架 |
+| `LiquidGlassTopAppBar` | 顶部导航栏 |
+| `LiquidGlassBottomNavigation` | 底部导航 |
+| `LiquidGlassCard` | 毛玻璃卡片 |
+| `LiquidGlassButton` | 按钮 |
+| `LiquidGlassTextField` | 文本输入框 |
+| `LiquidGlassSwitch` | 开关 |
+| `LiquidGlassSlider` | 滑块 |
+
+### 3.3 Material3 风格组件
+
+Material3 组件提供标准 Material Design 3 风格：
+
+```kotlin
+@Composable
+fun MyMaterialScreen() {
+    Material3Scaffold(
+        topBar = {
+            TopAppBar(title = { Text("标题") })
+        }
+    ) { paddingValues ->
+        // 内容
+    }
+}
+```
+
+### 3.4 主题配置
+
+```kotlin
+// AppTheme.kt
+@Composable
+fun AppTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable () -> Unit
+) {
+    val colorScheme = if (darkTheme) {
+        LiquidGlassDarkColorScheme
+    } else {
+        LiquidGlassLightColorScheme
+    }
+
+    MaterialTheme(
+        colorScheme = colorScheme,
+        content = content
+    )
+}
+```
+
+### 3.5 预览组件
+
+使用 `@PreviewWrapper` 进行跨风格预览：
 
 ```kotlin
 @PreviewWrapper
 @Composable
 fun MyComponentPreview() {
-    // Preview code here
+    AppTheme {
+        MyComponent()
+    }
 }
 ```
 
-### Key Components
-
-| Component | Location | Style Support |
-|-----------|----------|---------------|
-| LiquidGlassScaffold | ui/src/commonMain/.../liquidglass/ | LiquidGlass only |
-| LiquidGlassCard | ui/src/commonMain/.../liquidglass/ | LiquidGlass only |
-| LiquidGlassButton | ui/src/commonMain/.../liquidglass/ | LiquidGlass only |
-| PreviewWrapper | ui/src/commonMain/.../ | Both styles |
-
 ---
 
-## KMP Source-Set Discipline
+## 4. 使用共享模块
 
-### Common Rules
+### 4.1 数据库配置
 
-- **Business logic** → `shared/` module
-- **Platform-agnostic UI** → `ui/src/commonMain/`
-- **Platform-specific code** → respective platform source sets
-- **Compose UI** → `commonMain` for cross-platform, platform-specific for exceptions
-
-### Module Dependencies
-
-```
-composeApp (app)
-  └── shared (business logic)
-  └── ui (UI components)
-  └── webview
-  └── webviewParkwoocheol
-
-ui (library)
-  └── shared
-```
-
-### Import Conventions
+boot-app-kmp 使用 Room 3 进行数据库管理：
 
 ```kotlin
-// UI components
-import com.yuanjingtech.boot.app.kmp.ui.components.liquidglass.*
-import com.yuanjingtech.boot.app.kmp.ui.components.material3.*
+// AppDatabase.kt
+@OptIn(ExperimentalForeignApi::class)
+object AppDatabase {
+    private val dbFactory = BootDatabaseConstructor()
 
-// Shared utilities
-import com.yuanjingtech.boot.app.kmp.shared.*
+    val database: Database
+        get() = dbFactory.createDatabase()
+}
+
+// 在 Koin 模块中注册
+val databaseModule = module {
+    single { AppDatabase.database }
+}
+```
+
+### 4.2 网络配置
+
+```kotlin
+// NetworkModule.kt
+val networkModule = module {
+    single { NetworkClient(get()) }
+}
+```
+
+### 4.3 Koin 依赖注入
+
+```kotlin
+// AppModule.kt
+val appModule = module {
+    // 数据层
+    single { AppDatabase.database }
+    single { UserRepository(get()) }
+
+    // 网络层
+    single { NetworkClient(get()) }
+
+    // ViewModel
+    viewModel { MainViewModel(get(), get()) }
+}
+```
+
+启动应用：
+
+```kotlin
+fun Main() {
+    KoinApplication(application {
+        modules(appModule, databaseModule, networkModule)
+    }) {
+        App()
+    }
+}
 ```
 
 ---
 
-## Development Workflow
+## 5. KMP Source-Set 规则
 
-### Building
+### 5.1 代码放置规范
+
+| 功能类型 | 放置位置 |
+|----------|----------|
+| 业务逻辑 | `shared/src/commonMain/` |
+| 跨平台 UI | `ui/src/commonMain/` |
+| Android 特定 | `shared/src/androidMain/` |
+| iOS 特定 | `shared/src/iosMain/` |
+| 平台测试 | `shared/src/androidTest/` 等 |
+
+### 5.2 依赖层级
+
+```
+你的 App
+  └── boot-app-kmp:shared (业务逻辑)
+  └── boot-app-kmp:ui (UI 组件)
+        └── boot-app-kmp:shared
+```
+
+---
+
+## 6. 构建和运行
+
+### 6.1 Gradle 构建命令
 
 ```bash
-# Build all targets
+# 构建所有平台
 ./gradlew build
 
-# Build specific platform
-./gradlew :composeApp:assembleDebug        # Android
-./gradlew :composeApp:linkDebugFrameworkIosArm64  # iOS
-./gradlew :composeApp:wasmJsBrowserDebug   # Web
+# Android
+./gradlew :shared:assembleDebug
 
-# Run tests
-./gradlew :composeApp:testDebugUnitTest
+# iOS
+./gradlew :shared:linkDebugFrameworkIosArm64
+
+# Web
+./gradlew :shared:wasmJsBrowserDebug
+
+# 运行测试
+./gradlew :shared:testDebugUnitTest
 ```
 
-### Code Style
+### 6.2 Android Studio / IntelliJ 配置
 
-- Follow Kotlin conventions (ktlint)
-- Use semantic versioning for public API
-- Document breaking changes
-- Add KDoc for public APIs
-
-### Testing
-
-- Unit tests in `commonTest` source set
-- Integration tests where appropriate
-- UI preview testing via `@PreviewWrapper`
+1. 同步 Gradle 项目
+2. 选择运行配置（Android/iOS/Web）
+3. 运行或调试
 
 ---
 
-## Known Issues & Solutions
+## 7. 常见问题
 
-See `docs/solutions/` for documented solutions to known problems:
+### Q: 如何获取 API Key？
+A: 在 GitHub Settings → Secrets 中配置 `MINIMAX_API_KEY`
 
-- **Compose Preview API** - Common Preview API misuse patterns and fixes
-- **KSP Resource Packaging** - Generated META-INF/services resource packaging
-- **iOS Framework Linking** - Debug framework linking issues
+### Q: 如何处理平台特定代码？
+A: 使用 `expect` / `actual` 机制在 commonMain 中定义接口，在各平台实现
+
+### Q: 如何自定义组件样式？
+A: 覆盖 MaterialTheme 的颜色和类型，或创建自定义 modifier
 
 ---
 
-## Git Workflow
-
-1. Create feature branch from `main`
-2. Implement with incremental commits
-3. Run full build before PR
-4. Request review
-5. Squash and merge
-
-### Commit Message Format
+## 8. 示例项目结构
 
 ```
-type(scope): description
-
-[Optional body]
-
-[Optional footer]
+your-project/
+├── app/
+│   ├── src/
+│   │   ├── commonMain/
+│   │   │   └── kotlin/
+│   │   │       └── com/example/app/
+│   │   │           ├── App.kt
+│   │   │           └── MainScreen.kt
+│   │   └── androidMain/
+│   └── build.gradle.kts
+├── build.gradle.kts
+└── settings.gradle.kts
 ```
 
-Types: feat, fix, docs, refactor, test, chore
+---
+
+## 9. API 参考
+
+### UI 组件包
+
+```kotlin
+// LiquidGlass 组件
+com.yuanjingtech.boot.app.kmp.ui.components.liquidglass.*
+
+// Material3 组件
+com.yuanjingtech.boot.app.kmp.ui.components.material3.*
+
+// 预览工具
+com.yuanjingtech.boot.app.kmp.ui.components.PreviewWrapper
+```
+
+### Shared 模块包
+
+```kotlin
+// 数据库
+com.yuanjingtech.boot.app.kmp.shared.database.*
+
+// 网络
+com.yuanjingtech.boot.app.kmp.shared.network.*
+
+// DI
+com.yuanjingtech.boot.app.kmp.shared.di.*
+```
 
 ---
 
-## Dependencies
+## 10. 版本兼容性
 
-- Kotlin 2.0+
-- Compose Multiplatform
-- Koin (dependency injection)
-- Navigation 3
-- SQLDelight (database)
-- Compose Resources for i18n
+| boot-app-kmp | Kotlin | Compose | 最低 Android SDK |
+|---------------|--------|---------|------------------|
+| 1.0.x | 2.0+ | 1.6+ | API 24 |
+| 0.9.x | 1.9+ | 1.5+ | API 21 |
 
 ---
 
-## Key Files
+## 11. 联系方式
 
-- `composeApp/build.gradle.kts` - App module configuration
-- `ui/build.gradle.kts` - UI library configuration
-- `gradle/libs.versions.toml` - Version catalog
-- `docs/solutions/` - Known issue solutions
+- 文档问题：`docs/solutions/`
+- 已知问题：`docs/solutions/` 中的解决方案
