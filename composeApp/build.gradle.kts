@@ -11,6 +11,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.sqldelight)
     alias(libs.plugins.sweetspi)
+    alias(libs.plugins.publish)
 }
 
 kotlin {
