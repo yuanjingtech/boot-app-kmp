@@ -68,3 +68,23 @@ private fun BootCardsMaterial3Preview() {
         BootOutlinedCard { Text("Outlined Card") }
     }
 }
+
+@Preview
+@Composable
+@PreviewWrapper(wrapper = LiquidGlassPreviewWrapper::class)
+private fun BootCardsLoadingPreview() {
+    Column(modifier = Modifier.padding(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        BootElevatedCard(isLoading = true) { Text("Elevated Card") }
+        BootOutlinedCard(isLoading = true) { Text("Outlined Card") }
+    }
+}
+
+@Preview
+@Composable
+@PreviewWrapper(wrapper = Material3PreviewWrapper::class)
+private fun BootCardsLoadingMaterial3Preview() {
+    Column(modifier = Modifier.padding(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        BootElevatedCard(isLoading = true) { Text("Elevated Card") }
+        BootOutlinedCard(isLoading = true) { Text("Outlined Card") }
+    }
+}
