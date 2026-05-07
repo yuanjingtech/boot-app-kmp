@@ -64,3 +64,11 @@
 - ✅ `./gradlew test` — BUILD SUCCESSFUL (229 tasks)
 
 **状态:** PR 已创建，Linear API 评论失败（网络问题），手动记录到 WORKPAD.md
+
+**后续子任务拆分 (建议创建独立 Issue):**
+- YUA-15: auth 模块开发 (P0)
+- YUA-16: actuator 模块开发 (P0)
+- YUA-17: cache 模块开发 (P1)
+- YUA-18: store 模块开发 (P1)
+- YUA-19: tenant 模块开发 (P2)
+- YUA-20: mail 模块开发 (P2)
