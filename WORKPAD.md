@@ -34,4 +34,33 @@
 
 **状态:** 调查完成，已发布到 Linear comment。尝试切换状态到 research-review 时网络超时(api.linear.app DNS 解析失败) — 这是环境网络问题，非逻辑错误。
 
-**Blocker:** Linear API 网络不通，无法完成状态转换。
+**Blocker:** Linear API 网络不通，无法完成状态转换和评论更新。
+
+---
+
+### 2026-05-08 (run 1) — implement 阶段
+
+**任务:** 将调研结果落实为文档更新 + PR
+
+**完成内容:**
+1. 更新 `README.md` — 新增两大章节:
+   - **Boot Starter 架构**: Spring Boot Starter 与 boot-app-kmp 的等价关系
+   - **企业常用 Starter 模块映射**: 已实现(5个) + 待实现(9个, P0-P3 优先级)
+   - 修正过时条目: ktor network、sqldelight wasm、coil、webview 均已实现
+
+2. 重构 `TODO.md` — 按 P0/P1/P2/P3 优先级列出模块路线图
+
+**关键决策:**
+- 自动配置机制已实现: pluginModule + SweetSPI，等价 Spring Boot AutoConfiguration
+- 聚焦 80/20 法则: P0(auth + actuator) 覆盖 80% 企业场景
+- 不追求 50+ 全覆盖
+
+**Git:**
+- Branch: `feat/enterprise-starters-research`
+- PR: https://github.com/yuanjingtech/boot-app-kmp/pull/5
+
+**验证:**
+- ✅ `./gradlew :shared:compileKotlinJvm` — BUILD SUCCESSFUL
+- ✅ `./gradlew test` — BUILD SUCCESSFUL (229 tasks)
+
+**状态:** PR 已创建，Linear API 评论失败（网络问题），手动记录到 WORKPAD.md
