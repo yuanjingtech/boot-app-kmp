@@ -8,3 +8,6 @@ ui/src/commonMain/kotlin/com/yuanjingtech/boot/app/kmp/ui/components public,对�
 ui/src/commonMain/kotlin/com/yuanjingtech/boot/app/kmp/ui/liquidglass internal,LiquidGlass风格的实现
 ui/src/commonMain/kotlin/com/yuanjingtech/boot/app/kmp/ui/material3 internal,Material3风格的实现
 ui/src/commonMain/kotlin/com/yuanjingtech/boot/app/kmp/ui/preview internal,预览相关实现
+
+## 
+内置骨架实现,简化使用
