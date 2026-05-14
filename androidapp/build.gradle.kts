@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "com.yuanjingtech.boot.app.kmp"
+    namespace = "com.yuanjingtech.boot.app.kmp.app"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
