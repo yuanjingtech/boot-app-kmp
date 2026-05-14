@@ -91,21 +91,29 @@ kotlin {
         }
         androidMain.dependencies {
             api(libs.androidx.activity.compose)
-            implementation(libs.sqlite.bundled)
         }
         jvmMain.dependencies {
             api(compose.desktop.currentOs)
             api(libs.kotlinx.coroutinesSwing)
+        }
+    }
+}
+kotlin {
+    sourceSets {
+        nativeMain.dependencies {
+            implementation(libs.room3.runtime)
             implementation(libs.sqlite.bundled)
         }
-        iosMain.dependencies {
+        androidMain.dependencies {
+            implementation(libs.room3.runtime)
             implementation(libs.sqlite.bundled)
         }
-        jsMain.dependencies {
-            implementation(libs.sqlite.web)
-            implementation(npm("sqlite-wasm-worker", file("../sqlite-wasm-worker/worker")))
+        jvmMain.dependencies {
+            implementation(libs.room3.runtime)
+            implementation(libs.sqlite.bundled)
         }
-        wasmJsMain.dependencies {
+        webMain.dependencies {
+            implementation(libs.room3.runtime)
             implementation(libs.sqlite.web)
             implementation(npm("sqlite-wasm-worker", file("../sqlite-wasm-worker/worker")))
         }
