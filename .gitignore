@@ -20,3 +20,5 @@ node_modules/
 
 .compound-engineering/*.local.yaml
 /desktopApp/boot_database.db*
+
+.alma-snapshots
