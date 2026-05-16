@@ -111,7 +111,7 @@ gradle/libs.version.toml
 
 ```yaml
 [ versions ]
-  boot = "0.0.1"
+  boot = "0.0.2-alpha.15"
   [ libraries ]
   boot-shared = { module = "com.yuanjingtech.boot.app.kmp:shared", version.ref = "boot" }
   [ bundles ]
