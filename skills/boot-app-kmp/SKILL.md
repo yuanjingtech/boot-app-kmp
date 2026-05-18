@@ -201,6 +201,58 @@ fun MyComponentPreview() {
 }
 ```
 
+### 3.6 Koin Preview 依赖注入
+
+使用 `BootApplicationPreview` 简化 Compose 预览的 Koin 依赖注入配置：
+
+```kotlin
+@Preview
+@Composable
+private fun MyScreenPreview() {
+    BootApplicationPreview {
+        MyScreen()
+    }
+}
+```
+
+**前置依赖**：模块的 `build.gradle.kts` 需要添加预览工具库：
+
+```kotlin
+// composeApp/build.gradle.kts
+dependencies {
+    // 预览支持（androidTest + preview 源码集）
+    androidRuntimeClasspath(libs.compose.ui.tooling.preview)
+    // 或在 commonMain 需要时
+    implementation(libs.compose.ui.tooling.preview)
+}
+```
+
+**与手动配置对比**：
+
+```kotlin
+// ❌ 手动配置（需重复声明 bootModule + pluginModule）
+@Preview
+@Composable
+private fun MyScreenPreview() {
+    KoinApplicationPreview(application = { modules(bootModule, pluginModule) }) {
+        BootAppTheme {
+            MyScreen()
+        }
+    }
+}
+
+// ✅ 使用 BootApplicationPreview（自动包含 bootModule + pluginModule + BootAppTheme）
+@Preview
+@Composable
+private fun MyScreenPreview() {
+    BootApplicationPreview {
+        MyScreen()
+    }
+}
+```
+
+**适用场景**：预览使用 Koin 注入的 ViewModel 或依赖项的 Composable 组件。
+
 ---
 
 ## 4. 使用共享模块
