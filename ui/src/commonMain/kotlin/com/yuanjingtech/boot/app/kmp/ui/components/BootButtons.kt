@@ -18,6 +18,8 @@ import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
+import com.yuanjingtech.boot.app.kmp.ui.fluent.FluentButton
+import com.yuanjingtech.boot.app.kmp.ui.fluent.FluentFilledTonalButton
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassButton
 import com.yuanjingtech.boot.app.kmp.ui.material3.Material3ElevatedButton
 import com.yuanjingtech.boot.app.kmp.ui.material3.Material3FilledTonalButton
@@ -37,6 +39,7 @@ fun BootFilledTonalButton(
     when (LocalUiStyle.current) {
         BootUiStyle.LIQUID_GLASS -> LiquidGlassButton(onClick = onClick, modifier = modifier, enabled = enabled, content = content)
         BootUiStyle.MATERIAL3 -> Material3FilledTonalButton(onClick = onClick, modifier = modifier, enabled = enabled, content = content)
+        BootUiStyle.FLUENT -> FluentFilledTonalButton(onClick = onClick, modifier = modifier, enabled = enabled, content = content)
     }
 }
 
@@ -50,6 +53,7 @@ fun BootOutlinedButton(
     when (LocalUiStyle.current) {
         BootUiStyle.LIQUID_GLASS -> LiquidGlassButton(onClick = onClick, modifier = modifier, enabled = enabled, content = content)
         BootUiStyle.MATERIAL3 -> Material3OutlinedButton(onClick = onClick, modifier = modifier, enabled = enabled, content = content)
+        BootUiStyle.FLUENT -> FluentButton(onClick = onClick, modifier = modifier, enabled = enabled, content = content)
     }
 }
 
@@ -63,6 +67,7 @@ fun BootTextButton(
     when (LocalUiStyle.current) {
         BootUiStyle.LIQUID_GLASS -> LiquidGlassButton(onClick = onClick, modifier = modifier, enabled = enabled, content = content)
         BootUiStyle.MATERIAL3 -> Material3TextButton(onClick = onClick, modifier = modifier, enabled = enabled, content = content)
+        BootUiStyle.FLUENT -> FluentButton(onClick = onClick, modifier = modifier, enabled = enabled, content = content)
     }
 }
 
@@ -76,6 +81,7 @@ fun BootElevatedButton(
     when (LocalUiStyle.current) {
         BootUiStyle.LIQUID_GLASS -> LiquidGlassButton(onClick = onClick, modifier = modifier, enabled = enabled, content = content)
         BootUiStyle.MATERIAL3 -> Material3ElevatedButton(onClick = onClick, modifier = modifier, enabled = enabled, content = content)
+        BootUiStyle.FLUENT -> FluentButton(onClick = onClick, modifier = modifier, enabled = enabled, content = content)
     }
 }
 
@@ -95,6 +101,10 @@ fun BootIconButton(
         BootUiStyle.MATERIAL3 -> Material3IconButton(
             onClick = onClick, modifier = modifier, enabled = enabled,
             icon = icon, contentDescription = contentDescription
+        )
+        BootUiStyle.FLUENT -> FluentButton(
+            onClick = onClick, modifier = modifier, enabled = enabled,
+            content = { Icon(imageVector = icon, contentDescription = contentDescription) }
         )
     }
 }

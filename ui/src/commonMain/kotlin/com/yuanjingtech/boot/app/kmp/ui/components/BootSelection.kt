@@ -14,6 +14,10 @@ import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.*
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
+import com.yuanjingtech.boot.app.kmp.ui.fluent.FluentCheckbox
+import com.yuanjingtech.boot.app.kmp.ui.fluent.FluentRadioButton
+import com.yuanjingtech.boot.app.kmp.ui.fluent.FluentSwitch
+import com.yuanjingtech.boot.app.kmp.ui.fluent.FluentSlider
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassCheckbox
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassRadioButton
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassSwitch
@@ -28,6 +32,7 @@ fun BootCheckbox(checked: Boolean, onCheckedChange: (Boolean) -> Unit, modifier:
     when (LocalUiStyle.current) {
         BootUiStyle.LIQUID_GLASS -> LiquidGlassCheckbox(checked = checked, onCheckedChange = onCheckedChange, modifier = modifier, enabled = enabled, label = label)
         BootUiStyle.MATERIAL3 -> Material3Checkbox(checked = checked, onCheckedChange = onCheckedChange, modifier = modifier, enabled = enabled, label = label)
+        BootUiStyle.FLUENT -> FluentCheckbox(checked = checked, onCheckedChange = onCheckedChange, modifier = modifier, enabled = enabled, label = label)
     }
 }
 
@@ -36,6 +41,7 @@ fun BootRadioButton(selected: Boolean, onClick: (() -> Unit)? = null, modifier: 
     when (LocalUiStyle.current) {
         BootUiStyle.LIQUID_GLASS -> LiquidGlassRadioButton(selected = selected, onClick = onClick, modifier = modifier, enabled = enabled, label = label)
         BootUiStyle.MATERIAL3 -> Material3RadioButton(selected = selected, onClick = onClick, modifier = modifier, enabled = enabled, label = label)
+        BootUiStyle.FLUENT -> FluentRadioButton(selected = selected, onClick = onClick, modifier = modifier, enabled = enabled, label = label)
     }
 }
 
@@ -44,6 +50,7 @@ fun BootSwitch(checked: Boolean, onCheckedChange: (Boolean) -> Unit, modifier: M
     when (LocalUiStyle.current) {
         BootUiStyle.LIQUID_GLASS -> LiquidGlassSwitch(checked = checked, onCheckedChange = onCheckedChange, modifier = modifier, enabled = enabled, label = label)
         BootUiStyle.MATERIAL3 -> Material3Switch(checked = checked, onCheckedChange = onCheckedChange, modifier = modifier, enabled = enabled, label = label)
+        BootUiStyle.FLUENT -> FluentSwitch(checked = checked, onCheckedChange = onCheckedChange, modifier = modifier, enabled = enabled, label = label)
     }
 }
 
@@ -52,6 +59,7 @@ fun BootSlider(value: Float, onValueChange: (Float) -> Unit, modifier: Modifier 
     when (LocalUiStyle.current) {
         BootUiStyle.LIQUID_GLASS -> LiquidGlassSlider(value = value, onValueChange = onValueChange, modifier = modifier, valueRange = valueRange, steps = steps, enabled = enabled)
         BootUiStyle.MATERIAL3 -> Material3Slider(value = value, onValueChange = onValueChange, modifier = modifier, valueRange = valueRange, steps = steps, enabled = enabled)
+        BootUiStyle.FLUENT -> FluentSlider(value = value, onValueChange = onValueChange, modifier = modifier, valueRange = valueRange, steps = steps, enabled = enabled)
     }
 }
 

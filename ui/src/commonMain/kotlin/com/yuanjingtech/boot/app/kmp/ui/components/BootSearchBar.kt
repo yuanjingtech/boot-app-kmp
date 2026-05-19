@@ -15,6 +15,7 @@ import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.*
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
+import com.yuanjingtech.boot.app.kmp.ui.fluent.FluentSearchBar
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassSearchBar
 import com.yuanjingtech.boot.app.kmp.ui.material3.Material3SearchBar
 
@@ -33,6 +34,7 @@ fun BootSearchBar(
     when (LocalUiStyle.current) {
         BootUiStyle.LIQUID_GLASS -> LiquidGlassSearchBar(query = query, onQueryChange = onQueryChange, onSearch = onSearch, active = active, onActiveChange = onActiveChange, modifier = modifier, placeholder = placeholder, leadingIcon = leadingIcon ?: Icons.Default.Search, trailingIcon = trailingIcon)
         BootUiStyle.MATERIAL3 -> Material3SearchBar(query = query, onQueryChange = onQueryChange, onSearch = onSearch, active = active, onActiveChange = onActiveChange, modifier = modifier, placeholder = placeholder, leadingIcon = leadingIcon ?: Icons.Default.Search, trailingIcon = trailingIcon)
+        BootUiStyle.FLUENT -> FluentSearchBar(query = query, onQueryChange = onQueryChange, onSearch = onSearch, active = active, onActiveChange = onActiveChange, modifier = modifier, placeholder = placeholder, leadingIcon = leadingIcon ?: Icons.Default.Search, trailingIcon = trailingIcon)
     }
 }
 

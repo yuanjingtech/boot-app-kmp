@@ -12,6 +12,7 @@ import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.*
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
+import com.yuanjingtech.boot.app.kmp.ui.fluent.FluentModalBottomSheet
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassModalBottomSheet
 import com.yuanjingtech.boot.app.kmp.ui.material3.Material3ModalBottomSheet
 
@@ -20,6 +21,7 @@ fun BootModalBottomSheet(onDismiss: () -> Unit, modifier: Modifier = Modifier, c
     when (LocalUiStyle.current) {
         BootUiStyle.LIQUID_GLASS -> LiquidGlassModalBottomSheet(modifier = modifier, content = content)
         BootUiStyle.MATERIAL3 -> Material3ModalBottomSheet(onDismiss = onDismiss, modifier = modifier, content = content)
+        BootUiStyle.FLUENT -> FluentModalBottomSheet(onDismiss = onDismiss, modifier = modifier, content = content)
     }
 }
 

@@ -11,6 +11,7 @@ import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.tooling.preview.PreviewWrapperProvider
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
+import com.yuanjingtech.boot.app.kmp.ui.fluent.FluentTheme
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassTheme
 
 // ─── Preview Color Schemes ────────────────────────────────────────────────────
@@ -57,6 +58,32 @@ class Material3PreviewWrapper : PreviewWrapperProvider {
         CompositionLocalProvider(LocalUiStyle provides BootUiStyle.MATERIAL3) {
             MaterialTheme {
                 content()
+            }
+        }
+    }
+}
+
+class FluentPreviewWrapper : PreviewWrapperProvider {
+    @Composable
+    override fun Wrap(content: @Composable () -> Unit) {
+        CompositionLocalProvider(LocalUiStyle provides BootUiStyle.FLUENT) {
+            MaterialTheme(colorScheme = DarkColorScheme) {
+                FluentTheme {
+                    content()
+                }
+            }
+        }
+    }
+}
+
+class FluentLightPreviewWrapper : PreviewWrapperProvider {
+    @Composable
+    override fun Wrap(content: @Composable () -> Unit) {
+        CompositionLocalProvider(LocalUiStyle provides BootUiStyle.FLUENT) {
+            MaterialTheme(colorScheme = LightColorScheme) {
+                FluentTheme {
+                    content()
+                }
             }
         }
     }

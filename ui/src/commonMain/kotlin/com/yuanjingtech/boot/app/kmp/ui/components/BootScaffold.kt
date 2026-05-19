@@ -15,6 +15,7 @@ import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.*
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
+import com.yuanjingtech.boot.app.kmp.ui.fluent.FluentScaffold
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassScaffold
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassScaffoldTopBar
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassScaffoldBottomBar
@@ -32,6 +33,7 @@ fun BootScaffold(
     when (LocalUiStyle.current) {
         BootUiStyle.LIQUID_GLASS -> LiquidGlassScaffold(modifier = modifier, topBar = topBar, bottomBar = bottomBar, content = content)
         BootUiStyle.MATERIAL3 -> Material3Scaffold(modifier = modifier, topBar = topBar, bottomBar = bottomBar, content = content)
+        BootUiStyle.FLUENT -> FluentScaffold(modifier = modifier, topBar = topBar, bottomBar = bottomBar, content = content)
     }
 }
 

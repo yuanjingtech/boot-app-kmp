@@ -9,6 +9,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
+import com.yuanjingtech.boot.app.kmp.ui.fluent.FluentButton
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassButton
 import com.yuanjingtech.boot.app.kmp.ui.material3.Material3Button
 import com.yuanjingtech.boot.app.kmp.ui.preview.LiquidGlassPreviewWrapper
@@ -19,6 +20,7 @@ fun BootButton(onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Bool
     when (LocalUiStyle.current) {
         BootUiStyle.LIQUID_GLASS -> LiquidGlassButton(onClick = onClick, modifier = modifier, enabled = enabled, content = content)
         BootUiStyle.MATERIAL3 -> Material3Button(onClick = onClick, modifier = modifier, enabled = enabled, content = content)
+        BootUiStyle.FLUENT -> FluentButton(onClick = onClick, modifier = modifier, enabled = enabled, content = content)
     }
 }
 

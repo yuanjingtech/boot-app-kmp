@@ -13,10 +13,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
+import com.yuanjingtech.boot.app.kmp.ui.fluent.FluentBadge
+import com.yuanjingtech.boot.app.kmp.ui.fluent.FluentBadgedBox
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassBadge
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassBadgedBox
 import com.yuanjingtech.boot.app.kmp.ui.material3.Material3Badge
 import com.yuanjingtech.boot.app.kmp.ui.material3.Material3BadgedBox
+import com.yuanjingtech.boot.app.kmp.ui.preview.FluentPreviewWrapper
 import com.yuanjingtech.boot.app.kmp.ui.preview.LiquidGlassPreviewWrapper
 import com.yuanjingtech.boot.app.kmp.ui.preview.Material3PreviewWrapper
 
@@ -30,6 +33,7 @@ fun BootBadge(
     when (LocalUiStyle.current) {
         BootUiStyle.LIQUID_GLASS -> LiquidGlassBadge(modifier = modifier, backgroundColor = containerColor, contentColor = contentColor, content = content)
         BootUiStyle.MATERIAL3 -> Material3Badge(modifier = modifier, containerColor = containerColor, contentColor = contentColor, content = content)
+        BootUiStyle.FLUENT -> FluentBadge(modifier = modifier, backgroundColor = containerColor, contentColor = contentColor, content = content)
     }
 }
 
@@ -42,6 +46,7 @@ fun BootBadgedBox(
     when (LocalUiStyle.current) {
         BootUiStyle.LIQUID_GLASS -> LiquidGlassBadgedBox(badgeContent = badgeContent, modifier = modifier, content = content)
         BootUiStyle.MATERIAL3 -> Material3BadgedBox(badgeContent = badgeContent, modifier = modifier, content = content)
+        BootUiStyle.FLUENT -> FluentBadgedBox(badgeContent = badgeContent, modifier = modifier, content = content)
     }
 }
 
