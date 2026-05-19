@@ -2,7 +2,6 @@ package com.yuanjingtech.boot.app.kmp.ui.fluent
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -34,7 +33,7 @@ fun FluentModalBottomSheet(
                     .background(colors.surface)
                     .padding(16.dp),
             ) {
-                Column {
+                androidx.compose.foundation.layout.Column {
                     content()
                 }
             }

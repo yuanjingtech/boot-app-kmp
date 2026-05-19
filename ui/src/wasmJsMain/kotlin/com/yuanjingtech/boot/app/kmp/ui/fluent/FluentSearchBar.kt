@@ -3,7 +3,6 @@ package com.yuanjingtech.boot.app.kmp.ui.fluent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -14,7 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -26,8 +25,8 @@ fun FluentSearchBar(
     onActiveChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
     placeholder: String = "Search",
-    leadingIcon: ImageVector = Icons.Default.Search,
-    trailingIcon: ImageVector? = null,
+    leadingIcon: @Composable () -> Unit = { Icon(Icons.Default.Search, contentDescription = "Search") },
+    trailingIcon: @Composable (() -> Unit)? = null,
 ) {
     val colors = LocalFluentColors.current
     val shape = RoundedCornerShape(4.dp)
@@ -41,24 +40,30 @@ fun FluentSearchBar(
                 .background(backgroundColor, shape)
                 .padding(horizontal = 12.dp, vertical = 8.dp),
         ) {
-            Row(
+            androidx.compose.foundation.layout.Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Icon(leadingIcon, contentDescription = "Search", tint = textColor)
-                Row(
+                leadingIcon()
+                androidx.compose.foundation.layout.Row(
                     modifier = Modifier
                         .weight(1f)
                         .padding(horizontal = 8.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     if (query.isEmpty() && !active) {
-                        Text(text = placeholder, color = textColor)
+                        Text(
+                            text = placeholder,
+                            color = textColor,
+                        )
                     } else {
-                        Text(text = query, color = textColor)
+                        Text(
+                            text = query,
+                            color = textColor,
+                        )
                     }
                 }
-                trailingIcon?.let { Icon(it, contentDescription = null, tint = textColor) }
+                trailingIcon?.invoke()
             }
         }
     }

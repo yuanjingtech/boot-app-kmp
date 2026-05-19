@@ -45,13 +45,12 @@ kotlin {
             implementation(libs.bundles.compose)
             implementation(libs.bundles.coil)
             implementation(libs.compose.material.icons.extended)
-            implementation(libs.compose.fluent.ui)
-            implementation(libs.compose.fluent.icons.extended)
             implementation(projects.network)
         }
         androidMain.dependencies {
             implementation(libs.compose.ui.tooling)
             implementation(libs.backdrop)
+            implementation(libs.compose.fluent.android)
         }
         jvmMain.dependencies {
             implementation(libs.backdrop)
@@ -62,10 +61,10 @@ kotlin {
         iosSimulatorArm64Main.dependencies {
             implementation(libs.backdrop)
         }
-        wasmJsMain.dependencies {
-            implementation(libs.backdrop)
-        }
         jsMain.dependencies {
+        }
+        wasmJsMain.dependencies {
+            // fluent-wasm-js artifact not available, wasmJsMain uses stub implementations
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

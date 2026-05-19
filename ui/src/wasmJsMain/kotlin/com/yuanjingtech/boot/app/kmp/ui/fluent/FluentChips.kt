@@ -3,17 +3,18 @@ package com.yuanjingtech.boot.app.kmp.ui.fluent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -21,17 +22,18 @@ fun FluentAssistChip(
     onClick: () -> Unit,
     label: String,
     modifier: Modifier = Modifier,
-    leadingIcon: ImageVector? = null,
+    leadingIcon: @Composable (() -> Unit)? = null,
     enabled: Boolean = true,
 ) {
     val colors = LocalFluentColors.current
     val interactionSource = remember { MutableInteractionSource() }
     val backgroundColor = if (enabled) colors.controlFillTertiary else colors.controlFillDisabled
     val textColor = if (enabled) colors.textPrimary else colors.textDisabled
+    val shape = RoundedCornerShape(4.dp)
 
     Box(
         modifier = modifier
-            .background(backgroundColor, RoundedCornerShape(4.dp))
+            .background(backgroundColor, shape)
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,
@@ -42,10 +44,12 @@ fun FluentAssistChip(
         contentAlignment = Alignment.Center,
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            leadingIcon?.let {
-                Icon(it, contentDescription = null, modifier = Modifier.padding(end = 8.dp))
-            }
-            Text(text = label, color = textColor)
+            leadingIcon?.invoke()
+            Text(
+                text = label,
+                color = textColor,
+                modifier = Modifier.padding(start = 8.dp),
+            )
         }
     }
 }
@@ -55,17 +59,18 @@ fun FluentSuggestionChip(
     onClick: () -> Unit,
     label: String,
     modifier: Modifier = Modifier,
-    icon: ImageVector? = null,
+    icon: @Composable (() -> Unit)? = null,
     enabled: Boolean = true,
 ) {
     val colors = LocalFluentColors.current
     val interactionSource = remember { MutableInteractionSource() }
     val backgroundColor = if (enabled) colors.controlFillSecondary else colors.controlFillDisabled
     val textColor = if (enabled) colors.textPrimary else colors.textDisabled
+    val shape = RoundedCornerShape(4.dp)
 
     Box(
         modifier = modifier
-            .background(backgroundColor, RoundedCornerShape(4.dp))
+            .background(backgroundColor, shape)
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,
@@ -76,10 +81,12 @@ fun FluentSuggestionChip(
         contentAlignment = Alignment.Center,
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            icon?.let {
-                Icon(it, contentDescription = null, modifier = Modifier.padding(end = 8.dp))
-            }
-            Text(text = label, color = textColor)
+            icon?.invoke()
+            Text(
+                text = label,
+                color = textColor,
+                modifier = Modifier.padding(start = 8.dp),
+            )
         }
     }
 }
@@ -90,7 +97,7 @@ fun FluentFilterChip(
     onClick: () -> Unit,
     label: String,
     modifier: Modifier = Modifier,
-    leadingIcon: ImageVector? = null,
+    leadingIcon: @Composable (() -> Unit)? = null,
     enabled: Boolean = true,
 ) {
     val colors = LocalFluentColors.current
@@ -105,10 +112,11 @@ fun FluentFilterChip(
         selected -> colors.accentText
         else -> colors.textPrimary
     }
+    val shape = RoundedCornerShape(4.dp)
 
     Box(
         modifier = modifier
-            .background(backgroundColor, RoundedCornerShape(4.dp))
+            .background(backgroundColor, shape)
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,
@@ -119,10 +127,12 @@ fun FluentFilterChip(
         contentAlignment = Alignment.Center,
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            leadingIcon?.let {
-                Icon(it, contentDescription = null, modifier = Modifier.padding(end = 8.dp))
-            }
-            Text(text = label, color = textColor)
+            leadingIcon?.invoke()
+            Text(
+                text = label,
+                color = textColor,
+                modifier = Modifier.padding(start = 8.dp),
+            )
         }
     }
 }

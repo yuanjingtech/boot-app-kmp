@@ -134,8 +134,8 @@ room3-compiler = { module = "androidx.room3:room3-compiler", version.ref = "room
 sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
 sqlite-web = { module = "androidx.sqlite:sqlite-web", version.ref = "sqlite" }
 backdrop = { module = "io.github.kashif-mehmood-km:backdrop", version.ref = "backdrop" }
-compose-fluent-ui = { module = "com.klibs.composeui:compose-fluent-ui", version.ref = "compose-fluent" }
-compose-fluent-icons-extended = { module = "com.klibs.composeui:compose-fluent-icons-extended", version.ref = "compose-fluent" }
+compose-fluent-android = { group = "io.github.compose-fluent", name = "fluent-android", version.ref = "compose-fluent" }
+compose-fluent-wasmjs = { group = "io.github.compose-fluent", name = "fluent-wasm-js", version.ref = "compose-fluent" }
 [bundles]
 nav3 = [
     "jetbrains-navigation3-ui",
