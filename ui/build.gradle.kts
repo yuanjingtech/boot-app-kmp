@@ -46,11 +46,11 @@ kotlin {
             implementation(libs.bundles.coil)
             implementation(libs.compose.material.icons.extended)
             implementation(projects.network)
+            implementation(libs.compose.fluent)
         }
         androidMain.dependencies {
             implementation(libs.compose.ui.tooling)
             implementation(libs.backdrop)
-            implementation(libs.compose.fluent.android)
         }
         jvmMain.dependencies {
             implementation(libs.backdrop)
@@ -64,7 +64,7 @@ kotlin {
         jsMain.dependencies {
         }
         wasmJsMain.dependencies {
-            // fluent-wasm-js artifact not available, wasmJsMain uses stub implementations
+            implementation(libs.backdrop)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

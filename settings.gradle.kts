@@ -13,7 +13,6 @@ pluginManagement {
         gradlePluginPortal()
         mavenCentral()
         maven { url = uri("https://packages.jetbrains.team/maven/p/kpm/public/") }
-        maven { url = uri("https://repo.klibs.io/releases") }
     }
     includeBuild("build-logic")
 }
