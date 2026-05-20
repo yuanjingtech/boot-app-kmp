@@ -23,6 +23,29 @@ https://insert-koin.io/docs/migration/from-ksp-to-compiler-plugin
 koin-compose-ui-preview
 https://insert-koin.io/docs/4.1/reference/koin-compose/compose#compose-preview-with-koinapplicationpreview
 
+**boot-app-kmp 简化用法**：shared 模块提供 `BootApplicationPreview` 封装，自动注入 bootModule + pluginModule：
+
+```kotlin
+@Preview
+@Composable
+private fun MyScreenPreview() {
+    BootApplicationPreview {
+        MyScreen()
+    }
+}
+```
+
+依赖（koin-compose 已包含在 boot-app-kmp 各模块中）：
+
+```kotlin
+dependencies {
+    // 预览工具库
+    androidRuntimeClasspath(libs.compose.ui.tooling.preview)
+}
+```
+
+详情见 [boot-app-kmp SKILL.md](../../skills/boot-app-kmp/SKILL.md#36-koin-preview-依赖注入)
+
 ### auto discover koin modules migration
 
 when use koin compiler plugin, the auto discover koin modules feature need to change from property to function,

@@ -1,5 +1,85 @@
 ## Workpad
 
+### YUA-75 — 增加BootApplicationPreview(content) 用来简化预览
+
+#### 2026-05-15 (run 1) — investigate 阶段
+
+**任务:** 参考 Koin 官方文档 `KoinApplicationPreview` API，新增 `BootApplicationPreview(content)` 简化 Compose 预览，并编写使用文档。
+
+**完成内容:**
+1. 阅读了 `BootApplication.kt`、`BootAppTheme.kt`、`BootModule.kt` 等核心文件
+2. 阅读了 `skills/boot-app-kmp/SKILL.md` 现有文档
+3. 研究了 `docs/skills.md` 中的 compose-ui-preview 配置说明
+4. 参考了 `webview-parkwoocheol/WebViewScreen.kt` 中已使用 `KoinApplicationPreview` 的实际案例
+5. 了解了 gradle 依赖配置 (koin 4.2.1, compose 1.11.0-beta03)
+
+**核心发现:**
+- `BootApplication` 已使用 `KoinApplication`，包含 `bootModule` + `pluginModule`
+- 现有预览需要手动 `modules(...)` 配置，与主入口不一致
+- Koin 4.x 的 `KoinApplicationPreview` 已在 `koin-compose` 中提供
+- 已有 `webview-parkwoocheol` 模块成功使用 `KoinApplicationPreview`
+
+**受影响文件:**
+| 文件 | 说明 |
+|------|------|
+| `shared/src/commonMain/kotlin/com/yuanjingtech/boot/app/kmp/BootApplication.kt` | 新增 `BootApplicationPreview(content)` 函数 |
+| `skills/boot-app-kmp/SKILL.md` | 新增预览章节文档 |
+| `docs/skills.md` | 新增 compose-ui-preview 章节 |
+
+**Proposed approach:**
+1. 新增 `BootApplicationPreview(content)` — 封装 `KoinApplicationPreview`，自动注入 `bootModule` + `pluginModule`
+2. 文档聚焦：gradle 依赖配置 + 使用示例（与 `KoinApplicationPreview` 对比）
+3. 保持 API 简洁，无额外参数，与 `BootApplication` 行为一致
+
+**Blocker:** Linear API 网络不通，无法完成状态转换和评论更新。
+
+---
+
+### YUA-75 — implement 阶段 (run 1)
+
+**状态:** ✅ 完成
+
+**完成内容:**
+1. 新增 `BootApplicationPreview(content)` 函数于 `shared/.../BootApplication.kt`
+   - 封装 `KoinApplicationPreview`，自动注入 `bootModule` + `pluginModule` + `BootAppTheme`
+   - 预览使用只需一行 `@Composable` lambda，无需手动配置 modules
+2. 更新 `docs/skills.md` — 新增 `compose-ui-preview` 章节说明
+3. 更新 `skills/boot-app-kmp/SKILL.md` — 新增 3.6 Koin Preview 依赖注入使用文档（含对比示例）
+
+**质量验证:**
+- ✅ `./gradlew :shared:compileKotlinJvm` — BUILD SUCCESSFUL
+- ✅ `./gradlew test` — BUILD SUCCESSFUL (225 tasks)
+
+**Git 状态:**
+- Branch: `yua-75-boot-application-preview`
+- Commit: `2cecbad feat(shared): 新增 BootApplicationPreview(content) 简化 Compose 预览`
+- Push: ✅ `git push -u origin HEAD` 成功
+
+**PR 创建:** ✅ PR #7 已存在并 OPEN
+- URL: https://github.com/yuanjingtech/boot-app-kmp/pull/7
+- 网络问题已恢复，PR 已正常创建
+
+---
+
+### YUA-75 — implement 阶段 (rework run 1)
+
+**日期:** 2026-05-19
+
+**状态:** ✅ 完成
+
+**复验内容:**
+- ✅ PR 已存在并 OPEN: https://github.com/yuanjingtech/boot-app-kmp/pull/7
+- ✅ 分支已推送到 origin
+- ✅ `./gradlew :shared:jvmTest` — BUILD SUCCESSFUL
+- ✅ `./gradlew :ui:jvmTest` — BUILD SUCCESSFUL
+
+**受影响文件（无变更）:**
+- `shared/.../BootApplication.kt` — 已存在
+- `docs/skills.md` — 已存在
+- `skills/boot-app-kmp/SKILL.md` — 已存在
+
+---
+
 ### YUA-14 — 企业常用boot starter 模块调研
 
 #### 2026-05-07 (run 1) — investigate 阶段
