@@ -15,6 +15,11 @@ import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.*
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
+import com.yuanjingtech.boot.app.kmp.ui.fluent.FluentTopAppBar
+import com.yuanjingtech.boot.app.kmp.ui.fluent.FluentBottomAppBar
+import com.yuanjingtech.boot.app.kmp.ui.fluent.FluentNavigationBar
+import com.yuanjingtech.boot.app.kmp.ui.fluent.FluentNavigationRail
+import com.yuanjingtech.boot.app.kmp.ui.fluent.FluentTabRow
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassTopAppBar
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassBottomAppBar
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassNavigationBar
@@ -37,6 +42,7 @@ fun BootTopAppBar(
     when (LocalUiStyle.current) {
         BootUiStyle.LIQUID_GLASS -> LiquidGlassTopAppBar(title = title, modifier = modifier, navigationIcon = navigationIcon, onNavigationClick = onNavigationClick, actions = actions)
         BootUiStyle.MATERIAL3 -> Material3TopAppBar(title = title, modifier = modifier, navigationIcon = navigationIcon, onNavigationClick = onNavigationClick, actions = actions)
+        BootUiStyle.FLUENT -> FluentTopAppBar(title = title, modifier = modifier, navigationIcon = navigationIcon, onNavigationClick = onNavigationClick, actions = actions)
     }
 }
 
@@ -45,6 +51,7 @@ fun BootBottomAppBar(modifier: Modifier = Modifier, content: @Composable RowScop
     when (LocalUiStyle.current) {
         BootUiStyle.LIQUID_GLASS -> LiquidGlassBottomAppBar(modifier = modifier, content = content)
         BootUiStyle.MATERIAL3 -> Material3BottomAppBar(modifier = modifier, content = content)
+        BootUiStyle.FLUENT -> FluentBottomAppBar(modifier = modifier, content = content)
     }
 }
 
@@ -53,6 +60,7 @@ fun BootNavigationBar(selectedIndex: Int, onItemSelected: (Int) -> Unit, modifie
     when (LocalUiStyle.current) {
         BootUiStyle.LIQUID_GLASS -> LiquidGlassNavigationBar(selectedIndex = selectedIndex, onItemSelected = onItemSelected, modifier = modifier, items = items)
         BootUiStyle.MATERIAL3 -> Material3NavigationBar(selectedIndex = selectedIndex, onItemSelected = onItemSelected, modifier = modifier, items = items)
+        BootUiStyle.FLUENT -> FluentNavigationBar(selectedIndex = selectedIndex, onItemSelected = onItemSelected, modifier = modifier, items = items)
     }
 }
 
@@ -61,6 +69,7 @@ fun BootNavigationRail(selectedIndex: Int, onItemSelected: (Int) -> Unit, modifi
     when (LocalUiStyle.current) {
         BootUiStyle.LIQUID_GLASS -> LiquidGlassNavRail(selectedIndex = selectedIndex, onItemSelected = onItemSelected, modifier = modifier, items = items)
         BootUiStyle.MATERIAL3 -> Material3NavigationRail(selectedIndex = selectedIndex, onItemSelected = onItemSelected, modifier = modifier, items = items)
+        BootUiStyle.FLUENT -> FluentNavigationRail(selectedIndex = selectedIndex, onItemSelected = onItemSelected, modifier = modifier, items = items)
     }
 }
 
@@ -69,6 +78,7 @@ fun BootTabRow(selectedTabIndex: Int, modifier: Modifier = Modifier, tabTitles: 
     when (LocalUiStyle.current) {
         BootUiStyle.LIQUID_GLASS -> LiquidGlassTabRow(selectedTabIndex = selectedTabIndex, modifier = modifier, tabTitles = tabTitles, onTabSelected = onTabSelected)
         BootUiStyle.MATERIAL3 -> Material3TabRow(selectedTabIndex = selectedTabIndex, modifier = modifier, tabTitles = tabTitles, onTabSelected = onTabSelected)
+        BootUiStyle.FLUENT -> FluentTabRow(selectedTabIndex = selectedTabIndex, modifier = modifier, tabTitles = tabTitles, onTabSelected = onTabSelected)
     }
 }
 

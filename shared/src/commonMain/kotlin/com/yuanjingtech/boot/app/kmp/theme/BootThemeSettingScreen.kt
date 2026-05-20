@@ -50,6 +50,7 @@ private data class UiStyleOption(
 private val uiStyleOptions = listOf(
     UiStyleOption(BootUiStyle.LIQUID_GLASS, "Liquid Glass", "毛玻璃透明风格，适用于 iOS/Web"),
     UiStyleOption(BootUiStyle.MATERIAL3, "Material 3", "Material Design 3 风格"),
+    UiStyleOption(BootUiStyle.FLUENT, "Fluent", "Windows 11 Fluent Design 风格"),
 )
 
 @Composable

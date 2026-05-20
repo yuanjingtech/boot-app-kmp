@@ -46,6 +46,7 @@ kotlin {
             implementation(libs.bundles.coil)
             implementation(libs.compose.material.icons.extended)
             implementation(projects.network)
+            implementation(libs.compose.fluent)
         }
         androidMain.dependencies {
             implementation(libs.compose.ui.tooling)
@@ -60,10 +61,10 @@ kotlin {
         iosSimulatorArm64Main.dependencies {
             implementation(libs.backdrop)
         }
+        jsMain.dependencies {
+        }
         wasmJsMain.dependencies {
             implementation(libs.backdrop)
-        }
-        jsMain.dependencies {
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

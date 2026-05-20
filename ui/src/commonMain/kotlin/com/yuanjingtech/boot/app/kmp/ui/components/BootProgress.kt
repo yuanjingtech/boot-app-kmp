@@ -14,6 +14,8 @@ import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.*
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
+import com.yuanjingtech.boot.app.kmp.ui.fluent.FluentCircularProgressIndicator
+import com.yuanjingtech.boot.app.kmp.ui.fluent.FluentLinearProgressIndicator
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassCircularProgressIndicator
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassLinearProgressIndicator
 import com.yuanjingtech.boot.app.kmp.ui.material3.Material3CircularProgressIndicator
@@ -24,6 +26,7 @@ fun BootCircularProgressIndicator(modifier: Modifier = Modifier, progress: Float
     when (LocalUiStyle.current) {
         BootUiStyle.LIQUID_GLASS -> LiquidGlassCircularProgressIndicator(modifier = modifier, progress = progress, color = color)
         BootUiStyle.MATERIAL3 -> Material3CircularProgressIndicator(modifier = modifier, progress = progress, color = color)
+        BootUiStyle.FLUENT -> FluentCircularProgressIndicator(modifier = modifier, progress = progress, color = color)
     }
 }
 
@@ -32,6 +35,7 @@ fun BootLinearProgressIndicator(modifier: Modifier = Modifier, progress: Float? 
     when (LocalUiStyle.current) {
         BootUiStyle.LIQUID_GLASS -> LiquidGlassLinearProgressIndicator(modifier = modifier, progress = progress)
         BootUiStyle.MATERIAL3 -> Material3LinearProgressIndicator(modifier = modifier, progress = progress)
+        BootUiStyle.FLUENT -> FluentLinearProgressIndicator(modifier = modifier, progress = progress)
     }
 }
 

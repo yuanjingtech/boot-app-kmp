@@ -14,6 +14,8 @@ import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.*
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
+import com.yuanjingtech.boot.app.kmp.ui.fluent.FluentAlertDialog
+import com.yuanjingtech.boot.app.kmp.ui.fluent.FluentSnackbar
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassAlertDialog
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassSnackbar
 import com.yuanjingtech.boot.app.kmp.ui.material3.Material3AlertDialog
@@ -30,6 +32,7 @@ fun BootAlertDialog(
     when (LocalUiStyle.current) {
         BootUiStyle.LIQUID_GLASS -> LiquidGlassAlertDialog(onDismissRequest = onDismissRequest, title = title, text = text, confirmButton = confirmButton, dismissButton = dismissButton)
         BootUiStyle.MATERIAL3 -> Material3AlertDialog(onDismissRequest = onDismissRequest, title = title, text = text, confirmButton = confirmButton, dismissButton = dismissButton)
+        BootUiStyle.FLUENT -> FluentAlertDialog(onDismissRequest = onDismissRequest, title = title, text = text, confirmButton = confirmButton, dismissButton = dismissButton)
     }
 }
 
@@ -43,6 +46,7 @@ fun BootSnackbar(
     when (LocalUiStyle.current) {
         BootUiStyle.LIQUID_GLASS -> LiquidGlassSnackbar(message = message, modifier = modifier, action = action, onActionClick = onActionClick)
         BootUiStyle.MATERIAL3 -> Material3Snackbar(message = message, modifier = modifier, action = action, onActionClick = onActionClick)
+        BootUiStyle.FLUENT -> FluentSnackbar(message = message, modifier = modifier, action = action, onActionClick = onActionClick)
     }
 }
 

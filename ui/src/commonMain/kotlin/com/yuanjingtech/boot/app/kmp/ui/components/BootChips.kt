@@ -14,6 +14,9 @@ import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.*
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
+import com.yuanjingtech.boot.app.kmp.ui.fluent.FluentAssistChip
+import com.yuanjingtech.boot.app.kmp.ui.fluent.FluentFilterChip
+import com.yuanjingtech.boot.app.kmp.ui.fluent.FluentSuggestionChip
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassAssistChip
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassFilterChip
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassSuggestionChip
@@ -32,6 +35,7 @@ fun BootAssistChip(
     when (LocalUiStyle.current) {
         BootUiStyle.LIQUID_GLASS -> LiquidGlassAssistChip(onClick = onClick, label = label, modifier = modifier, leadingIcon = leadingIcon, enabled = enabled)
         BootUiStyle.MATERIAL3 -> Material3AssistChip(onClick = onClick, label = label, modifier = modifier, leadingIcon = leadingIcon, enabled = enabled)
+        BootUiStyle.FLUENT -> FluentAssistChip(onClick = onClick, label = label, modifier = modifier, leadingIcon = leadingIcon, enabled = enabled)
     }
 }
 
@@ -47,6 +51,7 @@ fun BootFilterChip(
     when (LocalUiStyle.current) {
         BootUiStyle.LIQUID_GLASS -> LiquidGlassFilterChip(selected = selected, onClick = onClick, label = label, modifier = modifier, leadingIcon = leadingIcon, enabled = enabled)
         BootUiStyle.MATERIAL3 -> Material3FilterChip(selected = selected, onClick = onClick, label = label, modifier = modifier, leadingIcon = leadingIcon, enabled = enabled)
+        BootUiStyle.FLUENT -> FluentFilterChip(selected = selected, onClick = onClick, label = label, modifier = modifier, leadingIcon = leadingIcon, enabled = enabled)
     }
 }
 
@@ -61,6 +66,7 @@ fun BootSuggestionChip(
     when (LocalUiStyle.current) {
         BootUiStyle.LIQUID_GLASS -> LiquidGlassSuggestionChip(onClick = onClick, label = label, modifier = modifier, icon = icon, enabled = enabled)
         BootUiStyle.MATERIAL3 -> Material3SuggestionChip(onClick = onClick, label = label, modifier = modifier, icon = icon, enabled = enabled)
+        BootUiStyle.FLUENT -> FluentSuggestionChip(onClick = onClick, label = label, modifier = modifier, icon = icon, enabled = enabled)
     }
 }
 

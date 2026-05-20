@@ -14,6 +14,10 @@ import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.*
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
+import com.yuanjingtech.boot.app.kmp.ui.fluent.FluentFAB
+import com.yuanjingtech.boot.app.kmp.ui.fluent.FluentSmallFAB
+import com.yuanjingtech.boot.app.kmp.ui.fluent.FluentLargeFAB
+import com.yuanjingtech.boot.app.kmp.ui.fluent.FluentExtendedFAB
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassFAB
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassLargeFAB
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassSmallFAB
@@ -33,6 +37,7 @@ fun BootFloatingActionButton(
     when (LocalUiStyle.current) {
         BootUiStyle.LIQUID_GLASS -> LiquidGlassFAB(onClick = onClick, modifier = modifier, icon = icon, contentDescription = contentDescription)
         BootUiStyle.MATERIAL3 -> Material3FloatingActionButton(onClick = onClick, modifier = modifier, icon = icon, contentDescription = contentDescription)
+        BootUiStyle.FLUENT -> FluentFAB(onClick = onClick, modifier = modifier, icon = icon, contentDescription = contentDescription)
     }
 }
 
@@ -46,6 +51,7 @@ fun BootSmallFloatingActionButton(
     when (LocalUiStyle.current) {
         BootUiStyle.LIQUID_GLASS -> LiquidGlassSmallFAB(onClick = onClick, modifier = modifier, icon = icon, contentDescription = contentDescription)
         BootUiStyle.MATERIAL3 -> Material3SmallFloatingActionButton(onClick = onClick, modifier = modifier, icon = icon, contentDescription = contentDescription)
+        BootUiStyle.FLUENT -> FluentSmallFAB(onClick = onClick, modifier = modifier, icon = icon, contentDescription = contentDescription)
     }
 }
 
@@ -59,6 +65,7 @@ fun BootLargeFloatingActionButton(
     when (LocalUiStyle.current) {
         BootUiStyle.LIQUID_GLASS -> LiquidGlassLargeFAB(onClick = onClick, modifier = modifier, icon = icon, contentDescription = contentDescription)
         BootUiStyle.MATERIAL3 -> Material3LargeFloatingActionButton(onClick = onClick, modifier = modifier, icon = icon, contentDescription = contentDescription)
+        BootUiStyle.FLUENT -> FluentLargeFAB(onClick = onClick, modifier = modifier, icon = icon, contentDescription = contentDescription)
     }
 }
 
@@ -73,6 +80,7 @@ fun BootExtendedFloatingActionButton(
     when (LocalUiStyle.current) {
         BootUiStyle.LIQUID_GLASS -> LiquidGlassExtendedFAB(onClick = onClick, text = text, modifier = modifier, icon = icon)
         BootUiStyle.MATERIAL3 -> Material3ExtendedFloatingActionButton(onClick = onClick, text = text, modifier = modifier, icon = icon, expanded = expanded)
+        BootUiStyle.FLUENT -> FluentExtendedFAB(onClick = onClick, text = text, modifier = modifier, icon = icon)
     }
 }
 

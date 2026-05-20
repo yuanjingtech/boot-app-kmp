@@ -12,6 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
+import com.yuanjingtech.boot.app.kmp.ui.fluent.FluentCard
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassCard
 import com.yuanjingtech.boot.app.kmp.ui.material3.Material3Card
 
@@ -23,6 +24,7 @@ fun BootCard(
     when (LocalUiStyle.current) {
         BootUiStyle.LIQUID_GLASS -> LiquidGlassCard(modifier = modifier, content = content)
         BootUiStyle.MATERIAL3 -> Material3Card(modifier = modifier, content = content)
+        BootUiStyle.FLUENT -> FluentCard(modifier = modifier, content = content)
     }
 }
 

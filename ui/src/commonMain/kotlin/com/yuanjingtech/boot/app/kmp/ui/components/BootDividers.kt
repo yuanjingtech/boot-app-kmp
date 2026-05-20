@@ -14,6 +14,9 @@ import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.*
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
+import com.yuanjingtech.boot.app.kmp.ui.fluent.FluentHorizontalDivider
+import com.yuanjingtech.boot.app.kmp.ui.fluent.FluentListItem
+import com.yuanjingtech.boot.app.kmp.ui.fluent.FluentVerticalDivider
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassHorizontalDivider
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassListItem
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassVerticalDivider
@@ -26,6 +29,7 @@ fun BootHorizontalDivider(modifier: Modifier = Modifier, thickness: Dp = 1.dp) {
     when (LocalUiStyle.current) {
         BootUiStyle.LIQUID_GLASS -> LiquidGlassHorizontalDivider(modifier = modifier, thickness = thickness)
         BootUiStyle.MATERIAL3 -> Material3HorizontalDivider(modifier = modifier, thickness = thickness)
+        BootUiStyle.FLUENT -> FluentHorizontalDivider(modifier = modifier, thickness = thickness)
     }
 }
 
@@ -34,6 +38,7 @@ fun BootVerticalDivider(modifier: Modifier = Modifier, thickness: Dp = 1.dp) {
     when (LocalUiStyle.current) {
         BootUiStyle.LIQUID_GLASS -> LiquidGlassVerticalDivider(modifier = modifier, thickness = thickness)
         BootUiStyle.MATERIAL3 -> Material3VerticalDivider(modifier = modifier, thickness = thickness)
+        BootUiStyle.FLUENT -> FluentVerticalDivider(modifier = modifier, thickness = thickness)
     }
 }
 
@@ -49,6 +54,7 @@ fun BootListItem(
     when (LocalUiStyle.current) {
         BootUiStyle.LIQUID_GLASS -> LiquidGlassListItem(headlineContent = headlineContent, modifier = modifier, overlineContent = overlineContent, supportingContent = supportingContent, leadingContent = leadingContent, trailingContent = trailingContent)
         BootUiStyle.MATERIAL3 -> Material3ListItem(headlineContent = headlineContent, modifier = modifier, overlineContent = overlineContent, supportingContent = supportingContent, leadingContent = leadingContent, trailingContent = trailingContent)
+        BootUiStyle.FLUENT -> FluentListItem(headlineContent = headlineContent, modifier = modifier, overlineContent = overlineContent, supportingContent = supportingContent, leadingContent = leadingContent, trailingContent = trailingContent)
     }
 }
 

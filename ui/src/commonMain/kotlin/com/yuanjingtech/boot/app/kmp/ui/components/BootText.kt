@@ -20,8 +20,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import com.yuanjingtech.boot.app.kmp.ui.BootUiStyle
 import com.yuanjingtech.boot.app.kmp.ui.LocalUiStyle
+import com.yuanjingtech.boot.app.kmp.ui.fluent.FluentText
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.LiquidGlassText
 import com.yuanjingtech.boot.app.kmp.ui.material3.Material3Text
+import com.yuanjingtech.boot.app.kmp.ui.preview.FluentPreviewWrapper
 import com.yuanjingtech.boot.app.kmp.ui.preview.LiquidGlassPreviewWrapper
 import com.yuanjingtech.boot.app.kmp.ui.preview.Material3PreviewWrapper
 
@@ -57,6 +59,19 @@ fun BootText(
             text = text,
             modifier = modifier,
             color = color ?: MaterialTheme.colorScheme.onSurface,
+            fontSize = fontSize,
+            fontWeight = fontWeight,
+            fontStyle = fontStyle,
+            textDecoration = textDecoration,
+            textAlign = textAlign,
+            lineHeight = lineHeight,
+            overflow = overflow,
+            maxLines = maxLines,
+        )
+        BootUiStyle.FLUENT -> FluentText(
+            text = text,
+            modifier = modifier,
+            color = color,
             fontSize = fontSize,
             fontWeight = fontWeight,
             fontStyle = fontStyle,
