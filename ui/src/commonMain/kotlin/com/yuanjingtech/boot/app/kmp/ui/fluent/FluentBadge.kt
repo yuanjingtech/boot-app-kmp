@@ -15,7 +15,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
+import com.yuanjingtech.boot.app.kmp.ui.preview.FluentPreviewWrapper
+import com.yuanjingtech.boot.app.kmp.ui.preview.FluentLightPreviewWrapper
 
 @Composable
 fun FluentBadge(
@@ -48,5 +52,33 @@ fun FluentBadgedBox(
             modifier = Modifier.align(Alignment.TopEnd),
             content = badgeContent,
         )
+    }
+}
+
+// ─── Previews ─────────────────────────────────────────────────────────────────
+
+@Preview
+@Composable
+@PreviewWrapper(wrapper = FluentPreviewWrapper::class)
+private fun FluentBadgePreview() {
+    FluentBadgedBox(
+        badgeContent = { FluentBadge { Text("3") } },
+    ) {
+        Box(modifier = Modifier.size(100.dp).padding(8.dp)) {
+            Text("Content")
+        }
+    }
+}
+
+@Preview
+@Composable
+@PreviewWrapper(wrapper = FluentLightPreviewWrapper::class)
+private fun FluentBadgeLightPreview() {
+    FluentBadgedBox(
+        badgeContent = { FluentBadge(backgroundColor = Color(0xFF0078D4)) { Text("99+") } },
+    ) {
+        Box(modifier = Modifier.size(100.dp).padding(8.dp)) {
+            Text("Notifications")
+        }
     }
 }

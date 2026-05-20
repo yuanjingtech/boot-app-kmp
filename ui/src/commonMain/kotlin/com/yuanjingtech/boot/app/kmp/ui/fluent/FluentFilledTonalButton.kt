@@ -8,11 +8,16 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
+import com.yuanjingtech.boot.app.kmp.ui.preview.FluentPreviewWrapper
+import com.yuanjingtech.boot.app.kmp.ui.preview.FluentLightPreviewWrapper
 
 @Composable
 fun FluentFilledTonalButton(
@@ -39,4 +44,24 @@ fun FluentFilledTonalButton(
             .padding(horizontal = 16.dp, vertical = 8.dp),
         content = content,
     )
+}
+
+// ─── Previews ─────────────────────────────────────────────────────────────────
+
+@Preview
+@Composable
+@PreviewWrapper(wrapper = FluentPreviewWrapper::class)
+private fun FluentFilledTonalButtonPreview() {
+    FluentFilledTonalButton(onClick = {}) {
+        Text("Tonal Button")
+    }
+}
+
+@Preview
+@Composable
+@PreviewWrapper(wrapper = FluentLightPreviewWrapper::class)
+private fun FluentFilledTonalButtonLightPreview() {
+    FluentFilledTonalButton(onClick = {}) {
+        Text("Light Theme")
+    }
 }

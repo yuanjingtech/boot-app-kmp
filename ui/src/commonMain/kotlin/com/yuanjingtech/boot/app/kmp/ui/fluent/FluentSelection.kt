@@ -7,21 +7,21 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.Checkbox as M3Checkbox
-import androidx.compose.material3.RadioButton as M3RadioButton
-import androidx.compose.material3.Switch as M3Switch
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
+import com.yuanjingtech.boot.app.kmp.ui.preview.FluentLightPreviewWrapper
+import com.yuanjingtech.boot.app.kmp.ui.preview.FluentPreviewWrapper
 
 @Composable
 fun FluentCheckbox(
@@ -63,12 +63,12 @@ fun FluentCheckbox(
             contentAlignment = Alignment.Center,
         ) {
             if (checked) {
-                Text("✓", color = colors.accentText)
+                FluentText("✓", color = colors.accentText)
             }
         }
 
         if (label != null) {
-            Text(
+            FluentText(
                 text = label,
                 color = if (enabled) colors.textPrimary else colors.textDisabled,
             )
@@ -118,7 +118,7 @@ fun FluentRadioButton(
         }
 
         if (label != null) {
-            Text(
+            FluentText(
                 text = label,
                 color = if (enabled) colors.textPrimary else colors.textDisabled,
             )
@@ -174,10 +174,55 @@ fun FluentSwitch(
         }
 
         if (label != null) {
-            Text(
+            FluentText(
                 text = label,
                 color = if (enabled) colors.textPrimary else colors.textDisabled,
             )
         }
+    }
+}
+
+// ─── Previews ─────────────────────────────────────────────────────────────────
+
+@Preview
+@Composable
+@PreviewWrapper(wrapper = FluentPreviewWrapper::class)
+private fun FluentSelectionControlsPreview() {
+    var checked1 by remember { mutableStateOf(false) }
+    var selected by remember { mutableStateOf(0) }
+    var checked2 by remember { mutableStateOf(true) }
+
+    Column(modifier = Modifier.padding(16.dp)) {
+        FluentCheckbox(
+            checked = checked1,
+            onCheckedChange = { checked1 = it },
+            label = "Checkbox"
+        )
+        FluentRadioButton(
+            selected = selected == 0,
+            onClick = { selected = 0 },
+            label = "Radio 1"
+        )
+        FluentRadioButton(
+            selected = selected == 1,
+            onClick = { selected = 1 },
+            label = "Radio 2"
+        )
+        FluentSwitch(
+            checked = checked2,
+            onCheckedChange = { checked2 = it },
+            label = "Switch"
+        )
+    }
+}
+
+@Preview
+@Composable
+@PreviewWrapper(wrapper = FluentLightPreviewWrapper::class)
+private fun FluentSelectionControlsLightPreview() {
+    var checked by remember { mutableStateOf(true) }
+    Column(modifier = Modifier.padding(16.dp)) {
+        FluentCheckbox(checked = checked, onCheckedChange = { checked = it }, label = "Enabled")
+        FluentSwitch(checked = checked, onCheckedChange = { checked = it }, label = "Light Theme")
     }
 }

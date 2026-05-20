@@ -10,12 +10,21 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
+import com.yuanjingtech.boot.app.kmp.ui.preview.FluentPreviewWrapper
+import com.yuanjingtech.boot.app.kmp.ui.preview.FluentLightPreviewWrapper
 
 @Composable
 fun FluentSearchBar(
@@ -62,4 +71,36 @@ fun FluentSearchBar(
             }
         }
     }
+}
+
+// ─── Previews ─────────────────────────────────────────────────────────────────
+
+@Preview
+@Composable
+@PreviewWrapper(wrapper = FluentPreviewWrapper::class)
+private fun FluentSearchBarPreview() {
+    var query by remember { mutableStateOf("") }
+    var active by remember { mutableStateOf(false) }
+    FluentSearchBar(
+        query = query,
+        onQueryChange = { query = it },
+        onSearch = { },
+        active = active,
+        onActiveChange = { active = it },
+    )
+}
+
+@Preview
+@Composable
+@PreviewWrapper(wrapper = FluentLightPreviewWrapper::class)
+private fun FluentSearchBarLightPreview() {
+    var query by remember { mutableStateOf("Search query") }
+    var active by remember { mutableStateOf(false) }
+    FluentSearchBar(
+        query = query,
+        onQueryChange = { query = it },
+        onSearch = { },
+        active = active,
+        onActiveChange = { active = it },
+    )
 }

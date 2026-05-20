@@ -12,8 +12,16 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
+import com.yuanjingtech.boot.app.kmp.ui.preview.FluentPreviewWrapper
+import com.yuanjingtech.boot.app.kmp.ui.preview.FluentLightPreviewWrapper
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,5 +56,19 @@ fun FluentModalBottomSheet(
         Box(modifier = Modifier.background(colors.background)) {
             Text("")
         }
+    }
+}
+
+// ─── Previews ─────────────────────────────────────────────────────────────────
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview
+@Composable
+@PreviewWrapper(wrapper = FluentPreviewWrapper::class)
+private fun FluentModalBottomSheetPreview() {
+    FluentModalBottomSheet(
+        onDismiss = { },
+    ) {
+        Text("Bottom Sheet Content")
     }
 }

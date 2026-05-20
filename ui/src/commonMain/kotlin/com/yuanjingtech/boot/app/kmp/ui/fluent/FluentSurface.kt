@@ -2,14 +2,16 @@ package com.yuanjingtech.boot.app.kmp.ui.fluent
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.yuanjingtech.boot.app.kmp.ui.preview.FluentLightPreviewWrapper
+import com.yuanjingtech.boot.app.kmp.ui.preview.FluentPreviewWrapper
 
 @Composable
 fun FluentSurface(
@@ -26,5 +28,25 @@ fun FluentSurface(
         contentAlignment = Alignment.TopStart,
     ) {
         content()
+    }
+}
+
+// ─── Previews ─────────────────────────────────────────────────────────────────
+
+@Preview
+@Composable
+@PreviewWrapper(wrapper = FluentPreviewWrapper::class)
+private fun FluentSurfacePreview() {
+    FluentSurface {
+        FluentText("Surface Content")
+    }
+}
+
+@Preview
+@Composable
+@PreviewWrapper(wrapper = FluentLightPreviewWrapper::class)
+private fun FluentSurfaceLightPreview() {
+    FluentSurface(cornerRadius = 12.dp) {
+        FluentText("Custom Corner Radius")
     }
 }

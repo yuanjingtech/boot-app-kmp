@@ -10,7 +10,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.dp
+import com.yuanjingtech.boot.app.kmp.ui.preview.FluentLightPreviewWrapper
+import com.yuanjingtech.boot.app.kmp.ui.preview.FluentPreviewWrapper
 
 @Composable
 fun FluentText(
@@ -44,12 +48,18 @@ fun FluentText(
     )
 }
 
+// ─── Previews ─────────────────────────────────────────────────────────────────
+
 @Preview
 @Composable
-fun FluentTextPreview() {
-    FluentTheme {
-        FluentText(
-            "ceshi "
-        )
-    }
+@PreviewWrapper(wrapper = FluentPreviewWrapper::class)
+private fun FluentSurfacePreview() {
+    FluentText("Surface Content")
+}
+
+@Preview
+@Composable
+@PreviewWrapper(wrapper = FluentLightPreviewWrapper::class)
+private fun FluentSurfaceLightPreview() {
+    FluentText("Custom Corner Radius")
 }
