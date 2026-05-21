@@ -22,9 +22,9 @@ plugins {
 }
 
 include(":plugin")
-include(":composeApp")
-include(":androidApp")
-include(":desktopApp")
+include(":app:composeApp")
+include(":app:androidApp")
+include(":app:desktopApp")
 include(":runblocking")
 include(":logging")
 include(":sqldelight")

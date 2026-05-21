@@ -49,7 +49,7 @@ android {
 
 dependencies {
     implementation(projects.shared)
-    implementation(projects.composeApp)
+    implementation(projects.app.composeApp)
     implementation(libs.androidx.activity.compose)
     implementation(libs.compose.ui.tooling.preview)
     implementation(libs.compose.components.resources)

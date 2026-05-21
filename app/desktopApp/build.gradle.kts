@@ -31,7 +31,7 @@ compose.desktop {
 }
 
 dependencies {
-    implementation(projects.composeApp)
+    implementation(projects.app.composeApp)
     implementation(libs.compose.ui.desktop)
 }
 //webview-parkwoocheol依赖了sun.awt和sun.lwawt等模块，在Java 17中需要添加以下JVM参数来允许访问这些模块：
