@@ -1,6 +1,7 @@
 package com.yuanjingtech.boot.app.kmp.network
 
 import io.ktor.client.HttpClient
+import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.statement.HttpStatement
@@ -30,7 +31,7 @@ internal class NetworkServiceKtorImpl(private val httpClient: HttpClient) : Netw
     ) = HttpStatement(builder.build(), httpClient).execute()
 }
 
-internal fun createHttpClient() = HttpClient {
+internal fun createHttpClient() = HttpClient(CIO) {
     install(ContentNegotiation) {
         json(Json {
             encodeDefaults = true

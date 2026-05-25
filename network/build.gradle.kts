@@ -4,6 +4,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.android.kotlin.multiplatform.library)
+    alias(libs.plugins.koinCompiler)
     alias(libs.plugins.publish)
 }
 kotlin {
@@ -51,32 +52,7 @@ kotlin {
         commonMain.dependencies {
             implementation(libs.bundles.koin)
             implementation(libs.bundles.ktor.client)
-        }
-        //jvm
-        jvmMain.dependencies {
-        }
-        androidMain.dependencies {
-            implementation(libs.ktor.client.android)
-        }
-        //web
-        webMain.dependencies {
-
-        }
-        jsMain.dependencies {
-        }
-        wasmJsMain.dependencies {
-            implementation(libs.ktor.client.wasm)
-        }
-        //native
-        nativeMain.dependencies {
             implementation(libs.ktor.client.cio)
-        }
-        iosMain.dependencies {
-            implementation(libs.ktor.client.darwin)
-        }
-        iosArm64Main.dependencies {
-        }
-        iosSimulatorArm64Main.dependencies {
         }
     }
 }
