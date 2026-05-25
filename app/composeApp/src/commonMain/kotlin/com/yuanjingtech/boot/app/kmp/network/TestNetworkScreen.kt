@@ -18,7 +18,8 @@ fun TestNetworkScreen(
                 url("https://www.baidu.com")
             }).body<List<String>>()
         } catch (e: Exception) {
-            println(e.message)
+            // TODO: Replace with proper error logging system (e.g., os.log on iOS, Log on Android)
+            // Avoid exposing internal error details in production logs
         }
     }
     Text("TestNetworkScreen")

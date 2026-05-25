@@ -21,7 +21,6 @@ internal class NetworkServiceKtorImpl(private val httpClient: HttpClient) : Netw
         val builder = NetworkRequestBuilder()
         builder.method = NetworkMethod.Post
         builder.block()
-        builder.method = NetworkMethod.Post
 
         return NetworkResponse(request(builder))
     }
@@ -40,8 +39,6 @@ internal fun createHttpClient() = HttpClient(CIO) {
             ignoreUnknownKeys = true
         })
     }
-    defaultRequest {
-        host = "1.2.3.4"
-        port = 8080
-    }
+    // Note: host should be provided per-request via NetworkRequestBuilder.url()
+    // DefaultRequest intentionally omits hardcoded host to avoid traffic redirection risk
 }
