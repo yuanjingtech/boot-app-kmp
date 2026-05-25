@@ -9,6 +9,12 @@ import kotlinx.coroutines.flow.map
 
 class BootThemeStore(private val themeDao: ThemeDao) {
 
+    private val defaultSettings = ThemeSettings(
+        id = 1,
+        themeMode = BootThemeMode.FOLLOW_SYSTEM.name,
+        uiStyle = BootUiStyle.LIQUID_GLASS.name
+    )
+
     val themeModeFlow: Flow<BootThemeMode> = themeDao.getThemeSettings().map { settings ->
         try {
             settings?.let { BootThemeMode.valueOf(it.themeMode) } ?: BootThemeMode.FOLLOW_SYSTEM
@@ -26,24 +32,16 @@ class BootThemeStore(private val themeDao: ThemeDao) {
     }
 
     suspend fun setThemeMode(mode: BootThemeMode) {
-        val current = themeDao.getThemeSettings().first()
+        val current = themeDao.getThemeSettings().first() ?: defaultSettings
         themeDao.insertOrUpdate(
-            ThemeSettings(
-                id = 1,
-                themeMode = mode.name,
-                uiStyle = current?.uiStyle ?: "LIQUID_GLASS",
-            )
+            current.copy(themeMode = mode.name)
         )
     }
 
     suspend fun setUiStyle(style: BootUiStyle) {
-        val current = themeDao.getThemeSettings().first()
+        val current = themeDao.getThemeSettings().first() ?: defaultSettings
         themeDao.insertOrUpdate(
-            ThemeSettings(
-                id = 1,
-                themeMode = current?.themeMode ?: "FOLLOW_SYSTEM",
-                uiStyle = style.name,
-            )
+            current.copy(uiStyle = style.name)
         )
     }
 }
