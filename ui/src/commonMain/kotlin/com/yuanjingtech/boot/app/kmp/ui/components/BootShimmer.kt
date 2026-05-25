@@ -56,6 +56,17 @@ private fun shimmerColors(
                 highlightColor = Color(0xFFF5F5F5),
             )
         }
+        BootUiStyle.FLUENT -> if (isDarkTheme) {
+            ShimmerColors(
+                baseColor = Color(0xFF2D2D2D),
+                highlightColor = Color(0xFF3D3D3D),
+            )
+        } else {
+            ShimmerColors(
+                baseColor = Color(0xFFE4E4E4),
+                highlightColor = Color(0xFFF0F0F0),
+            )
+        }
     }
 }
 

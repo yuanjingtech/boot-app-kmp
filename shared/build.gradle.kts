@@ -71,7 +71,8 @@ kotlin {
         commonTest.dependencies {
             implementation(libs.kotlin.test)
             implementation(libs.kotlinx.coroutines.test)
-            implementation(libs.compose.test)
+            // Note: ui-test-junit4 is only available for JVM/Android, not JS/WASM
+            // Use it in platform-specific test source sets
         }
     }
 }
@@ -95,6 +96,9 @@ kotlin {
         jvmMain.dependencies {
             api(compose.desktop.currentOs)
             api(libs.kotlinx.coroutinesSwing)
+        }
+        jvmTest.dependencies {
+            api(libs.compose.test)
         }
     }
 }
