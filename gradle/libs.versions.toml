@@ -37,6 +37,7 @@ backdrop = "0.0.1-alpha02"
 compose-fluent = "v0.1.0"
 room3 = "3.0.0-alpha03"
 sqlite = "2.6.2"
+admob = "24.5.0"
 [libraries]
 # for gradle-plugin
 android-gradle = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
@@ -135,6 +136,8 @@ sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sql
 sqlite-web = { module = "androidx.sqlite:sqlite-web", version.ref = "sqlite" }
 backdrop = { module = "io.github.kashif-mehmood-km:backdrop", version.ref = "backdrop" }
 compose-fluent = { group = "io.github.compose-fluent", name = "fluent", version.ref = "compose-fluent" }
+# AdMob
+admob-android = { group = "com.google.android.gms", name = "play-services-ads", version.ref = "admob" }
 [bundles]
 nav3 = [
     "jetbrains-navigation3-ui",
