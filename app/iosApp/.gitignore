@@ -1,0 +1,9 @@
+KotlinMultiplatformLinkedPackage/.build/
+KotlinMultiplatformLinkedPackage/subpackages/_app_composeApp/.build/
+KotlinMultiplatformLinkedPackage/subpackages/_feature_ad/.build/
+KotlinMultiplatformLinkedPackage/Package.swift
+KotlinMultiplatformLinkedPackage/Package.resolved
+KotlinMultiplatformLinkedPackage/subpackages/_app_composeApp/Package.swift
+KotlinMultiplatformLinkedPackage/subpackages/_app_composeApp/Package.resolved
+KotlinMultiplatformLinkedPackage/subpackages/_feature_ad/Package.swift
+KotlinMultiplatformLinkedPackage/subpackages/_feature_ad/Package.resolved
