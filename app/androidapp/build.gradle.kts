@@ -17,6 +17,9 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
+        // Google AdMob App ID(对应 AndroidManifest.xml 中 com.google.android.gms.ads.APPLICATION_ID)
+        // release 构建应替换为生产 ID
+        manifestPlaceholders["ADMOB_APP_ID"] = "ca-app-pub-3940256099942544~3347511713"
     }
 
     compileOptions {

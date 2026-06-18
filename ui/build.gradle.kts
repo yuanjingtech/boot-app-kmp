@@ -56,9 +56,15 @@ kotlin {
             implementation(libs.backdrop)
         }
         iosArm64Main.dependencies {
+            // backdrop re-enabled — LiquidGlassBackdrop.ios.kt references
+            // kashif_e.backdrop.* API and requires this dependency.
+            // (Original removal comment about Skiko ColorMatrix no longer
+            //  applies since the module now needs to compile for iosApp.)
             implementation(libs.backdrop)
         }
         iosSimulatorArm64Main.dependencies {
+            // backdrop re-enabled — LiquidGlassBackdrop.ios.kt references
+            // kashif_e.backdrop.* API and requires this dependency.
             implementation(libs.backdrop)
         }
         jsMain.dependencies {

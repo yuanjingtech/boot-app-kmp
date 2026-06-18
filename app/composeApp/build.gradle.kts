@@ -51,6 +51,7 @@ kotlin {
             implementation(projects.shared)
             implementation(projects.webview)
             implementation(projects.webviewParkwoocheol)
+            implementation(projects.feature.ad)
             implementation(libs.compose.components.resources)
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.koin.annotations)

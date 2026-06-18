@@ -4,5 +4,15 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<!--
+	  Google AdMob App ID — 由 feature/ad 模块通过 swiftPMDependencies 自动集成
+	  GoogleMobileAds SDK,启动时 MobileAds.sharedInstance().start() 会读取此 key。
+	  release 构建应替换为生产 ID(与 AdUnitConfig.appIdIos 保持一致)。
+
+	  模块依赖:com.yuanjingtech.boot.app.kmp.ad:feature:ad
+	  配置位置:feature/ad/src/iosMain/.../AdModule.ios.kt 中的 IosAdManager
+	-->
+	<key>GADApplicationIdentifier</key>
+	<string>ca-app-pub-3940256099942544~1458002511</string>
 </dict>
 </plist>

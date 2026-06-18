@@ -16,10 +16,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewWrapper
 import androidx.compose.ui.unit.dp
 import com.yuanjingtech.boot.app.kmp.ad.preview.AdDarkPreviewWrapper
 import com.yuanjingtech.boot.app.kmp.ad.preview.AdLightPreviewWrapper
+import com.yuanjingtech.boot.app.kmp.ad.preview.AdUnitConfigParameterProvider
 import org.koin.compose.KoinApplicationPreview
 import org.koin.compose.koinInject
 
@@ -142,5 +144,18 @@ private fun AdBannerInLayoutPreview() {
                 )
             }
         }
+    }
+}
+
+// ─── PreviewParameter 变体预览 ────────────────────────────────────────────────
+
+@Preview(name = "AdBanner per config", group = "feature/ad - variants")
+@Composable
+@PreviewWrapper(wrapper = AdLightPreviewWrapper::class)
+private fun AdBannerPerConfigPreview(
+    @PreviewParameter(AdUnitConfigParameterProvider::class) config: AdUnitConfig,
+) {
+    KoinApplicationPreview(application = { modules(adModule) }) {
+        AdBanner(config = config)
     }
 }
