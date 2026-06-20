@@ -1,6 +1,10 @@
+// Use only `kotlin-dsl` here. The precompiled-script plugin classpath is compiled
+// against the Kotlin version that Gradle embeds for the `kotlin-dsl` plugin, so
+// applying an additional `kotlin("jvm")` plugin (and pinning API/language versions
+// to a different release) triggers "incompatible Kotlin versions" warnings. See
+// https://kotl.in/gradle/kotlin-dsl-version-compatibility for details.
 plugins {
     `kotlin-dsl`
-    alias(libs.plugins.kotlinJvm)
     alias(libs.plugins.gradle.plugin.publish)
 }
 
@@ -106,12 +110,5 @@ gradlePlugin {
                         "Designed to be applied alongside boot-library or boot-application plugins."
             tags = listOf("kotlin", "multiplatform", "publishing", "mavencentral")
         }
-    }
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    compilerOptions {
-        apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_1)
-        languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_1)
     }
 }
