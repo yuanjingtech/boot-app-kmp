@@ -1,4 +1,5 @@
 import com.yuanjingtech.boot.app.kmp.gradle.configureKoin
+import com.yuanjingtech.boot.app.kmp.gradle.configureKotlinMultiplatform
 import com.yuanjingtech.boot.app.kmp.gradle.configureNavigation3
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -12,6 +13,7 @@ class BootApplicationConventionPlugin : Plugin<Project> {
                 apply("org.jetbrains.compose")
                 apply("org.jetbrains.kotlin.plugin.compose")
             }
+            configureKotlinMultiplatform()
             configureKoin()
             configureNavigation3()
         }

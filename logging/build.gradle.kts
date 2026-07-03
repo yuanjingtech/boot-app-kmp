@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -16,9 +15,9 @@ kotlin {
         withDeviceTestBuilder {
             sourceSetTreeName = "test"
         }
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_17)
-        }
+        // JVM target is configured globally via Kotlin toolchain (JDK 17) in
+        // the root `build.gradle.kts` `subprojects { plugins.withId(...) }`
+        // block — no per-target `jvmTarget` needed.
     }
 
     iosArm64()

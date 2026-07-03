@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     alias(libs.plugins.androidApplication)
     // Do NOT apply kotlin-android — AGP 9.0 includes built-in Kotlin support
@@ -22,15 +20,14 @@ android {
         manifestPlaceholders["ADMOB_APP_ID"] = "ca-app-pub-3940256099942544~3347511713"
     }
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
+    // The Kotlin toolchain (JDK 17) is configured via `kotlin.jvmToolchain(17)`
+    // below. The toolchain also propagates to the Java compile tasks, so the
+    // explicit `sourceCompatibility` / `targetCompatibility` block is no
+    // longer needed.
 
     kotlin {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_17)
-        }
+        @Suppress("UnstableApiUsage", "DEPRECATION")
+        jvmToolchain(17)
     }
 
     packaging {

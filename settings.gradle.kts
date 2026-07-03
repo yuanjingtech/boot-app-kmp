@@ -19,6 +19,12 @@ pluginManagement {
 
 plugins {
     id("com.yuanjingtech.boot.app.kmp.settings")
+    // Foojay Toolchain Resolver: lets Gradle automatically download the JDK
+    // versions requested by `kotlin { jvmToolchain(17) }` / `java { toolchain { ... } }`
+    // when the local machine does not have them pre-installed.
+    // Required for Gradle 8.0.2+ to resolve toolchains from a remote source.
+    // See: https://kotlinlang.org/docs/gradle-configure-project.html#gradle-java-toolchains
+    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
 include(":plugin")

@@ -1,5 +1,4 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlinJvm)
@@ -7,16 +6,10 @@ plugins {
     alias(libs.plugins.composeCompiler)
 }
 
-kotlin {
-    compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_17)
-    }
-}
-
-java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
-}
+// JVM toolchain (JDK 17) is configured in the root `build.gradle.kts`
+// `subprojects { plugins.withId("org.jetbrains.kotlin.jvm") { ... } }`
+// block. The toolchain propagates to the `java { }` extension and sets
+// `sourceCompatibility` / `targetCompatibility` automatically.
 
 compose.desktop {
     application {
