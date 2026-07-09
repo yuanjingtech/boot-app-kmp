@@ -12,9 +12,10 @@
       "computedHash": "0d1198cb007e6238f7fc8b3d2999ad0186cabf057950a3b21b6f5c19559a735e"
     },
     "kotlin-tooling-cocoapods-spm-migration": {
-      "source": "Kotlin/kotlin-agent-skills",
+      "source": "kotlin/kotlin-agent-skills",
       "sourceType": "github",
-      "computedHash": "ef3fdaf390680b7a20a3398ef243ddb61262c338e1f4dbd2ffd8833bd65db908"
+      "skillPath": "skills/kotlin-tooling-cocoapods-spm-migration/SKILL.md",
+      "computedHash": "330690dec858a66bedc9c5eae00fde30a8512aaed8d6839cf16cac2c915044bb"
     }
   }
 }
