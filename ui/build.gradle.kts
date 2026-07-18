@@ -55,16 +55,11 @@ kotlin {
         jvmMain.dependencies {
             implementation(libs.backdrop)
         }
-        iosArm64Main.dependencies {
-            // backdrop re-enabled — LiquidGlassBackdrop.ios.kt references
-            // kashif_e.backdrop.* API and requires this dependency.
-            // (Original removal comment about Skiko ColorMatrix no longer
-            //  applies since the module now needs to compile for iosApp.)
-            implementation(libs.backdrop)
-        }
-        iosSimulatorArm64Main.dependencies {
-            // backdrop re-enabled — LiquidGlassBackdrop.ios.kt references
-            // kashif_e.backdrop.* API and requires this dependency.
+        // backdrop is required by iosMain/.../liquidglass/LiquidGlassBackdrop.ios.kt,
+        // which references kashif_e.backdrop.* APIs. vibrancy() is intentionally
+        // skipped on iOS — backdrop 0.0.1-alpha02 routes through
+        // org.jetbrains.skia.ColorMatrix, triggering IrLinkageError.
+        iosMain.dependencies {
             implementation(libs.backdrop)
         }
         jsMain.dependencies {

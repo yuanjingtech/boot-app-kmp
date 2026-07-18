@@ -58,16 +58,11 @@ actual fun Modifier.liquidGlassBackdrop(
             backdrop = native,
             shape = { shape },
             effects = {
-                // NOTE: vibrancy() is intentionally skipped on iOS.
-                //
-                // backdrop 0.0.1-alpha02 implements vibrancy() via
-                // org.jetbrains.skia.ColorMatrix(*matrix), which fails to link on
-                // iOS KMP (IrLinkageError: No constructor found for symbol
-                // 'org.jetbrains.skia.ColorMatrix.<init>'). The other effects
-                // used here (blur, lens) go through SkSL RuntimeShader and are
-                // safe. Glass readability on iOS is preserved by the
-                // surfaceColor/surfaceAlpha overlay drawn on top of the
-                // backdrop, so disabling vibrancy is visually acceptable.
+                // NOTE: vibrancy() is intentionally skipped on iOS — backdrop
+                // 0.0.1-alpha02 routes through org.jetbrains.skia.ColorMatrix,
+                // which fails to link on iOS KMP (IrLinkageError). Other effects
+                // (blur, lens) are safe. Glass readability is preserved by the
+                // surfaceColor/surfaceAlpha overlay.
                 if (config.blurRadius > 0.dp) blur(config.blurRadius.toPx())
                 if (config.hasLens) lens(
                     refractionHeight = config.lensRefractionHeight.toPx(),
