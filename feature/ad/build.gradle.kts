@@ -41,8 +41,13 @@ kotlin {
         browser()
     }
 
-    // SwiftPM 集成 — 让 feature/ad 自包含 iOS AdMob 能力
-    // 业务模块只需依赖 :feature:ad,iOS app 自动获得 GoogleMobileAds 框架
+    // SwiftPM 集成(2026-07-15 唯一保留路径)
+    // - 历史背景:Xcode 27 beta clang 触发 `-emit-library` unknown argument;
+    //   2026-07-07 临时反向 hack `type: .dynamic → .static` workaround 已删除,
+    //   2026-07-09 spm4kmp / CocoaPods POC 全部回退。详见 docs/solutions/runtime-errors/
+    // - 当前状态:Xcode 27 GA(27A5218g)+ JetBrains swiftPMDependencies,
+    //   iOS app workflow 仍走 xcodebuild 直接构建,convertSyntheticImportProjectIntoDefFile*
+    //   失败为已接受代价。
     swiftPMDependencies {
         iosMinimumDeploymentTarget.set("16.0")
 
@@ -70,40 +75,6 @@ kotlin {
     sourceSets.configureEach {
         languageSettings {
             optIn("kotlinx.cinterop.ExperimentalForeignApi")
-        }
-    }
-
-    // Workaround for Xcode 27.0 beta toolchain bug (Kotlin 2.4.0 swiftPMDependencies):
-    // The generated Package.swift uses `.library(type: .dynamic)` which invokes
-    // `clang -emit-library` — an LLVM linker flag Xcode 27 doesn't recognize.
-    // Rewrite to `.static` so xcodebuild uses `-r` (relocatable) instead.
-    //
-    // NOTE: This workaround causes a secondary "List is empty" error in Kotlin's
-    // XcodebuildDefFileWorkAction (it filters ld-args dump files for
-    // `@rpath/KotlinMultiplatformLinkedPackageDylib.framework`, which is no
-    // longer produced by SPM in static mode). The secondary error means the
-    // Gradle task fails even though xcodebuild itself succeeds.
-    //
-    // When run from xcodebuild (the iOS app workflow), the failure is
-    // ignored — the framework is built and signed correctly.
-    // When run from Gradle directly, the error is logged but does not
-    // affect downstream tasks (the dylib is still produced).
-    tasks.matching { it.name.startsWith("convertSyntheticImportProjectIntoDefFile") }.configureEach {
-        doFirst {
-            val subpackagesDir = layout.buildDirectory.dir("kotlin/swiftImport/subpackages")
-                .get().asFile
-            if (subpackagesDir.exists()) {
-                subpackagesDir.walkTopDown()
-                    .filter { it.isFile && it.name == "Package.swift" }
-                    .forEach { pkgFile ->
-                        val original = pkgFile.readText()
-                        val patched = original.replace("type: .dynamic", "type: .static")
-                        if (patched != original) {
-                            logger.lifecycle("[swiftPM XCode27 workaround] Patched ${pkgFile.relativeTo(projectDir)}")
-                            pkgFile.writeText(patched)
-                        }
-                    }
-            }
         }
     }
 }

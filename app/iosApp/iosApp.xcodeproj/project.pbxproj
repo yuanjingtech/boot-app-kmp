@@ -146,7 +146,6 @@
 /* Begin PBXShellScriptBuildPhase section */
 		25D3D4CA095349FBFDC83A48 /* Compile Kotlin Framework */ = {
 			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
