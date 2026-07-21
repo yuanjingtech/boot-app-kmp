@@ -59,7 +59,7 @@ include(":app:composeApp")
 // `:app:androidApp` does not resolve because the actual directory is
 // `androidapp` (lowercase `a`). macOS HFS+/APFS is case-insensitive
 // by default, which masked the mismatch locally.
-include(":app:androidapp")
+include(":app:androidApp")
 include(":app:desktopApp")
 include(":runblocking")
 include(":logging")
