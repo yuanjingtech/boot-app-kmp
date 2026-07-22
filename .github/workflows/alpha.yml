@@ -67,17 +67,24 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       # Build first, fail fast before we touch the package registry.
-      # `:ui` is a self-contained KMP library module with no transitive
-      # dependency on broken `androidx.sqlite:sqlite-web` artifacts —
-      # we use it as the smoke test for this workflow. The full multi-
-      # module publish still runs at the end regardless of the smoke
-      # build target.
-      - name: Smoke build (:ui)
-        run: ./gradlew :ui:assemble
+      # `:app:composeApp` is a KMP Android Library module — AGP-KMP exposes
+      # `assemble` (not `assembleDebug`) because each target has its own
+      # binary artifact. We use `linkDebugFrameworkIosArm64` for iOS as it
+      # produces the actual `.framework` artifact we ship.
+      - name: Build (Android)
+        run: ./gradlew :app:composeApp:assemble
         timeout-minutes: 25
 
-      - name: Smoke build (:ui tests)
-        run: ./gradlew :ui:testDebugUnitTest --continue
+      - name: Build (iOS)
+        run: ./gradlew :app:composeApp:linkDebugFrameworkIosArm64
+        timeout-minutes: 25
+
+      - name: Build (Web)
+        run: ./gradlew :app:composeApp:wasmJsBrowserDistribution
+        timeout-minutes: 25
+
+      - name: Unit Tests
+        run: ./gradlew :app:composeApp:testDebugUnitTest --continue
         timeout-minutes: 25
 
       # Publish every publication to GitHub Packages. We pass two flags:
@@ -108,5 +115,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: alpha-test-reports-${{ github.run_id }}
-          path: ui/build/reports/tests/
+          path: app/composeApp/build/reports/tests/
           retention-days: 7
