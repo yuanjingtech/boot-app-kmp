@@ -58,36 +58,12 @@ subprojects {
 }
 val build_number = providers.gradleProperty("project.build_number").getOrElse("SNAPSHOT")
 
-// `project.publish_to_github_packages=true` is set by `.github/workflows/alpha.yml`
-// to route publishing to GitHub Packages instead of Maven Central.
-// This keeps release publishing (Maven Central) and alpha publishing
-// (GitHub Packages) fully orthogonal — neither workflow touches the other's
-// credentials, and a misconfigured alpha run cannot accidentally publish to
-// Maven Central.
-val publishToGitHubPackages = providers.gradleProperty("project.publish_to_github_packages")
-    .map { it.toBoolean() }
-    .getOrElse(false)
-
 subprojects {
     group = "com.yuanjingtech.boot.app.kmp"
     version = "0.0.2-${build_number}"
     plugins.withId("com.vanniktech.maven.publish") {
         configure<com.vanniktech.maven.publish.MavenPublishBaseExtension> {
-            // Alpha/internal CI builds go to GitHub Packages; release builds
-            // go to Maven Central. The branches are mutually exclusive —
-            // see `project.publish_to_github_packages` in alpha.yml.
-            //
-            // Note: vanniktech's `MavenPublishBaseExtension` only exposes
-            // `publishToMavenCentral()` as a built-in target. For GitHub
-            // Packages we register a maven repository directly via
-            // `PublishingExtension.repositories` below — name MUST be
-            // "githubPackages" so the plugin auto-wires credentials from
-            // `githubPackagesUsername` / `githubPackagesPassword` (or the
-            // `ORG_GRADLE_PROJECT_`-prefixed env-var equivalents).
-            // See: https://vanniktech.github.io/gradle-maven-publish-plugin/other
-            if (!publishToGitHubPackages) {
-                publishToMavenCentral()
-            }
+            publishToMavenCentral()
 
             signAllPublications()
 
@@ -116,36 +92,6 @@ subprojects {
                     url = "https://github.com/yuanjingtech/boot-app-kmp"
                     connection = "scm:git:git://github.com/yuanjingtech/boot-app-kmp.git"
                     developerConnection = "scm:git:ssh://git@github.com/yuanjingtech/boot-app-kmp.git"
-                }
-            }
-        }
-    }
-
-    // GitHub Packages repository registration (alpha/internal only).
-    //
-    // Registered via `PublishingExtension.repositories` rather than a
-    // `MavenPublishBaseExtension` helper because vanniktech's plugin does
-    // not provide a `publishToGitHubPackagesRepo()` shortcut — GitHub
-    // Packages is configured as a plain maven repo with the well-known
-    // name `githubPackages`.
-    //
-    // Authentication is supplied at runtime by the alpha workflow through
-    // the `GITHUB_TOKEN` secret, exposed to Gradle as
-    // `ORG_GRADLE_PROJECT_githubPackagesUsername` /
-    // `ORG_GRADLE_PROJECT_githubPackagesPassword`. Do NOT hardcode
-    // credentials — GitHub Actions' OIDC token rotates per-run.
-    //
-    // Wrapped in `plugins.withId(...)` so we only touch the extension on
-    // modules that actually apply maven-publish; on every other module
-    // `PublishingExtension` doesn't exist yet and configure() would fail.
-    plugins.withId("com.vanniktech.maven.publish") {
-        if (publishToGitHubPackages) {
-            extensions.configure<org.gradle.api.publish.PublishingExtension> {
-                repositories {
-                    maven {
-                        name = "githubPackages"
-                        url = uri("https://maven.pkg.github.com/yuanjingtech/boot-app-kmp")
-                    }
                 }
             }
         }

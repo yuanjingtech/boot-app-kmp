@@ -1,111 +1,43 @@
-# .github/workflows/alpha.yml
-#
-# Publishes alpha snapshots of every KMP library module to GitHub Packages
-# on every push to main. Consumers (yuanjingtech/*) can resolve these
-# snapshots by adding https://maven.pkg.github.com/yuanjingtech/boot-app-kmp
-# as a repository — see settings.gradle.kts for the matching consumer-side
-# config.
-#
-# The alpha workflow and the Maven Central release workflow are intentionally
-# kept on separate code paths: this file sets `project.publish_to_github_packages=true`
-# to route Gradle's `publishTo...` target at GitHub Packages instead of Maven
-# Central. A misconfigured alpha run cannot accidentally publish to Maven
-# Central because that property is only true on alpha runs.
-#
-# Authentication:
-#   - The repository's default `GITHUB_TOKEN` (auto-provided by GitHub
-#     Actions) authenticates publishing via `ORG_GRADLE_PROJECT_githubPackagesUsername`
-#     and `ORG_GRADLE_PROJECT_githubPackagesPassword`.
-#   - For a private repo this works out of the box. For a public repo, the
-#     token's package-write scope must be granted at the org/repo level.
-#
-# Required secrets: none beyond the implicit GITHUB_TOKEN.
+# .github/workflows/publish.yml
 
 name: Publish Alpha
-
 on:
   push:
     branches: [ main ]
-  # Allow manual re-runs from the Actions tab without a fresh push.
-  workflow_dispatch:
-
-# Cancel in-flight runs on a new push so we don't double-publish.
-concurrency:
-  group: alpha-${{ github.ref }}
-  cancel-in-progress: true
-
-permissions:
-  # `contents: read` for checkout. `packages: write` is required to publish
-  # to GitHub Packages under the auto-provided GITHUB_TOKEN.
-  contents: read
-  packages: write
-
 jobs:
-  alpha:
-    name: Build & publish alpha snapshot to GitHub Packages
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
-
+  publish:
+    name: Release build and publish
+    runs-on: macOS-latest
     steps:
-      - name: Checkout
+      - name: Check out code
         uses: actions/checkout@v4
+      - name: Detect changes in build-logic
+        id: changes
+        uses: dorny/paths-filter@v3
         with:
-          fetch-depth: 0
-
+          filters: |
+            buildlogic:
+              - 'build-logic/**'
+              - 'gradle-plugin/**'
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '21'
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
-
-      # Build first, fail fast before we touch the package registry.
-      # Mirrors the targets covered by ci-build-test.yml so a broken change
-      # is caught here rather than producing a half-published alpha.
-      - name: Build (Android)
-        run: ./gradlew :composeApp:assembleDebug
-        timeout-minutes: 25
-
-      - name: Build (iOS)
-        run: ./gradlew :composeApp:linkDebugFrameworkIosArm64
-        timeout-minutes: 25
-
-      - name: Build (Web)
-        run: ./gradlew :composeApp:wasmJsBrowserDebug
-        timeout-minutes: 25
-
-      - name: Unit Tests
-        run: ./gradlew :composeApp:testDebugUnitTest --continue
-
-      # Publish every publication to GitHub Packages. We pass two flags:
-      #   -Pproject.build_number=alpha.<run_number>   — unique snapshot version
-      #   -Pproject.publish_to_github_packages=true   — switch the publish target
-      #     (see root build.gradle.kts)
-      #
-      # `publishAllPublicationsToGithubPackagesRepository` is the task
-      # vanniktech generates for any maven repo named "githubPackages" in
-      # `publishing.repositories`. It walks every module's publications
-      # (sources, javadoc, aar, klib, etc.) and uploads them.
-      - name: Publish to GitHub Packages
+          distribution: 'zulu'
+          java-version: 21
+      - name: Publish Gradle Plugin Skipped, Cause No changes in build-logic
+        if: steps.changes.outputs.buildlogic != 'true'
+        run: echo "No changes detected in build-logic — skipping publish"
+      - name: Publish Gradle Plugin
+        if: steps.changes.outputs.buildlogic == 'true'
+        run: ./gradlew :build-logic:convention:publishPlugins -Pproject.build_number=alpha.${{ github.run_number }}
         env:
-          # GITHUB_TOKEN is auto-provided by GitHub Actions on every run.
-          # vanniktech's plugin reads these env-var names and wires them as
-          # the maven repository's `username` / `password` credentials.
-          ORG_GRADLE_PROJECT_githubPackagesUsername: ${{ github.actor }}
-          ORG_GRADLE_PROJECT_githubPackagesPassword: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          ./gradlew \
-            publishAllPublicationsToGithubPackagesRepository \
-            --no-configuration-cache \
-            -Pproject.build_number=alpha.${{ github.run_number }} \
-            -Pproject.publish_to_github_packages=true
-
-      - name: Upload test reports
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: alpha-test-reports-${{ github.run_id }}
-          path: composeApp/build/reports/tests/
-          retention-days: 7
+          GRADLE_PUBLISH_KEY: ${{ secrets.GRADLE_PUBLISH_KEY }}
+          GRADLE_PUBLISH_SECRET: ${{ secrets.GRADLE_PUBLISH_SECRET }}
+      - name: Publish to MavenCentral
+        run: ./gradlew publishAllPublicationsToMavenCentral --no-configuration-cache -Pproject.build_number=alpha.${{ github.run_number }}
+        env:
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ secrets.SIGNING_KEY_ID }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_KEY_CONTENTS }}

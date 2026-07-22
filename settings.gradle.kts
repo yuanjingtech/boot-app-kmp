@@ -13,34 +13,8 @@ pluginManagement {
         gradlePluginPortal()
         mavenCentral()
         maven { url = uri("https://packages.jetbrains.team/maven/p/kpm/public/") }
-        // GitHub Packages - for alpha/internal builds published by CI
-        // Authenticated read for self-hosted KMP modules via the GITHUB_TOKEN
-        maven {
-            name = "githubPackagesYuanjingtech"
-            url = uri("https://maven.pkg.github.com/yuanjingtech/boot-app-kmp")
-        }
     }
     includeBuild("build-logic")
-}
-
-dependencyResolutionManagement {
-    @Suppress("UnstableApiUsage")
-    repositories {
-        google {
-            content {
-                includeGroupByRegex("com\\.android.*")
-                includeGroupByRegex("com\\.google.*")
-                includeGroupByRegex("androidx.*")
-            }
-        }
-        mavenCentral()
-        maven { url = uri("https://packages.jetbrains.team/maven/p/kpm/public/") }
-        // GitHub Packages - alpha/internal KMP module snapshots published by .github/workflows/alpha.yml
-        maven {
-            name = "githubPackagesYuanjingtech"
-            url = uri("https://maven.pkg.github.com/yuanjingtech/boot-app-kmp")
-        }
-    }
 }
 
 plugins {
