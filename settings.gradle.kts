@@ -13,20 +13,11 @@ pluginManagement {
         gradlePluginPortal()
         mavenCentral()
         maven { url = uri("https://packages.jetbrains.team/maven/p/kpm/public/") }
-        // GitHub Packages - alpha/internal KMP module snapshots published by
-        // .github/workflows/alpha.yml. Restricted to our own group via
-        // mavenContent: without this filter, Gradle queries GitHub Packages
-        // for every dependency in the graph (e.g. androidx.sqlite:sqlite-web
-        // pulled in by :sqlite-wasm-worker) and fails with HTTP 401 because
-        // GitHub Packages 401s on any group it doesn't host. Confirmed by
-        // run 29820761013 log: "Received status code 401 from server:
-        // Unauthorized" for androidx.sqlite:sqlite-web:2.6.2.
+        // GitHub Packages - for alpha/internal builds published by CI
+        // Authenticated read for self-hosted KMP modules via the GITHUB_TOKEN
         maven {
             name = "githubPackagesYuanjingtech"
             url = uri("https://maven.pkg.github.com/yuanjingtech/boot-app-kmp")
-            mavenContent {
-                includeGroup("com.yuanjingtech.boot.app.kmp")
-            }
         }
     }
     includeBuild("build-logic")
@@ -44,14 +35,10 @@ dependencyResolutionManagement {
         }
         mavenCentral()
         maven { url = uri("https://packages.jetbrains.team/maven/p/kpm/public/") }
-        // GitHub Packages - same includeGroup filter as the pluginManagement
-        // entry. See that comment for the rationale.
+        // GitHub Packages - alpha/internal KMP module snapshots published by .github/workflows/alpha.yml
         maven {
             name = "githubPackagesYuanjingtech"
             url = uri("https://maven.pkg.github.com/yuanjingtech/boot-app-kmp")
-            mavenContent {
-                includeGroup("com.yuanjingtech.boot.app.kmp")
-            }
         }
     }
 }
