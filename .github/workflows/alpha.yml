@@ -43,12 +43,7 @@ permissions:
 jobs:
   alpha:
     name: Build & publish alpha snapshot to GitHub Packages
-    # macOS runner is required: feature:ad declares a `swiftPMImport` cinterop
-    # on iosArm64/iosSimulatorArm64 targets, which cannot cross-compile on
-    # Linux. macOS also gives us the Xcode toolchain needed for KMP's iOS
-    # framework binaries. This matches the historical publish.yml that ran
-    # on macOS-latest.
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     timeout-minutes: 60
 
     steps:
@@ -67,25 +62,22 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       # Build first, fail fast before we touch the package registry.
-      # `:app:composeApp` is a KMP Android Library module — AGP-KMP exposes
-      # `assemble` (not `assembleDebug`) because each target has its own
-      # binary artifact. We use `linkDebugFrameworkIosArm64` for iOS as it
-      # produces the actual `.framework` artifact we ship.
+      # Mirrors the targets covered by ci-build-test.yml so a broken change
+      # is caught here rather than producing a half-published alpha.
       - name: Build (Android)
-        run: ./gradlew :app:composeApp:assemble
+        run: ./gradlew :composeApp:assembleDebug
         timeout-minutes: 25
 
       - name: Build (iOS)
-        run: ./gradlew :app:composeApp:linkDebugFrameworkIosArm64
+        run: ./gradlew :composeApp:linkDebugFrameworkIosArm64
         timeout-minutes: 25
 
       - name: Build (Web)
-        run: ./gradlew :app:composeApp:wasmJsBrowserDistribution
+        run: ./gradlew :composeApp:wasmJsBrowserDebug
         timeout-minutes: 25
 
       - name: Unit Tests
-        run: ./gradlew :app:composeApp:testDebugUnitTest --continue
-        timeout-minutes: 25
+        run: ./gradlew :composeApp:testDebugUnitTest --continue
 
       # Publish every publication to GitHub Packages. We pass two flags:
       #   -Pproject.build_number=alpha.<run_number>   — unique snapshot version
@@ -115,5 +107,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: alpha-test-reports-${{ github.run_id }}
-          path: app/composeApp/build/reports/tests/
+          path: composeApp/build/reports/tests/
           retention-days: 7
