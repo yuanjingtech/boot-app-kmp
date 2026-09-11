@@ -35,6 +35,7 @@ include(":app:composeApp")
 // by default, which masked the mismatch locally.
 include(":app:androidApp")
 include(":app:desktopApp")
+include(":app:webApp")
 include(":runblocking")
 include(":logging")
 include(":sqldelight")
