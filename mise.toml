@@ -1,0 +1,4 @@
+[tools]
+java = "24"
+node = "26"
+yarn = "4"
