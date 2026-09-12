@@ -1,0 +1,322 @@
+# 构建并发布 Android / iOS / Desktop / Web 四端产物。
+#
+# 触发方式：
+#   - push tag `v*`        → 构建全部平台并创建/更新对应 GitHub Release
+#   - release published    → 构建全部平台并上传到该 Release
+#   - workflow_dispatch    → 手动构建（可指定版本号），产物仅作为 Actions Artifact
+#
+# 产物命名：<APP_NAME>-<version>-<platform>.<ext>
+
+name: Release Artifacts
+
+on:
+  push:
+    tags:
+      - 'v*'
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: '版本号（用于产物命名），留空则使用 tag 或 1.0.<run_number>'
+        required: false
+        type: string
+
+# 只读权限是默认值；需要写 Release 的 job 自行提升为 contents: write
+permissions:
+  contents: read
+
+concurrency:
+  group: release-artifacts-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  APP_NAME: boot-app-kmp
+  # 版本号优先级：手动输入 > tag 名 > 1.0.<run_number>
+  APP_VERSION: ${{ github.event.inputs.version || (startsWith(github.ref, 'refs/tags/') && github.ref_name) || format('1.0.{0}', github.run_number) }}
+  # 与 gradle/libs.versions.toml 中的 android-compileSdk 保持一致
+  ANDROID_COMPILE_SDK: '37'
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Android：debug + release(未签名) APK
+  # release APK 目前没有配置 signingConfig，产出为 *-release-unsigned.apk。
+  # 如需正式签名，请补充 keystore secrets 并在 app/androidApp/build.gradle.kts 中配置。
+  # ---------------------------------------------------------------------------
+  android:
+    name: Android APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: zulu
+          java-version: '21'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android platform ${{ env.ANDROID_COMPILE_SDK }}
+        run: |
+          yes | sdkmanager --licenses > /dev/null 2>&1 || true
+          sdkmanager "platforms;android-${ANDROID_COMPILE_SDK}" || \
+            echo "::warning::platforms;android-${ANDROID_COMPILE_SDK} 安装失败，交由 AGP 自动下载"
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Assemble APKs
+        run: ./gradlew :app:androidApp:assembleDebug :app:androidApp:assembleRelease --stacktrace
+
+      - name: Collect and rename APKs
+        run: |
+          set -euo pipefail
+          mkdir -p release-assets/android
+          find app/androidApp/build/outputs/apk -name '*.apk' -print0 |
+            while IFS= read -r -d '' apk; do
+              base="$(basename "$apk" .apk)"
+              case "$base" in
+                *-debug)            suffix=debug ;;
+                *-release-unsigned) suffix=release-unsigned ;;
+                *)                  suffix="$base" ;;
+              esac
+              cp "$apk" "release-assets/android/${APP_NAME}-${APP_VERSION}-${suffix}.apk"
+            done
+          ls -lh release-assets/android
+
+      - name: Upload Android artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk
+          path: release-assets/android/*.apk
+          if-no-files-found: error
+          retention-days: 30
+
+  # ---------------------------------------------------------------------------
+  # iOS：无签名 .ipa
+  #
+  # 前置条件（当前仓库尚未满足，会导致本 job 失败）：
+  #   app/iosApp 的 Xcode target 依赖本地 Swift Package
+  #   `KotlinMultiplatformLinkedPackage` 提供 `import ComposeApp` 与
+  #   `import GoogleMobileAds`。该包由 `:feature:ad` 的 swiftPMDependencies /
+  #   integrateLinkagePackage 生成，而 settings.gradle.kts 当前注释掉了
+  #   `include(":feature:ad")`；同时 pbxproj 中没有 FRAMEWORK_SEARCH_PATHS /
+  #   OTHER_LDFLAGS。恢复 swiftPM 集成（或补齐 framework 搜索路径）后本 job 即可通过。
+  #
+  # 说明：无签名 .ipa 无法直接安装到非越狱设备（需重签名）；正式分发需要
+  #       Apple 证书 + provisioning profile。
+  # ---------------------------------------------------------------------------
+  ios:
+    name: iOS IPA (unsigned)
+    runs-on: macos-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: zulu
+          java-version: '21'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      # Kotlin/Native 编译器 (~/.konan) 不在 Gradle Home 缓存内，单独缓存可显著缩短 iOS 构建时间
+      - name: Cache Kotlin/Native toolchain
+        uses: actions/cache@v4
+        with:
+          path: ~/.konan
+          key: ${{ runner.os }}-konan-${{ hashFiles('gradle/libs.versions.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-konan-
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+
+      - name: Archive (unsigned)
+        working-directory: app/iosApp
+        run: |
+          set -euo pipefail
+          # shell 脚本阶段会调用 ./gradlew :app:composeApp:embedAndSignAppleFrameworkForXcode
+          xcodebuild archive \
+            -project iosApp.xcodeproj \
+            -scheme iosApp \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -archivePath "$RUNNER_TEMP/iosApp.xcarchive" \
+            -derivedDataPath "$RUNNER_TEMP/DerivedData" \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Package unsigned IPA
+        run: |
+          set -euo pipefail
+          APP_PATH="$(find "$RUNNER_TEMP/iosApp.xcarchive/Products/Applications" -maxdepth 1 -name '*.app' | head -1)"
+          if [ -z "$APP_PATH" ]; then
+            echo "::error::归档中未找到 .app"
+            exit 1
+          fi
+          echo "App: $APP_PATH"
+          rm -rf "$RUNNER_TEMP/Payload"
+          mkdir -p "$RUNNER_TEMP/Payload" release-assets/ios
+          cp -R "$APP_PATH" "$RUNNER_TEMP/Payload/"
+          ( cd "$RUNNER_TEMP" && zip -qry "$GITHUB_WORKSPACE/release-assets/ios/${APP_NAME}-${APP_VERSION}-unsigned.ipa" Payload )
+          ls -lh release-assets/ios
+
+      - name: Upload iOS artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-ipa
+          path: release-assets/ios/*.ipa
+          if-no-files-found: error
+          retention-days: 30
+
+  # ---------------------------------------------------------------------------
+  # Desktop：macOS(.dmg) / Windows(.msi/.exe) / Linux(.deb)
+  # 使用 marketplace action: KMP Build Desktop App
+  # https://github.com/marketplace/actions/kmp-build-desktop-app
+  # 该 action 内部执行 `./gradlew [packageRelease]DistributionForCurrentOS`
+  # 并按 matrix.os 分别上传 artifact。
+  #
+  # build_type 使用 'Debug'（= packageDistributionForCurrentOS，"main" 构建类型）：
+  #   实测 `:app:desktopApp:packageReleaseDistributionForCurrentOS` 会先执行
+  #   Compose Desktop 的 proguardReleaseJars，因 710 处 unresolved references /
+  #   60 处 unresolved program class members 而失败（webview/CEF、slf4j 等可选依赖）。
+  #   要产出 Release 包，需先在 app/desktopApp/build.gradle.kts 中为
+  #   `buildTypes.release.proguard` 补 -dontwarn 规则或关闭 ProGuard。
+  # ---------------------------------------------------------------------------
+  desktop:
+    name: Desktop (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # jpackage 打 .deb 需要 fakeroot
+      - name: Install Linux packaging tools
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get update && sudo apt-get install -y fakeroot
+
+      - name: Build Desktop App
+        uses: openMF/mifos-x-actionhub-build-desktop-app-kmp@v1.0.1
+        with:
+          desktop_package_name: 'desktopApp'
+          build_type: 'Debug'
+          java-version: '21'
+
+  # ---------------------------------------------------------------------------
+  # Web：Wasm 生产分发目录（可直接静态托管）
+  # ---------------------------------------------------------------------------
+  web:
+    name: Web (Wasm)
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: zulu
+          java-version: '21'
+
+      # Node 兜底：Kotlin Gradle 插件通常自行下载 Node 到 ~/.gradle/nodejs，
+      # 这里提供 PATH 上的 Node，避免插件因找不到 Node 而报错。
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build Wasm distribution
+        run: ./gradlew :app:webApp:wasmJsBrowserDistribution --stacktrace
+
+      # JS 产物为可选目标，失败不阻塞 wasm 产物发布
+      - name: Build JS distribution (optional)
+        continue-on-error: true
+        run: ./gradlew :app:webApp:jsBrowserDistribution --stacktrace
+
+      - name: Package web distribution
+        run: |
+          set -euo pipefail
+          mkdir -p release-assets/web
+          for target in wasmJs js; do
+            DIST_DIR="app/webApp/build/dist/${target}/productionExecutable"
+            if [ -d "$DIST_DIR" ]; then
+              ( cd "$DIST_DIR" && zip -qr "$GITHUB_WORKSPACE/release-assets/web/${APP_NAME}-${APP_VERSION}-web-${target}.zip" . )
+            else
+              echo "::warning::$DIST_DIR 不存在，跳过 ${target} 产物"
+            fi
+          done
+          # 至少要有 wasm 产物
+          ls release-assets/web/*.zip > /dev/null 2>&1 || { echo "::error::web 产物为空"; exit 1; }
+          ls -lh release-assets/web
+
+      - name: Upload web artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-wasm
+          path: release-assets/web/*.zip
+          if-no-files-found: error
+          retention-days: 30
+
+  # ---------------------------------------------------------------------------
+  # 将全部 artifact 附加到 GitHub Release（tag push / release 事件时执行）
+  #
+  # 任一平台失败时仍然发布其余平台的产物（整体流水线仍标记为失败，便于定位）。
+  # ---------------------------------------------------------------------------
+  publish-release:
+    name: Attach artifacts to Release
+    needs: [android, ios, desktop, web]
+    if: ${{ always() && !cancelled() && contains(needs.*.result, 'success') && (startsWith(github.ref, 'refs/tags/v') || github.event_name == 'release') }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Report job results
+        run: |
+          set -euo pipefail
+          SUMMARY="android=${{ needs.android.result }} ios=${{ needs.ios.result }} desktop=${{ needs.desktop.result }} web=${{ needs.web.result }}"
+          echo "$SUMMARY" >> "$GITHUB_STEP_SUMMARY"
+          echo "::notice::job results: $SUMMARY"
+          for r in $SUMMARY; do
+            case "$r" in
+              *=success|*=skipped) ;;
+              *) echo "::warning::失败或未完成的 job: $r" ;;
+            esac
+          done
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: release-assets
+          merge-multiple: true
+
+      - name: List artifacts
+        run: find release-assets -type f | sort
+
+      - name: Upload assets to Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          TAG="${GITHUB_REF_NAME}"
+          gh release view "$TAG" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1 || \
+            gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --title "$TAG" --generate-notes
+          find release-assets -type f -print0 | \
+            xargs -0 -r gh release upload "$TAG" --repo "$GITHUB_REPOSITORY" --clobber
