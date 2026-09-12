@@ -3,6 +3,6 @@
   "version": "1.0.0",
   "type": "module",
   "dependencies": {
-    "@sqlite.org/sqlite-wasm": "^3.47.0"
+    "@sqlite.org/sqlite-wasm": "^3.50.1-build1"
   }
 }

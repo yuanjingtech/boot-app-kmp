@@ -18,7 +18,6 @@ import com.kashif_e.backdrop.backdrops.rememberLayerBackdrop
 import com.kashif_e.backdrop.drawBackdrop
 import com.kashif_e.backdrop.effects.blur
 import com.kashif_e.backdrop.effects.lens
-import com.kashif_e.backdrop.effects.vibrancy
 import com.yuanjingtech.boot.app.kmp.ui.liquidglass.effects.LgEffectConfig
 
 @Composable
@@ -59,7 +58,10 @@ actual fun Modifier.liquidGlassBackdrop(
             backdrop = native,
             shape = { shape },
             effects = {
-                if (config.vibrancy) vibrancy()
+                // NOTE: vibrancy() is intentionally skipped on WasmJS — backdrop
+                // 0.0.1-alpha02 routes through org.jetbrains.skia.ColorMatrix, which
+                // fails to link on Kotlin/Wasm (IrLinkageError), exactly as it does
+                // on iOS. Other effects (blur, lens) are safe.
                 if (config.blurRadius > 0.dp) blur(config.blurRadius.toPx())
                 if (config.hasLens) lens(
                     refractionHeight = config.lensRefractionHeight.toPx(),
@@ -105,7 +107,7 @@ actual fun Modifier.liquidGlassBackdropCanvas(
             backdrop = canvasBackdrop,
             shape = { shape },
             effects = {
-                if (config.vibrancy) vibrancy()
+                // vibrancy() skipped on WasmJS — see comment in liquidGlassBackdrop.
                 if (config.blurRadius > 0.dp) blur(config.blurRadius.toPx())
                 if (config.hasLens) lens(
                     refractionHeight = config.lensRefractionHeight.toPx(),

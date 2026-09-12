@@ -14,11 +14,20 @@ actual fun getPlatform(): Platform = WasmPlatform()
 actual val bootPlatformModule: Module = module {
     single {
         getDatabaseBuilder()
-            .setDriver(WebWorkerSQLiteDriver(createWorker()))
+            .setDriver(WebWorkerSQLiteDriver(createSQLiteWorker()))
             .setQueryCoroutineContext(kotlinx.coroutines.Dispatchers.Main)
             .build()
     }
 }
 
-@Suppress("ACTUAL_FUNCTION_WITH_DEFAULT_ARGUMENTS")
-external fun createWorker(): Worker
+/**
+ * Creates the web worker that runs SQLite off the main thread.
+ *
+ * Unlike the Kotlin/JS target there is no `Worker(scriptURL)` constructor available
+ * for `org.w3c.dom.Worker` here, so the whole expression is delegated to JavaScript.
+ * It still has to contain `new URL("...", import.meta.url)` literally, because that
+ * is the pattern webpack recognizes when emitting the worker chunk — see
+ * `Platform.js.kt` for the Kotlin/JS counterpart.
+ */
+private fun createSQLiteWorker(): Worker =
+    js("""new Worker(new URL("sqlite-wasm-worker/worker.js", import.meta.url))""")

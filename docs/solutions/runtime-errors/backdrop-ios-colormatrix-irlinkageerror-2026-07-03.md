@@ -8,8 +8,9 @@ component: liquidglass
 symptoms:
   - "kotlin.internal.IrLinkageError: Constructor 'ColorMatrix.<init>' can not be called: No constructor found for symbol 'org.jetbrains.skia/ColorMatrix.<init>'"
   - "iOS KMP link failure (compileKotlinIosArm64 / compileKotlinIosSimulatorArm64 / iosArm64MainBinaries)"
-  - "Does NOT reproduce on Android, JVM, WASM, JS"
-  - "Triggers when LiquidGlass backdrop on iOS invokes vibrancy()/opacity()/colorControls()/exposureAdjustment()"
+  - "Kotlin/Wasm runtime failure: same IrLinkageError thrown from com.kashif_e.backdrop.effects.colorControlsColorFilter when the backdrop is composed (since 2026-09-12)"
+  - "Does NOT reproduce on Android, JVM, JS"
+  - "Triggers when LiquidGlass backdrop on iOS/WasmJS invokes vibrancy()/opacity()/colorControls()/exposureAdjustment()"
 root_cause: upstream_library_bug
 resolution_type: temporary_workaround
 severity: high
@@ -119,3 +120,44 @@ When the upgrade becomes available:
 
 - The Android path is unaffected; `vibrancy()` continues to work on Android/JVM/WASM/JS.
 - The dependency declaration in `ui/build.gradle.kts` for `iosArm64Main` and `iosSimulatorArm64Main` (the `implementation(libs.backdrop)` lines) **must stay** — the library is still needed for `blur()` and `lens()`. Only the `vibrancy()` call site is disabled.
+
+## Recurrence on Kotlin/Wasm (2026-09-12)
+
+While bringing up `:app:webApp`, the very same `IrLinkageError` showed up at **runtime** on
+the `wasmJs` target — not at link time like iOS:
+
+```
+Error was captured in composition.
+kotlin.internal.IrLinkageError: Constructor 'ColorMatrix.<init>' can not be called:
+  No constructor found for symbol 'org.jetbrains.skia/ColorMatrix.<init>|<init>(kotlin.FloatArray...){}[0]'
+    at com.kashif_e.backdrop.effects.colorControlsColorFilter
+    at com.kashif_e.backdrop.effects.VibrantColorFilter$delegate$lambda.invoke
+```
+
+The stack goes through `VibrantColorFilter`, so — exactly as on iOS — `vibrancy()` is the
+only effect that fails; `blur()` and `lens()` are fine.
+
+`ui/src/jsMain/.../LiquidGlassBackdrop.js.kt` was never affected because the JS
+implementation does not use `drawBackdrop` at all (it draws a plain gradient).
+
+### Workaround applied
+
+`ui/src/wasmJsMain/kotlin/com/yuanjingtech/boot/app/kmp/ui/liquidglass/LiquidGlassBackdrop.wasmJs.kt`
+now mirrors the iOS implementation:
+
+1. Removed `import com.kashif_e.backdrop.effects.vibrancy`.
+2. Removed `if (config.vibrancy) vibrancy()` from `liquidGlassBackdrop` **and**
+   `liquidGlassBackdropCanvas`.
+3. Left a comment explaining why, pointing at this document.
+
+`config.vibrancy` is now silently ignored on WasmJS, so the visual result differs slightly
+from Android/JVM. Revert both call sites (this file and the iOS one) when `backdrop` ships
+a `ColorMatrix`-free `vibrancy()` implementation for Skia-based non-Android targets.
+
+### Verification
+
+```
+./gradlew :app:webApp:wasmJsBrowserDevelopmentWebpack   # BUILD SUCCESSFUL
+# served the dev bundle and loaded it in headless Chrome:
+#   no pageerror, no IrLinkageError, UI renders
+```
