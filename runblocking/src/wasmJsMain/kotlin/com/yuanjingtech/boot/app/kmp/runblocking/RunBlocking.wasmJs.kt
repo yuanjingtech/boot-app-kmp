@@ -9,4 +9,4 @@ import kotlinx.coroutines.promise
 actual fun <T> runBlocking(
     context: CoroutineContext,
     block: suspend CoroutineScope.() -> T,
-): T = GlobalScope.promise(context) { block() } as T
+): T = GlobalScope.promise(context) { block() as JsAny? } as T
