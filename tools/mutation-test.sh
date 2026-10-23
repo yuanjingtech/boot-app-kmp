@@ -106,6 +106,16 @@ set +e
 #    ⇒ 表现为**莫名其妙的编译失败**（`:webview-parkwoocheol:compileKotlinJvm FAILED`，报的还是 KLIB/ABI）
 #    ⇒ **实测：同一个 worktree 立刻重跑就过了** ⇒ 这不是代码问题，是 daemon 污染。
 ./gradlew --stop >/dev/null 2>&1 || true
+# ⚠️⚠️ **停完 daemon 要等它真的退干净** ——
+#    `./gradlew --stop` 是**异步**的：它给 daemon 发停止信号后立刻返回
+#    ⇒ 紧接着的 `--no-daemon` 构建会在 daemon 还活着的时候起来
+#    ⇒ ⇒ 报 "Gradle build daemon has been stopped: stop command received"
+#    ⇒ ⇒ **这个报错会盖掉真正的测试结果**（看起来像"构建挂了"，其实是环境抖动）
+#    ⇒ ⇒ 所以停完要等一下让它退干净（最多等 30s）。
+for _ in 1 2 3 4 5 6 7 8 9 10; do
+  if ! ./gradlew --status >/dev/null 2>&1 | grep -q "Daemon"; then break; fi
+  sleep 3
+done
 OUT=$(./gradlew "${GRADLE_CMD[@]}" \
         --no-daemon --no-configuration-cache --no-build-cache 2>&1)
 GRADLE_RC=$?
