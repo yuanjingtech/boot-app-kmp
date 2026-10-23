@@ -28,25 +28,43 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      # ⚠️⚠️ 这里原来的三条命令**全是坏的**（不只是路径过时，任务名也不存在）：
+      #   `:composeApp:assembleDebug`      → 模块路径过时 **且** KMP 模块没有这个任务
+      #   `:composeApp:wasmJsBrowserDebug` → 同上
+      #   `:composeApp:testDebugUnitTest`  → `testDebugUnitTest` 是 **Android 模块**才有的任务
+      # ⇒ ⇒ 每个 PR 都在这里红。
+      # ⇒ 下面每个任务都用 `./gradlew <task> --dry-run` **实测存在**才写进来。
       - name: Build Android
-        run: ./gradlew :composeApp:assembleDebug
+        run: ./gradlew :app:androidApp:assembleDebug
         timeout-minutes: 20
 
       - name: Build iOS
-        run: ./gradlew :composeApp:linkDebugFrameworkIosArm64
+        run: ./gradlew :app:composeApp:linkDebugFrameworkIosArm64
         timeout-minutes: 20
 
       - name: Build Web
-        run: ./gradlew :composeApp:wasmJsBrowserDebug
+        run: ./gradlew :app:webApp:wasmJsBrowserDistribution
         timeout-minutes: 20
 
+      # ⚠️ `composeApp` 是 KMP 模块 ⇒ **没有** `testDebugUnitTest`（那是 Android 模块才有的）
+      #    ⇒ 正确写法是 `:app:composeApp:jvmTest`（KMP 的 JVM 目标）。
+      # ⚠️⚠️ **所有有测试源的模块都要跑** —— 只跑 composeApp 的话只跑了 **1** 个用例，
+      #    `:shared` / `:network` / `:webview-parkwoocheol` 全都没进 CI。
       - name: Unit Tests
-        run: ./gradlew :composeApp:testDebugUnitTest --continue
+        run: >-
+          ./gradlew
+          :app:composeApp:jvmTest
+          :shared:jvmTest
+          :network:jvmTest
+          :webview-parkwoocheol:jvmTest
+          --continue
 
       - name: Upload Test Reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-reports
-          path: composeApp/build/reports/tests/
+          # ⚠️ 用 `**/` 兜住所有模块的测试报告 —— 原来只指 composeApp 一个模块，
+          #    其它模块的用例跑完也不会被上传。
+          path: '**/build/reports/tests/'
           retention-days: 7

@@ -37,15 +37,27 @@ jobs:
         run: ./gradlew :app:webApp:wasmJsBrowserDistribution
         timeout-minutes: 20
 
+      # ⚠️⚠️ **所有有测试源的模块都要跑**。
+      #    原来只有 `:app:composeApp:jvmTest` ⇒ 只跑了 **1** 个用例（`assertEquals(3,1+2)`）
+      #    ⇒ `:shared`(26) / `:network`(21) / `:webview-parkwoocheol` 全都没进 CI
+      #    ⇒ ⇒ **"CI 绿"不等于"测试跑过了"**。
+      #    ⚠️ 加新模块时要**同时**把它的测试任务加进来，否则又是一轮空跑。
       - name: Unit Tests
-        run: ./gradlew :app:composeApp:jvmTest --continue
+        run: >-
+          ./gradlew
+          :app:composeApp:jvmTest
+          :shared:jvmTest
+          :network:jvmTest
+          :webview-parkwoocheol:jvmTest
+          --continue
 
       - name: Upload Test Reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-reports-${{ github.run_id }}
-          path: app/composeApp/build/reports/tests/
+          # ⚠️ 用 `**/` 兜住所有模块的测试报告 —— 原来只指 composeApp 一个模块。
+          path: '**/build/reports/tests/'
           retention-days: 7
 
   # Kotlin/Native 的 Apple 目标只能在 macOS 主机上编译
