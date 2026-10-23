@@ -52,6 +52,23 @@ fun WebViewScreen(
     }
     NavigationStateEffect(navigationSource, stateHolder)
 
+    // Platform → UI: 同步加载进度（T2.8）。
+    //
+    // ⚠️ `WebViewState.updateProgress(...)` 早就有，但全仓**调用点数为 0**
+    // ⇒ `progress` 恒为 0 ⇒ 进度条永远停在 0%、加载完也不消失。
+    //
+    // ⚠️ 读取必须写在**这个模块**（`webview-parkwoocheol`）：只有它依赖 `compose-webview`
+    // ⇒ 库的 `LoadingState` 类型不能透到 `webview` 模块（否则要把库提到 compile scope）。
+    //
+    // ⚠️ **各平台能读到的值不同**：Android / iOS 有真进度（0~1）；
+    // desktop / js / wasmJs 的库**只写 `Loading(0f)`** ⇒ 取不到真值
+    // ⇒ ⇒ 那些平台上 `progress` 恒为 0 ⇒ **进度条不显示**
+    // （满足 T2.8 的验收标准「要么消失、要么显示真实进度」）。
+    val progressSource = remember(state) {
+        LibraryProgressSource(libraryState = state)
+    }
+    ProgressStateEffect(progressSource, stateHolder)
+
     // Platform → UI: 同步加载失败（给"缓存条目失效后从列表移除"用）。
     //
     // 库的 `ComposeWebView` 有 `errorContent: @Composable (List<WebViewError>) -> Unit` 这个

@@ -42,6 +42,7 @@ jobs:
       #    ⇒ `:shared`(26) / `:network`(21) / `:webview-parkwoocheol` 全都没进 CI
       #    ⇒ ⇒ **"CI 绿"不等于"测试跑过了"**。
       #    ⚠️ 加新模块时要**同时**把它的测试任务加进来，否则又是一轮空跑。
+      #    ⚠️ `:webview` 从 T2.8 起也有测试源了（进度条判据 5 例）⇒ 一并加进来。
       - name: Unit Tests
         run: >-
           ./gradlew
@@ -49,6 +50,7 @@ jobs:
           :shared:jvmTest
           :network:jvmTest
           :webview-parkwoocheol:jvmTest
+          :webview:jvmTest
           --continue
 
       - name: Upload Test Reports
