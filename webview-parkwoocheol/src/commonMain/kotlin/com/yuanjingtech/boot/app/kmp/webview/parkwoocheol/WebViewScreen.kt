@@ -5,7 +5,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.parkwoocheol.composewebview.ComposeWebView
@@ -26,14 +25,15 @@ fun WebViewScreen(
     val controller = rememberWebViewController()
 
     // Platform → UI: 监听状态变化，回调到 state holder
-    LaunchedEffect(state) {
-        snapshotFlow { state.isLoading }.collect { isLoading ->
-            stateHolder.updateLoading(isLoading)
-        }
-        snapshotFlow { state.pageTitle }.collect { text ->
-            stateHolder.updatePageTitle(text)
-        }
-    }
+    //
+    // ⚠️⚠️ 加载状态与页面标题**必须拆成两个 `LaunchedEffect`**：
+    // `snapshotFlow{}.collect{}` **永不返回** ⇒ 写在同一个 `LaunchedEffect` 里的第二个
+    // `collect` **永远不会被执行** ⇒ ⇒ `updatePageTitle` 永远不会被调用
+    // ⇒ ⇒ `WebViewState.pageTitle` 恒为 null ⇒ KMP 侧的页面标题永远不显示。
+    // （这个缺陷在 2026-10-24 被 @远景react native开发 核出来并记进 `tasks.md` 的 T2.6。）
+    //
+    // 拆出来的理由、进度同步的口径见 `WebViewStateSyncEffect` 的 KDoc。
+    WebViewStateSyncEffect(libraryState = state, stateHolder = stateHolder)
 
     // Platform → UI: 同步导航状态（能否前进/后退）。
     //
