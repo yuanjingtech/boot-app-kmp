@@ -126,11 +126,13 @@ echo "$OUT" | grep -E "FAILED|tests completed|What went wrong" | head -10 || tru
 if [ "$GRADLE_RC" -ne 0 ] && [ -z "$FAILED_LINE" ]; then
   echo ""
   echo "✗ **构建/测试跑挂了，没拿到测试结果**（不是断言不符）"
-  echo "  ⇒ 常见原因 ①：Kotlin daemon 跨版本串味（报 `:webview-parkwoocheol:compileKotlinJvm FAILED` / KLIB / ABI）"
-  echo "     ⇒ **重跑一次通常就好了**（脚本已在跑前 `--stop`，但并发时仍可能撞上）"
+  echo "  ⇒ 常见原因 ①：Kotlin daemon 跨版本串味（报 :webview-parkwoocheol:compileKotlinJvm FAILED / KLIB / ABI）"
+  echo "     ⇒ **重跑一次通常就好了**（脚本已在跑前 --stop，但并发时仍可能撞上）"
   echo "  ⇒ 常见原因 ②：Gradle 缓存争用（'Unable to delete directory'）⇒ 隔几秒重试"
-  echo "  ⇒ 常见原因 ③：`--tests` 过滤串写错 ⇒ 会报 'No tests found for given includes'"
+  echo "  ⇒ 常见原因 ③：--tests 过滤串写错 ⇒ 会报 'No tests found for given includes'"
   echo "  ⇒ 若反复出现：换 worktree 路径（每次用新目录，避免和上次的 daemon 抢句柄）"
+  echo "  ⇒ 常见原因 ④：**变异本身编不过**（比如把 suspend 调用搬出了协程作用域）"
+  echo "     ⇒ 这是**变异写错了**，不是测试没鉴别力 ⇒ 换个能编过的写法再试"
   echo ""
   echo "  --- 构建失败详情（前 25 行）---"
   echo "$OUT" | grep -A 3 "What went wrong" | head -25 || echo "$OUT" | tail -25
