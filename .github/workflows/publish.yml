@@ -34,7 +34,11 @@ jobs:
           GRADLE_PUBLISH_KEY: ${{ secrets.GRADLE_PUBLISH_KEY }}
           GRADLE_PUBLISH_SECRET: ${{ secrets.GRADLE_PUBLISH_SECRET }}
       - name: Publish to MavenCentral
-        run: ./gradlew publishAllPublicationsToMavenCentral --no-configuration-cache -Pproject.build_number=${{ github.run_number }}
+        # -PmavenCentralAutomaticPublishing=true 让 vanniktech 插件用
+        # AUTOMATIC 发布类型：不加这个参数时插件默认是 USER_MANAGED，
+        # bundle 只会进 Sonatype Central Portal 的待发布队列，**没人点 release
+        # 就永远不会出现在 Central 上**（历史上 alpha.33 / alpha.34 都是这么丢的）。
+        run: ./gradlew publishAllPublicationsToMavenCentral --no-configuration-cache -Pproject.build_number=${{ github.run_number }} -PmavenCentralAutomaticPublishing=true
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
