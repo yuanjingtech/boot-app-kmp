@@ -8,9 +8,12 @@ import io.ktor.client.statement.HttpStatement
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
-internal class NetworkServiceKtorImpl(private val httpClient: HttpClient) : NetworkService {
+internal class NetworkServiceKtorImpl(
+    private val httpClient: HttpClient,
+    private val buildConfig: NetworkBuildConfig,
+) : NetworkService {
     override suspend fun get(block: NetworkRequestBuilder.() -> Unit): NetworkResponse {
-        val builder = NetworkRequestBuilder().apply {
+        val builder = NetworkRequestBuilder(isDebug = buildConfig.isDebug).apply {
             block()
         }
         builder.method = NetworkMethod.Get
@@ -18,7 +21,7 @@ internal class NetworkServiceKtorImpl(private val httpClient: HttpClient) : Netw
     }
 
     override suspend fun post(block: NetworkRequestBuilder.() -> Unit): NetworkResponse {
-        val builder = NetworkRequestBuilder()
+        val builder = NetworkRequestBuilder(isDebug = buildConfig.isDebug)
         builder.method = NetworkMethod.Post
         builder.block()
 
@@ -26,7 +29,7 @@ internal class NetworkServiceKtorImpl(private val httpClient: HttpClient) : Netw
     }
 
     private suspend inline fun request(
-        builder: NetworkRequestBuilder = NetworkRequestBuilder()
+        builder: NetworkRequestBuilder = NetworkRequestBuilder(isDebug = buildConfig.isDebug)
     ) = HttpStatement(builder.build(), httpClient).execute()
 }
 

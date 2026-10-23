@@ -7,5 +7,6 @@ import org.koin.plugin.module.dsl.single
 
 val networkModule = module {
     single<HttpClient> { createHttpClient() }
+    single<NetworkBuildConfig> { DefaultNetworkBuildConfig() }
     single<NetworkServiceKtorImpl>() bind NetworkService::class
 }

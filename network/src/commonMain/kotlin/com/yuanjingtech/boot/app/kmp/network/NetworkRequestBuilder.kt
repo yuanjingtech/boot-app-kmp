@@ -9,7 +9,18 @@ import io.ktor.http.URLBuilder
 import io.ktor.http.contentType
 import io.ktor.http.isSecure
 
-class NetworkRequestBuilder {
+class NetworkRequestBuilder(
+    /**
+     * 是否处于 debug 构建。
+     *
+     * `true` 时放宽 SSRF 校验：允许 `localhost` / `127.0.0.1` / 私网段
+     * （见 [NetworkBuildConfig]），便于开发时连本机后端。
+     *
+     * 默认 `false`（**全量拦截**）—— 保持 release 行为与既有调用方不变。
+     * 由 [NetworkServiceKtorImpl] 从 Koin 注入实际值。
+     */
+    private val isDebug: Boolean = false,
+) {
     private val builder: HttpRequestBuilder = HttpRequestBuilder()
 
     fun url(urlString: String) {
@@ -39,7 +50,8 @@ class NetworkRequestBuilder {
                 host.matches(Regex("^172\\.(1[6-9]|2[0-9]|3[0-1])\\.\\d+\\.\\d+$")) ||
                 host.matches(Regex("^192\\.168\\.\\d+\\.\\d+$"))
 
-        if (isBlocked) {
+        // debug 构建放宽私网/localhost 限制（仅限内网地址，协议校验仍然生效）
+        if (isBlocked && !isDebug) {
             throw IllegalArgumentException("URL host blocked for security: $host")
         }
 
