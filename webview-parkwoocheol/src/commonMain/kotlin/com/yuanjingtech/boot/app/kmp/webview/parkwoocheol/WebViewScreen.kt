@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,6 +34,23 @@ fun WebViewScreen(
             stateHolder.updatePageTitle(text)
         }
     }
+
+    // Platform → UI: 同步导航状态（能否前进/后退）。
+    //
+    // `compose-webview` 的默认 `ComposeWebViewClient` 在 `onPageStarted` / `onPageFinished`
+    // 里已经把 `canGoBack` / `canGoForward` 写回了 controller
+    // （字节码可见 `WebViewController.setCanGoBack$compose_webview` 调用），
+    // 且这两个 getter 是 public 的 ⇒ 这里只需**转发**给 state holder。
+    //
+    // ⚠️ 不这么做的话，`WebViewState.canGoBack` 恒为 false
+    // ⇒ 消费方拿不到真实值 ⇒ 返回键拦截 / 前进后退按钮都无法启用。
+    val navigationSource = remember(controller) {
+        object : NavigationStateSource {
+            override val canGoBack: Boolean get() = controller.canGoBack
+            override val canGoForward: Boolean get() = controller.canGoForward
+        }
+    }
+    NavigationStateEffect(navigationSource, stateHolder)
 
     // UI → Platform: 响应外部 url 变化，加载页面
     LaunchedEffect(stateHolder.url) {

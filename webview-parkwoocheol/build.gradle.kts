@@ -58,6 +58,12 @@ kotlin {
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
+        jvmTest.dependencies {
+            implementation(libs.kotlin.test)
+            // ⚠️ ui-test-junit4 只有 JVM/Android 有，JS/WASM 没有
+            // ⇒ 「导航状态同步」的测试是 Compose UI 测试 ⇒ 只能放 jvmTest
+            implementation(libs.compose.test)
+        }
     }
 }
 dependencies {
