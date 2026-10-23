@@ -52,6 +52,18 @@ fun WebViewScreen(
     }
     NavigationStateEffect(navigationSource, stateHolder)
 
+    // Platform → UI: 同步加载失败（给"缓存条目失效后从列表移除"用）。
+    //
+    // 库的 `ComposeWebView` 有 `onWebError: (List<WebViewError>) -> Unit` 参数
+    // ⇒ 加载失败时库会把错误递出来
+    // ⇒ 但 boot 的 `WebViewState.error` 永远为 null ⇒ 消费方拿不到失败信号。
+    //
+    // ⚠️ 库的 `WebViewError` 类型**不能**透出去：boot 的 `webview` 模块
+    // （`WebViewState` 所在处）**没有**依赖 `compose-webview`
+    // ⇒ 一旦透出去，KMP 侧就得把它提到 compile scope ⇒ 不必要地扩大依赖。
+    val loadErrorSource = remember { MutableLoadErrorSource() }
+    LoadErrorEffect(loadErrorSource, stateHolder)
+
     // UI → Platform: 响应外部 url 变化，加载页面
     LaunchedEffect(stateHolder.url) {
         controller.loadUrl(stateHolder.url)
@@ -61,6 +73,9 @@ fun WebViewScreen(
         modifier = modifier,
         state = state,
         controller = controller,
+        errorContent = { errors ->
+            applyLoadErrors(loadErrorSource, errors)
+        },
         settings = WebViewSettings(
             javaScriptEnabled = true,
             domStorageEnabled = true
