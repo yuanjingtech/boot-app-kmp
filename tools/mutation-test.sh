@@ -112,8 +112,15 @@ set +e
 #    ⇒ ⇒ 报 "Gradle build daemon has been stopped: stop command received"
 #    ⇒ ⇒ **这个报错会盖掉真正的测试结果**（看起来像"构建挂了"，其实是环境抖动）
 #    ⇒ ⇒ 所以停完要等一下让它退干净（最多等 30s）。
+#
+# ⚠️⚠️ **判"还有 daemon 在跑"不能 grep "Daemon"** ——
+#    `./gradlew --status` 的输出**永远**含这个词：
+#      "No Gradle daemons are running."   ← 一个都没跑，也含 "daemon"
+#      "39751 STOPPED  (stop command received)"  ← 已停的也列出来
+#    ⇒ ⇒ 只能找**还在跑**的那一行（状态列不是 STOPPED / IDLE）。
+RUNNING_RE='[0-9]+ +(IDLE|RUNNING)'
 for _ in 1 2 3 4 5 6 7 8 9 10; do
-  if ! ./gradlew --status >/dev/null 2>&1 | grep -q "Daemon"; then break; fi
+  if ! ./gradlew --status 2>&1 | grep -qE "$RUNNING_RE"; then break; fi
   sleep 3
 done
 OUT=$(./gradlew "${GRADLE_CMD[@]}" \
