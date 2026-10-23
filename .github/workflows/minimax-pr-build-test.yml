@@ -50,6 +50,7 @@ jobs:
       #    ⇒ 正确写法是 `:app:composeApp:jvmTest`（KMP 的 JVM 目标）。
       # ⚠️⚠️ **所有有测试源的模块都要跑** —— 只跑 composeApp 的话只跑了 **1** 个用例，
       #    `:shared` / `:network` / `:webview-parkwoocheol` 全都没进 CI。
+      #    ⚠️ `:webview` 从 T2.8 起也有测试源了（进度条判据 5 例）⇒ 一并加进来。
       - name: Unit Tests
         run: >-
           ./gradlew
@@ -57,6 +58,7 @@ jobs:
           :shared:jvmTest
           :network:jvmTest
           :webview-parkwoocheol:jvmTest
+          :webview:jvmTest
           --continue
 
       - name: Upload Test Reports
