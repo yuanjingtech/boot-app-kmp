@@ -54,7 +54,8 @@ fun WebViewScreen(
 
     // Platform → UI: 同步加载失败（给"缓存条目失效后从列表移除"用）。
     //
-    // 库的 `ComposeWebView` 有 `onWebError: (List<WebViewError>) -> Unit` 参数
+    // 库的 `ComposeWebView` 有 `errorContent: @Composable (List<WebViewError>) -> Unit` 这个
+    // **composable slot**（⚠️ **不是** `onWebError`，也不是普通回调）
     // ⇒ 加载失败时库会把错误递出来
     // ⇒ 但 boot 的 `WebViewState.error` 永远为 null ⇒ 消费方拿不到失败信号。
     //
@@ -63,6 +64,16 @@ fun WebViewScreen(
     // ⇒ 一旦透出去，KMP 侧就得把它提到 compile scope ⇒ 不必要地扩大依赖。
     val loadErrorSource = remember { MutableLoadErrorSource() }
     LoadErrorEffect(loadErrorSource, stateHolder)
+
+    // Platform → UI: **新一轮加载开始时**把上一次的加载失败清掉。
+    //
+    // ⚠️ 必须走 client 的 `onPageStarted` 回调：库的 `errorContent` slot
+    // **只在列表非空时才会被调用**
+    // ⇒ ⇒ 永远递不到空列表 ⇒ 靠 slot 自己是清不掉的（详见
+    // `createLoadErrorClearingClient` 的 KDoc）。
+    val client = remember(loadErrorSource) {
+        createLoadErrorClearingClient(loadErrorSource)
+    }
 
     // UI → Platform: 响应外部 url 变化，加载页面
     LaunchedEffect(stateHolder.url) {
@@ -73,6 +84,7 @@ fun WebViewScreen(
         modifier = modifier,
         state = state,
         controller = controller,
+        client = client,
         errorContent = { errors ->
             applyLoadErrors(loadErrorSource, errors)
         },

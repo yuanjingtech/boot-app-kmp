@@ -15,7 +15,8 @@ import kotlin.test.assertTrue
  *
  * ## 要防的是什么回归
  *
- * 库的 `ComposeWebView` 有 `onWebError: (List<WebViewError>) -> Unit` 参数
+ * 库的 `ComposeWebView` 有 `errorContent: @Composable (List<WebViewError>) -> Unit` 这个
+ * **composable slot**（⚠️ **不是** `onWebError`，也不是普通回调）
  * ⇒ 加载失败时库会把错误递出来
  * ⇒ 但 boot 的 `WebViewState.error` **永远是 null**
  * ⇒ 消费方（KMP 端"缓存条目加载失败后从列表移除"）拿不到失败信号。
