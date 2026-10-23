@@ -52,21 +52,21 @@ class NetworkRequestBuilderSsrfTest {
 
     @Test
     fun debug_allowsLocalhost() {
-        val builder = NetworkRequestBuilder(isDebug = true)
+        val builder = NetworkRequestBuilder().apply { isDebug = true }
         builder.url("http://localhost:8080/api")
         assertTrue(builder.build().url.toString().contains("localhost"))
     }
 
     @Test
     fun debug_allowsLoopbackIp() {
-        val builder = NetworkRequestBuilder(isDebug = true)
+        val builder = NetworkRequestBuilder().apply { isDebug = true }
         builder.url("http://127.0.0.1:8080/api")
         assertTrue(builder.build().url.toString().contains("127.0.0.1"))
     }
 
     @Test
     fun debug_allowsPrivateIp() {
-        val builder = NetworkRequestBuilder(isDebug = true)
+        val builder = NetworkRequestBuilder().apply { isDebug = true }
         builder.url("http://192.168.1.10:8080/api")
         assertTrue(builder.build().url.toString().contains("192.168.1.10"))
     }
@@ -75,7 +75,7 @@ class NetworkRequestBuilderSsrfTest {
     fun debug_stillRejectsNonHttpScheme() {
         // 放行的只是内网地址，协议限制不能被一起放开
         val thrown = try {
-            NetworkRequestBuilder(isDebug = true).url("ftp://localhost/file")
+            NetworkRequestBuilder().apply { isDebug = true }.url("ftp://localhost/file")
             null
         } catch (e: IllegalArgumentException) {
             e

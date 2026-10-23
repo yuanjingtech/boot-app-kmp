@@ -13,7 +13,7 @@ internal class NetworkServiceKtorImpl(
     private val buildConfig: NetworkBuildConfig,
 ) : NetworkService {
     override suspend fun get(block: NetworkRequestBuilder.() -> Unit): NetworkResponse {
-        val builder = NetworkRequestBuilder(isDebug = buildConfig.isDebug).apply {
+        val builder = newBuilder().apply {
             block()
         }
         builder.method = NetworkMethod.Get
@@ -21,7 +21,7 @@ internal class NetworkServiceKtorImpl(
     }
 
     override suspend fun post(block: NetworkRequestBuilder.() -> Unit): NetworkResponse {
-        val builder = NetworkRequestBuilder(isDebug = buildConfig.isDebug)
+        val builder = newBuilder()
         builder.method = NetworkMethod.Post
         builder.block()
 
@@ -29,8 +29,18 @@ internal class NetworkServiceKtorImpl(
     }
 
     private suspend inline fun request(
-        builder: NetworkRequestBuilder = NetworkRequestBuilder(isDebug = buildConfig.isDebug)
+        builder: NetworkRequestBuilder = newBuilder()
     ) = HttpStatement(builder.build(), httpClient).execute()
+
+    /**
+     * 按当前构建配置创建请求构造器。
+     *
+     * debug 标志通过属性设置而非构造参数 —— 保持 `NetworkRequestBuilder`
+     * 的 public 构造签名不变（已发布库的二进制兼容性，见该类 KDoc）。
+     */
+    private fun newBuilder(): NetworkRequestBuilder = NetworkRequestBuilder().apply {
+        isDebug = buildConfig.isDebug
+    }
 }
 
 internal fun createHttpClient() = HttpClient(CIO) {

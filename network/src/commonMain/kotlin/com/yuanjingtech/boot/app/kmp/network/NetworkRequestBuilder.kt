@@ -9,7 +9,7 @@ import io.ktor.http.URLBuilder
 import io.ktor.http.contentType
 import io.ktor.http.isSecure
 
-class NetworkRequestBuilder(
+class NetworkRequestBuilder {
     /**
      * 是否处于 debug 构建。
      *
@@ -18,9 +18,13 @@ class NetworkRequestBuilder(
      *
      * 默认 `false`（**全量拦截**）—— 保持 release 行为与既有调用方不变。
      * 由 [NetworkServiceKtorImpl] 从 Koin 注入实际值。
+     *
+     * 刻意**没有**做成构造参数：本类是已发布库的 public API，加构造参数会移除
+     * JVM 无参构造器，破坏已编译调用方的二进制兼容性。改成内部属性 + 一个
+     * internal setter，public 签名完全不变。
      */
-    private val isDebug: Boolean = false,
-) {
+    internal var isDebug: Boolean = false
+
     private val builder: HttpRequestBuilder = HttpRequestBuilder()
 
     fun url(urlString: String) {
