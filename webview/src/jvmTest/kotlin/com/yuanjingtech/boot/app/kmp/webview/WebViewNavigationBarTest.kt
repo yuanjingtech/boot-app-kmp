@@ -1,5 +1,6 @@
 package com.yuanjingtech.boot.app.kmp.webview
 
+import androidx.compose.material3.Text
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
@@ -223,6 +224,50 @@ class WebViewNavigationBarTest {
         waitForIdle()
 
         assertEquals(1, controller.goBackCalls, "挂上 controller 后点「后退」必须真的调得动")
+    }
+
+    @Test
+    fun consumerReadingControllerDuringCompositionRecomposesWhenItIsAttached() = runComposeUiTest {
+        // ⚠️⚠️ **这条才是「controller 必须是可观察状态」的唯一有效鉴别力用例。**
+        //
+        // ## 为什么上面那条 `controllerBecomesUsableAfterAttach` 抓不到这个 bug
+        //
+        // 工具栏的点击回调是 `state.controller?.goBack()` ——
+        // **这个读取发生在点击时，不在组合时** ⇒ ⇒ 无论 `controller` 是不是
+        // 可观察状态，读到的都是**当前**那个 ⇒ ⇒ 那条用例**两种实现都绿**。
+        //
+        // ## 真正会坏的是**在组合期间读**的消费方
+        //
+        // KMP 侧返回键的门控就是这么写的（peer 裁定第 ③ 条）：
+        // ```kotlin
+        // PlatformBackHandler(enabled = action is BackAction.GoBack && webViewState.controller != null)
+        // ```
+        // ⇒ ⇒ 这个 `!= null` 是**组合期读取** ⇒ ⇒ 若 `controller` 是普通 `var`
+        // ⇒ ⇒ 外层在首帧读到 `null` 之后**不会因为后续挂上 controller 而重组**
+        // ⇒ ⇒ **返回键永远不接管**（静默失效，没有任何报错）。
+        //
+        // ⇒ ⇒ 这条用例模拟的就是那个消费方：**在组合期把 `controller != null` 渲染出来**。
+        val state = WebViewState(initialUrl = "https://example.com")
+
+        setContent {
+            // 组合期读取 —— 这正是"返回键门控"那种消费方的写法
+            if (state.controller != null) {
+                Text("已就绪")
+            } else {
+                Text("未就绪")
+            }
+        }
+        waitForIdle()
+
+        // 起点：还没挂 ⇒ 必须显示"未就绪"
+        onNodeWithText("未就绪").assertExists("起点必须是「未就绪」")
+
+        // ⚠️ 关键：挂上 controller ⇒ 消费方必须**重组** ⇒ 文案必须变
+        state.attachController(FakeWebViewController())
+        waitForIdle()
+
+        onNodeWithText("已就绪").assertExists("挂上 controller 后消费方必须重组")
+        onNodeWithText("未就绪").assertDoesNotExist()
     }
 
     @Test
