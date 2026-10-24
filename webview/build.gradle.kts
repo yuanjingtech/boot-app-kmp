@@ -43,6 +43,16 @@ kotlin {
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
+        jvmTest.dependencies {
+            implementation(libs.kotlin.test)
+            // ⚠️ ui-test-junit4 只有 JVM/Android 有，JS/WASM 没有
+            // ⇒ 「前进/后退工具栏」的测试是 Compose UI 测试 ⇒ 只能放 jvmTest
+            implementation(libs.compose.test)
+            // ⚠️ compose.ui.test 只依赖 skiko-awt（不含原生 dylib）⇒ 跑 runComposeUiTest 会报
+            //    "Cannot find libskiko-macos-arm64.dylib.sha256" ⇒ 必须显式带上带原生库的
+            //    skiko-awt-runtime-<os>；compose.desktop.currentOs 会传递引入它（与 :plugin / :shared 同源做法）
+            implementation(compose.desktop.currentOs)
+        }
     }
 }
 dependencies {
