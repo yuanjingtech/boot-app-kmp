@@ -97,6 +97,16 @@ fun WebViewScreen(
         controller.loadUrl(stateHolder.url)
     }
 
+    // Platform → UI: **把 controller 挂到 state holder 上**（T2.7）。
+    //
+    // ⚠️ 为什么必须挂：
+    // boot 的 `WebViewState` 在 T2.7 之前**没有任何途径**发起前进/后退
+    // （`WebViewController` 接口是悬空契约）⇒ ⇒ 消费方（KMP 的两个子应用屏）
+    // 的"前进/后退工具栏"点了也没东西可调 ⇒ ⇒ 必须把 controller 递上去。
+    //
+    // 详见 `AttachControllerEffect` 的 KDoc（单独抽出来是为了能直接测它）。
+    AttachControllerEffect(controller = controller, stateHolder = stateHolder)
+
     ComposeWebView(
         modifier = modifier,
         state = state,

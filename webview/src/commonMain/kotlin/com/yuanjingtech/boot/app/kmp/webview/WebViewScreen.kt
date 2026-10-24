@@ -46,9 +46,44 @@ class WebViewState(
     var pageTitle by mutableStateOf<String?>(null)
         private set
 
+    /**
+     * 当前挂载的 [WebViewController]（可能为 `null`）。
+     *
+     * ## 为什么它是 `mutableStateOf` 而不是普通 `var`
+     *
+     * 挂载发生在**内层**组合里（`webview-parkwoocheol` 的 `WebViewScreen`），
+     * 而**读**它的是**外层**（消费方页面里的工具栏）。
+     *
+     * ⇒ 若用普通 `var` ⇒ 外层在首帧组合时读到的是 `null`，而这个 `null` **不是可观察状态**
+     * ⇒ ⇒ 外层**不会因为后续挂上 controller 而重组**
+     * ⇒ ⇒ **工具栏按钮永远 disabled**（一个"看起来能用、其实永远点不动"的假按钮）。
+     *
+     * ⇒ 所以这里**必须**是可观察状态。
+     */
+    var controller by mutableStateOf<WebViewController?>(null)
+        private set
+
     /** 是否处于可交互状态 */
     val isReady: Boolean
         get() = !isLoading && error == null
+
+    /**
+     * 挂载 controller（由持有真实 WebView 的那一层在组合期间调用）。
+     *
+     * 后挂的会覆盖先挂的 —— 重组时 controller 实例可能换掉。
+     */
+    fun attachController(controller: WebViewController) {
+        this.controller = controller
+    }
+
+    /**
+     * 摘掉 controller（由持有真实 WebView 的那一层在 `onDispose` 调用）。
+     *
+     * 幂等：没挂过就摘不会抛异常。
+     */
+    fun detachController() {
+        this.controller = null
+    }
 
     fun updateUrl(url: String) {
         this.url = url
