@@ -3,7 +3,6 @@ package com.yuanjingtech.boot.app.kmp.webview.parkwoocheol
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -105,20 +104,8 @@ fun WebViewScreen(
     // （`WebViewController` 接口是悬空契约）⇒ ⇒ 消费方（KMP 的两个子应用屏）
     // 的"前进/后退工具栏"点了也没东西可调 ⇒ ⇒ 必须把 controller 递上去。
     //
-    // ⚠️ 为什么用 `DisposableEffect` 而不是 `LaunchedEffect`：
-    // `LaunchedEffect` 的 `onDispose` 在**协程结束**时才跑，而这里要做的是
-    // "这个组合还在不在" ⇒ ⇒ `DisposableEffect` 才是对的。
-    //
-    // ⚠️ 为什么 `stateHolder` 要进 key：
-    // state holder 换了（`remember(app.url)` 重建）⇒ ⇒ 必须把旧的摘掉、把新的挂上
-    // ⇒ ⇒ 否则会拿着一个已经失效的 controller 继续调。
-    DisposableEffect(controller, stateHolder) {
-        val adapter = LibraryWebViewController(controller)
-        stateHolder.attachController(adapter)
-        onDispose {
-            stateHolder.detachController()
-        }
-    }
+    // 详见 `AttachControllerEffect` 的 KDoc（单独抽出来是为了能直接测它）。
+    AttachControllerEffect(controller = controller, stateHolder = stateHolder)
 
     ComposeWebView(
         modifier = modifier,
