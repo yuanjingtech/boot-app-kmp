@@ -37,12 +37,12 @@ subprojects {
     // not on individual targets. This also covers `iosArm64` / `js` /
     // `wasmJs` silently — toolchains only affect JVM/Android compilations.
     //
-    // AGP 9 + embedded Kotlin Android app modules (e.g. :app:androidapp)
+    // AGP 9 + embedded Kotlin Android app modules (e.g. :app:androidApp)
     // are NOT covered here — they apply `com.android.application` without
     // a separate `kotlin.android` plugin, so there is no
     // `KotlinMultiplatformExtension` / `KotlinJvmExtension` to configure.
     // Those modules declare `kotlin { jvmToolchain(17) }` inside the
-    // `android { }` block themselves; see `app/androidapp/build.gradle.kts`.
+    // `android { }` block themselves; see `app/androidApp/build.gradle.kts`.
     plugins.withId("com.android.kotlin.multiplatform.library") {
         extensions.configure<org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension> {
             @Suppress("UnstableApiUsage", "DEPRECATION")

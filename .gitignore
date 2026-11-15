@@ -40,3 +40,7 @@ node_modules/
 # `kotlinWasmUpgradePackageLock`. Never commit these — they are build
 # artifacts in the same family as `node_modules/`.
 kotlin-js-store/
+
+# 本地 AI 助手工作目录（各人不同，不入库）。
+# 注意：`.agents/` 是被跟踪的项目共享资产，不要一起忽略。
+.claude/
