@@ -29,9 +29,43 @@ jobs:
       - name: Fetch base branch
         run: git fetch origin ${{ github.event.pull_request.base.ref }}
 
-      - uses: anthropics/claude-code-action@v1
+      # 凭据守卫：本仓库未安装 Claude Code GitHub App，也没有 ANTHROPIC_API_KEY /
+      # CLAUDE_CODE_OAUTH_TOKEN。action 的 setupGitHubToken() 会先做 app token 交换，
+      # 失败即 401 抛错 —— 与仓库内容无关，历史上每次 PR 都产生一个必失败的 run。
+      # 这里改为：缺凭据就跳过并在 Step Summary 说明，而不是假红。
+      - name: 检查 Claude 凭据
+        id: check
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+        run: |
+          if [ -n "$ANTHROPIC_API_KEY" ] || [ -n "$CLAUDE_CODE_OAUTH_TOKEN" ]; then
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+            echo "Claude 凭据已配置，继续执行 PR 审查。"
+          else
+            echo "should_run=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::未配置 ANTHROPIC_API_KEY / CLAUDE_CODE_OAUTH_TOKEN，跳过 Claude PR Review（不判红）。"
+            {
+              echo "## Claude PR Review · 已跳过"
+              echo ""
+              echo "本仓库未配置 \`ANTHROPIC_API_KEY\` 或 \`CLAUDE_CODE_OAUTH_TOKEN\`，审查已跳过（不再判红）。"
+              echo ""
+              echo "启用方式："
+              echo "1. Settings → Secrets and variables → Actions → 新增 \`ANTHROPIC_API_KEY\`；"
+              echo "2. 本工作流通过 \`github_token\` 绕过 Claude Code GitHub App 的 token 交换，无需安装 App；"
+              echo "3. 评论将以工作流令牌身份（\`github-actions[bot]\`）而非 \`claude[bot]\` 发出。"
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Claude PR Review
+        if: steps.check.outputs.should_run == 'true'
+        uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          # 传入 github_token 跳过 app token 交换（本仓库未安装 Claude Code GitHub App，
+          # 交换会返回 401：Claude Code is not installed on this repository）。
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           trigger_phrase: ""
           prompt: |
             You are reviewing a pull request for a Kotlin Multiplatform project.
@@ -62,3 +96,11 @@ jobs:
           claude_args: "--model claude-sonnet-4-6 --max-turns 15"
           additional_permissions: "Bash(*),Read(*),Write(*),Edit(*),Glob(*),Grep(*)"
           show_full_output: true
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Claude PR Review Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- PR: #${{ github.event.pull_request.number }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Title: ${{ github.event.pull_request.title }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Status: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
