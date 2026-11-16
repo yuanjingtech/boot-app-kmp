@@ -52,7 +52,23 @@ kotlin {
         commonMain.dependencies {
             implementation(libs.bundles.koin)
             implementation(libs.bundles.ktor.client)
+        }
+        // 引擎依赖放最窄 source set（AGENTS.md：避免平台依赖进 commonMain）：
+        // iOS 用 Darwin（CIO 在 Kotlin/Native 无 TLS），其余平台沿用 CIO。
+        androidMain.dependencies {
             implementation(libs.ktor.client.cio)
+        }
+        jvmMain.dependencies {
+            implementation(libs.ktor.client.cio)
+        }
+        jsMain.dependencies {
+            implementation(libs.ktor.client.cio)
+        }
+        wasmJsMain.dependencies {
+            implementation(libs.ktor.client.cio)
+        }
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
         }
     }
 }
