@@ -24,9 +24,37 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: anthropics/claude-code-action@v1
+      # 凭据守卫：未配置 ANTHROPIC_API_KEY / CLAUDE_CODE_OAUTH_TOKEN 时跳过，
+      # 而不是让 action 在 app token 交换阶段 401 失败（见 claude-pr-review.yml 同款说明）。
+      - name: 检查 Claude 凭据
+        id: check
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+        run: |
+          if [ -n "$ANTHROPIC_API_KEY" ] || [ -n "$CLAUDE_CODE_OAUTH_TOKEN" ]; then
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+            echo "Claude 凭据已配置，继续执行修复。"
+          else
+            echo "should_run=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::未配置 ANTHROPIC_API_KEY / CLAUDE_CODE_OAUTH_TOKEN，跳过 Claude PR Fix（不判红）。"
+            {
+              echo "## Claude PR Fix · 已跳过"
+              echo ""
+              echo "本仓库未配置 \`ANTHROPIC_API_KEY\` 或 \`CLAUDE_CODE_OAUTH_TOKEN\`，自动修复已跳过（不再判红）。"
+              echo ""
+              echo "启用方式：在 Settings → Secrets and variables → Actions 新增 \`ANTHROPIC_API_KEY\`。"
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Claude PR Fix
+        if: steps.check.outputs.should_run == 'true'
+        uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          # 传入 github_token 跳过 Claude Code GitHub App 的 token 交换（本仓库未安装该 App）。
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           prompt: |
             You are fixing issues on a pull request for a Kotlin Multiplatform project.
 
@@ -50,3 +78,10 @@ jobs:
             - If a fix would significantly expand scope, leave a comment instead
           claude_args: "--model claude-sonnet-4-6 --max-turns 10"
           additional_permissions: "Bash(*),Read(*),Write(*),Edit(*),Glob(*),Grep(*)"
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Claude PR Fix Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- PR: #${{ github.event.issue.pull_request.number }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Status: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
