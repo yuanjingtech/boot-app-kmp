@@ -1,7 +1,6 @@
 package com.yuanjingtech.boot.app.kmp.network
 
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.statement.HttpStatement
@@ -43,15 +42,4 @@ internal class NetworkServiceKtorImpl(
     }
 }
 
-internal fun createHttpClient() = HttpClient(CIO) {
-    install(ContentNegotiation) {
-        json(Json {
-            encodeDefaults = true
-            isLenient = true
-            coerceInputValues = true
-            ignoreUnknownKeys = true
-        })
-    }
-    // Note: host should be provided per-request via NetworkRequestBuilder.url()
-    // DefaultRequest intentionally omits hardcoded host to avoid traffic redirection risk
-}
+// createHttpClient() 已按平台拆分到 HttpClientFactory.{platform}.kt（iOS 用 Darwin，其余沿用 CIO）
