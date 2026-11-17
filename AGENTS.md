@@ -65,6 +65,7 @@ Network access may be required for dependency resolution. If the environment is 
 - Kotlin, AGP, Compose, KSP, Koin, SQLDelight, and Room versions are tightly coupled. Before changing one, check compatibility across the catalog and affected Gradle plugins.
 - KSP configurations are target-specific in multiplatform modules, e.g. `kspAndroid`, `kspJvm`, `kspIosArm64`, `kspIosSimulatorArm64`, `kspJs`, and `kspWasmJs`.
 - Web/Wasm database support involves both Gradle dependencies and `sqlite-wasm-worker/worker`; keep them in sync.
+- The web SQLite worker belongs to the **application**, not to `:shared`: the worker URL must be a `new URL("…", import.meta.url)` literal, and such a literal baked into the published klib makes the consumer's webpack resolve an npm package that has never been published. `:shared` only exposes `BootSqliteWorker.install { … }`; see `docs/solutions/build-errors/klib-baked-worker-url-2026-11-17.md` and `:app:webApp` for the working pattern.
 - Publishing is configured through `com.vanniktech.maven.publish`; do not change coordinates casually.
 
 ## Agent Workflow
@@ -75,6 +76,7 @@ Network access may be required for dependency resolution. If the environment is 
 - If touching `build-logic`, verify the plugin ID and version catalog alias used by consuming modules.
 - If changing UI behavior, check shared Compose code and platform wrappers for assumptions.
 - When tests/builds cannot be run, state the exact command that should be run and why it was skipped.
+- Do not @-mention individual GitHub users in PR titles, bodies, comments, or commit messages. When a maintainer's decision is needed, write "maintainer decision required" in the PR body and let the maintainer pick it up voluntarily; assigning or pinging a specific person is not a substitute for a decision.
 
 
 <claude-mem-context>
