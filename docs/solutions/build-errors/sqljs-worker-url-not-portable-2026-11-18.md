@@ -3,6 +3,8 @@
 这是 `klib-baked-worker-url-2026-11-17.md`（`:shared` 的 `sqlite-wasm-worker`）的**同构缺陷**：
 同一个机制，不同的库、不同的 npm 包。上一份修的是 Room 的 worker，这一份修 SQLDelight 的。
 
+> 合并顺序：`klib-baked-worker-url-2026-11-17.md` 目前只存在于 PR #18，尚未进 main —— 本 PR 应与 #18 一起合（#18 先），否则 main 上这条链接悬空。
+
 ## 症状
 
 `sqldelight-js` 的发布构件的 klib 里含有唯一一处写死的 worker 脚本 URL：
@@ -63,8 +65,13 @@ js 构建用它」，而不是「替消费者选版本」。
 
 ```kotlin
 // consumer's jsMain
-SqldelightWorker.install {
+import org.w3c.dom.Worker
+
+fun newSqldelightWorker(): Worker =
     Worker(js("""new URL("@cashapp/sqldelight-sqljs-worker/sqljs.worker.js", import.meta.url)"""))
+
+fun installSqldelightWorker() {
+    SqldelightWorker.install { newSqldelightWorker() }
 }
 ```
 
@@ -74,12 +81,15 @@ api(npm("@cashapp/sqldelight-sqljs-worker", "2.4.1"))
 api(npm("sql.js", "1.8.0"))   // 满足 worker 的 peerDependencies
 ```
 
-还要让 `sql-wasm.wasm` 能被 worker 取到：worker 内部用 `locateFile: (file) => "/" + file`，
-默认从站点根目录读（`@cashapp/sqldelight-sqljs-worker` 包里带着这个 `.wasm`，拷到 web 根即可）。
+还要让 `sql-wasm.wasm` 能被 worker 取到：worker 内部是 `locateFile: file => "/sql-wasm.wasm"`（**硬编码常量**，不是 `"/" + file`），所以必须把 `sql.js/dist/sql-wasm.wasm` 拷到**站点根目录**、文件名保持 `sql-wasm.wasm`。`@cashapp/sqldelight-sqljs-worker` 包里只有 `sqljs.worker.js`，没有 `.wasm`（`npm pack` 实测 4 个文件：`LICENSE.txt` / `README.md` / `package.json` / `sqljs.worker.js`）。
 
 与 `:shared` 那次相比，这次**不需要 vendored 包**：`@cashapp/sqldelight-sqljs-worker` 是真实
 发布在 npm 上的（最新稳定 `2.4.1`），消费者直接声明版本即可；`:shared` 那个
 `sqlite-wasm-worker` 是仓库内 file 包、npm 上 404，所以才必须 vendored。
+
+版本口径：npm 包版本要与 `app.cash.sqldelight:web-worker-driver` 对齐（本仓库 `gradle/libs.versions.toml` 钉的是 2.3.2，npm 上 `@cashapp/sqldelight-sqljs-worker@2.3.2` 也存在）；上文写 `2.4.1` 是以最新稳定版为例。
+
+> js 目标允许把 `js(…)` 直接写在 lambda 里；**Kotlin/Wasm 不允许**（`Calls to 'js(code)' must be a single expression inside a top-level function body or a property initializer in Kotlin/Wasm.`）。上面的示例按顶层函数写，将来搬到 wasmJs 源集不用重写。
 
 ## 兼容性说明（改的是已发布库的公开面）
 
