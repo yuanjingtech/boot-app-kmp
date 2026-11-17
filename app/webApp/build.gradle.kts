@@ -33,7 +33,18 @@ kotlin {
     sourceSets {
         webMain.dependencies {
             implementation(projects.app.composeApp)
+            // `BootSqliteWorker` is the injection point this application has to fill in;
+            // `:app:composeApp` keeps `:shared` as an `implementation` dependency, so its
+            // API is not on this module's compile classpath unless declared here.
+            implementation(projects.shared)
             implementation(libs.bundles.nav3.web)
+            // The SQLite worker is this application's responsibility, not the library's:
+            // the published klib no longer contains the worker URL, so the specifier has
+            // to resolve from the application's own `node_modules`. KGP links the local
+            // package but does not install its transitive dependencies, hence the
+            // explicit `@sqlite.org/sqlite-wasm` entry below.
+            implementation(npm("sqlite-wasm-worker", file("../../sqlite-wasm-worker/worker")))
+            implementation(npm("@sqlite.org/sqlite-wasm", "3.50.1-build1"))
             // `ComposeViewport` and `ExperimentalComposeUiApi` live in
             // `org.jetbrains.compose.ui:ui` (re-exported under the
             // `androidx.compose.ui` package on JVM). Even though `:app:composeApp`

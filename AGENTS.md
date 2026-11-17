@@ -65,6 +65,7 @@ Network access may be required for dependency resolution. If the environment is 
 - Kotlin, AGP, Compose, KSP, Koin, SQLDelight, and Room versions are tightly coupled. Before changing one, check compatibility across the catalog and affected Gradle plugins.
 - KSP configurations are target-specific in multiplatform modules, e.g. `kspAndroid`, `kspJvm`, `kspIosArm64`, `kspIosSimulatorArm64`, `kspJs`, and `kspWasmJs`.
 - Web/Wasm database support involves both Gradle dependencies and `sqlite-wasm-worker/worker`; keep them in sync.
+- The web SQLite worker belongs to the **application**, not to `:shared`: the worker URL must be a `new URL("…", import.meta.url)` literal, and such a literal baked into the published klib makes the consumer's webpack resolve an npm package that has never been published. `:shared` only exposes `BootSqliteWorker.install { … }`; see `docs/solutions/build-errors/klib-baked-worker-url-2026-11-17.md` and `:app:webApp` for the working pattern.
 - Publishing is configured through `com.vanniktech.maven.publish`; do not change coordinates casually.
 
 ## Agent Workflow
