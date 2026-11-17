@@ -46,16 +46,31 @@ kotlin {
 }
 ```
 
-启动时、第一次解析数据库之前安装工厂：
+工厂必须写成 `expect`/`actual` 对，**不能**写成内联 `js(...)` 的 lambda ——
+Kotlin/Wasm 只接受「顶层函数体里的单个表达式或属性初始化器」形式：
 
 ```kotlin
+// webMain（js 与 wasmJs 共用的中间源集）
+internal expect fun newSqliteWorker(): Worker
+
+// 启动时、第一次解析数据库之前安装一次
 fun main() {
-  BootSqliteWorker.install {
-    js("""new Worker(new URL("sqlite-wasm-worker/worker.js", import.meta.url))""")
-  }
+  BootSqliteWorker.install { newSqliteWorker() }
   ComposeViewport { App() }
 }
+
+// jsMain
+@Suppress("UnsafeCastFromDynamic")
+internal actual fun newSqliteWorker(): Worker =
+  Worker(js("""new URL("sqlite-wasm-worker/worker.js", import.meta.url)"""))
+
+// wasmJsMain
+internal actual fun newSqliteWorker(): Worker =
+  js("""new Worker(new URL("sqlite-wasm-worker/worker.js", import.meta.url))""")
 ```
+
+写成 `install { js("""new Worker(new URL(...))""") }` 会在 Wasm 目标直接编译失败：
+`Calls to 'js(code)' must be a single expression inside a top-level function body or a property initializer in Kotlin/Wasm.`
 
 URL 必须保持 `new Worker(new URL("…", import.meta.url))` 的字面量形状：那是 webpack 识别
 worker chunk 的唯一签名。`new Worker("path")` 会留下解析不了的运行时 URL，

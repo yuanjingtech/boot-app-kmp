@@ -36,10 +36,21 @@ import org.w3c.dom.Worker
  * resolves the database:
  *
  * ```kotlin
- * BootSqliteWorker.install {
- *     js("""new Worker(new URL("sqlite-wasm-worker/worker.js", import.meta.url))""")
- * }
+ * // webMain source set (shared by the js and wasmJs targets):
+ * internal expect fun newSqliteWorker(): Worker
+ *
+ * // Once, before anything resolves the database:
+ * BootSqliteWorker.install { newSqliteWorker() }
  * ```
+ *
+ * The factory must be an `expect`/`actual` pair rather than a lambda that calls
+ * `js(...)` inline: Kotlin/Wasm only accepts `js(code)` as a single expression in a
+ * top-level function body or a property initializer, so `install { js("...") }`
+ * fails to compile with
+ * `Calls to 'js(code)' must be a single expression inside a top-level function body
+ * or a property initializer in Kotlin/Wasm`. See `:app:webApp/src/{jsMain,wasmJsMain}`
+ * for both actuals — the shapes differ (`Worker(js("""new URL(...)"""))` on JS,
+ * `js("""new Worker(new URL(...))"""))` on Wasm).
  *
  * It also declares the matching npm dependencies in its own build script, so the
  * specifier resolves from the application's `node_modules`. `:app:webApp` in this
