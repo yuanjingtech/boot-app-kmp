@@ -76,6 +76,7 @@ Network access may be required for dependency resolution. If the environment is 
 - If touching `build-logic`, verify the plugin ID and version catalog alias used by consuming modules.
 - If changing UI behavior, check shared Compose code and platform wrappers for assumptions.
 - When tests/builds cannot be run, state the exact command that should be run and why it was skipped.
+- Do not @-mention individual GitHub users in PR titles, bodies, comments, or commit messages. When a maintainer's decision is needed, write "maintainer decision required" in the PR body and let the maintainer pick it up voluntarily; assigning or pinging a specific person is not a substitute for a decision.
 
 
 <claude-mem-context>
