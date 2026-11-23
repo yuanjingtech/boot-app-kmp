@@ -119,7 +119,12 @@ kotlin {
         webMain.dependencies {
             implementation(libs.room3.runtime)
             implementation(libs.sqlite.web)
-            implementation(npm("sqlite-wasm-worker", file("../sqlite-wasm-worker/worker")))
+            // No `npm("sqlite-wasm-worker", ...)` here on purpose. The worker script URL
+            // has to be resolved by the *consumer's* webpack, and npm dependencies are
+            // not published with this module's Maven metadata, so a declaration here
+            // only ever helped this repository's own build while breaking every
+            // downstream web build. Applications install their own worker through
+            // `BootSqliteWorker.install { ... }`; see `:app:webApp`.
         }
     }
 }

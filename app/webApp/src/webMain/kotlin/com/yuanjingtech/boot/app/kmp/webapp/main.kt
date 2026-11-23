@@ -18,6 +18,9 @@ import com.yuanjingtech.boot.app.kmp.App
  */
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
+    // Has to run before the first Koin resolution: `bootPlatformModule` builds the Room
+    // database lazily and needs a worker factory to do it. See `SqliteWorker.kt`.
+    installSqliteWorker()
     ComposeViewport {
         App()
     }
